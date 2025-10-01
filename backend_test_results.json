@@ -1,0 +1,104 @@
+{
+  "total_tests": 16,
+  "passed_tests": 15,
+  "failed_tests": 1,
+  "success_rate": 93.75,
+  "test_results": [
+    {
+      "test": "Health Check",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:34.936457"
+    },
+    {
+      "test": "Get Articles (Public)",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:34.976232"
+    },
+    {
+      "test": "Get Navigation",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.014588"
+    },
+    {
+      "test": "Search - Valid Query",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.051742"
+    },
+    {
+      "test": "Search - Empty Query",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.089543"
+    },
+    {
+      "test": "Invalid Login",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.126375"
+    },
+    {
+      "test": "Admin Login",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.173108"
+    },
+    {
+      "test": "Admin Verify",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.208279"
+    },
+    {
+      "test": "Unauthorized Article Creation",
+      "success": false,
+      "details": "Expected 401, got 403. Response: {'detail': 'Not authenticated'}",
+      "timestamp": "2025-10-01T12:44:35.242256"
+    },
+    {
+      "test": "Create Article",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.318734"
+    },
+    {
+      "test": "Get Article by Slug",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.354891"
+    },
+    {
+      "test": "Update Article",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.388424"
+    },
+    {
+      "test": "Delete Article",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.425889"
+    },
+    {
+      "test": "Create Navigation Item",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.465150"
+    },
+    {
+      "test": "Update Navigation Item",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.537317"
+    },
+    {
+      "test": "Delete Navigation Item",
+      "success": true,
+      "details": "",
+      "timestamp": "2025-10-01T12:44:35.576431"
+    }
+  ]
+}
