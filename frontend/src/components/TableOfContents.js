@@ -31,24 +31,22 @@ const TableOfContents = ({ content }) => {
       });
       
       setHeadings(headingList);
+      
+      // Add IDs to actual DOM headings after they're rendered
+      setTimeout(() => {
+        headingList.forEach((heading) => {
+          const elements = document.querySelectorAll(`h${heading.level}`);
+          elements.forEach((element) => {
+            if (element.textContent.trim() === heading.text && !element.id) {
+              element.id = heading.id;
+            }
+          });
+        });
+      }, 100);
     };
 
     extractHeadings();
-    
-    // Add IDs to actual DOM headings after they're rendered
-    const addHeadingIds = () => {
-      headings.forEach((heading) => {
-        const element = document.querySelector(`h${heading.level}:not([id])`);
-        if (element && element.textContent.trim() === heading.text) {
-          element.id = heading.id;
-        }
-      });
-    };
-    
-    if (headings.length > 0) {
-      setTimeout(addHeadingIds, 100);
-    }
-  }, [content, headings]);
+  }, [content]);
 
   useEffect(() => {
     // Set up intersection observer for active heading detection
