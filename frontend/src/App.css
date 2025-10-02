@@ -300,8 +300,32 @@ body {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
+/* Responsive video embed (for YouTube, Vimeo, etc.) */
+.video-responsive {
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+  height: 0;
+  overflow: hidden;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.video-responsive iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+}
+
 .embed-container {
   margin: 32px 0;
+}
+
+.embed-container iframe {
+  max-width: 100%;
+  border-radius: 8px;
 }
 
 /* No Article State */
