@@ -37,7 +37,7 @@ const ArticleEditor = ({ onLogout }) => {
   const fetchArticle = async () => {
     try {
       const token = localStorage.getItem("adminToken");
-      const response = await axios.get(`${API}/articles/${id}`, {
+      const response = await axios.get(`${API}/admin/articles/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setArticle(response.data);
