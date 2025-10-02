@@ -405,6 +405,24 @@ body {
   padding-left: 40px;
 }
 
+/* Custom scrollbar for TOC */
+.table-of-contents::-webkit-scrollbar {
+  width: 6px;
+}
+
+.table-of-contents::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.table-of-contents::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+.table-of-contents::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
 .toc-title {
   font-size: 12px;
   font-weight: 700;
