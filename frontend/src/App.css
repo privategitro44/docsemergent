@@ -1702,7 +1702,7 @@ input[type="number"].form-input::-webkit-inner-spin-button {
 
 /* Responsive Design */
 @media (max-width: 1400px) {
-  .table-of-contents {
+  .docs-toc {
     display: none;
   }
   
