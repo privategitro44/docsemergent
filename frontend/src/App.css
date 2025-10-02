@@ -1718,6 +1718,21 @@ input[type="number"].form-input::-webkit-inner-spin-button {
   color: #854d0e;
 }
 
+.field-help {
+  padding: 8px 12px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 6px;
+  margin-top: 8px;
+  font-size: 12px;
+  color: #1e40af;
+  line-height: 1.5;
+}
+
+.field-help strong {
+  color: #1e3a8a;
+}
+
 .quill {
   background: #ffffff;
   border-radius: 8px;
