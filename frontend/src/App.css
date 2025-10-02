@@ -1601,6 +1601,20 @@ input[type="number"].form-input::-webkit-inner-spin-button {
   align-items: flex-start;
 }
 
+.info-banner.success-banner {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  border-left: 4px solid #10b981;
+}
+
+.info-banner.success-banner .info-content {
+  color: #065f46;
+}
+
+.info-banner.success-banner .info-content strong {
+  color: #064e3b;
+}
+
 .info-icon {
   font-size: 24px;
   flex-shrink: 0;
