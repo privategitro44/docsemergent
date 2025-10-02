@@ -44,37 +44,47 @@ const TableOfContents = ({ content }) => {
 
   useEffect(() => {
     // Set up intersection observer for active heading detection
-    const observerOptions = {
-      rootMargin: "-20% 0% -80% 0%",
-      threshold: 0
-    };
+    if (headings.length === 0) return;
+    
+    try {
+      const observerOptions = {
+        rootMargin: "-20% 0% -80% 0%",
+        threshold: 0
+      };
 
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach((entry) => {
-        if (entry.isIntersecting) {
-          setActiveHeading(entry.target.id);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setActiveHeading(entry.target.id);
+          }
+        });
+      }, observerOptions);
+
+      // Observe all headings
+      headings.forEach((heading) => {
+        const element = document.getElementById(heading.id);
+        if (element) {
+          observer.observe(element);
         }
       });
-    }, observerOptions);
 
-    // Observe all headings
-    headings.forEach((heading) => {
-      const element = document.getElementById(heading.id);
-      if (element) {
-        observer.observe(element);
-      }
-    });
-
-    return () => observer.disconnect();
+      return () => observer.disconnect();
+    } catch (error) {
+      console.error("Error setting up IntersectionObserver:", error);
+    }
   }, [headings]);
 
   const scrollToHeading = (headingId) => {
-    const element = document.getElementById(headingId);
-    if (element) {
-      element.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
+    try {
+      const element = document.getElementById(headingId);
+      if (element) {
+        element.scrollIntoView({
+          behavior: "smooth",
+          block: "start"
+        });
+      }
+    } catch (error) {
+      console.error("Error scrolling to heading:", error);
     }
   };
 
