@@ -79,10 +79,22 @@ const Documentation = () => {
     return content.map((item, index) => {
       switch (item.type) {
         case "text":
+          // Add IDs to headings in the HTML for TOC linking
+          let htmlContent = item.content;
+          const tempDiv = document.createElement("div");
+          tempDiv.innerHTML = htmlContent;
+          const headings = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
+          headings.forEach((heading, headingIndex) => {
+            const text = heading.textContent;
+            const id = `${index}-${text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "")}`;
+            heading.id = id;
+          });
+          
           return (
             <div
               key={index}
-              dangerouslySetInnerHTML={{ __html: item.content }}
+              dangerouslySetInnerHTML={{ __html: tempDiv.innerHTML }}
+              data-testid="article-text-block"
             />
           );
         case "image":
