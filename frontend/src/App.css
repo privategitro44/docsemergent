@@ -158,14 +158,15 @@ body {
   grid-row: 2;
   overflow-y: auto;
   display: flex;
+  justify-content: center;
   background: #ffffff;
+  padding: 48px 40px;
 }
 
 .docs-content {
   flex: 1;
-  max-width: 900px;
-  padding: 48px 80px;
-  margin: 0 auto;
+  max-width: 800px;
+  padding: 0 40px;
 }
 
 /* Article Styles */
