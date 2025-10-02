@@ -307,7 +307,7 @@ body {
 /* No Article State */
 .no-article {
   text-align: center;
-  padding: 80px 20px;
+  padding: 80px 20px 120px;
 }
 
 .no-article h1 {
