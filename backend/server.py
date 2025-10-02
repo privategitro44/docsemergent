@@ -200,6 +200,13 @@ async def get_article(slug: str):
         raise HTTPException(status_code=404, detail="Article not found")
     return Article(**parse_from_mongo(article))
 
+@api_router.get("/admin/articles/{article_id}", response_model=Article)
+async def get_article_by_id(article_id: str, current_admin: str = Depends(get_current_admin)):
+    article = await db.articles.find_one({"id": article_id})
+    if not article:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return Article(**parse_from_mongo(article))
+
 @api_router.post("/admin/articles", response_model=Article)
 async def create_article(article: ArticleCreate, current_admin: str = Depends(get_current_admin)):
     # Check if slug already exists
