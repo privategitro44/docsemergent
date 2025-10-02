@@ -440,13 +440,101 @@ const ArticleEditor = ({ onLogout }) => {
                 
                 <div className="content-block-content">
                   {block.type === "text" && (
-                    <ReactQuill
-                      value={block.content}
-                      onChange={(value) => handleContentChange(index, "content", value)}
-                      modules={quillModules}
-                      theme="snow"
-                      placeholder="Write your content here..."
-                    />
+                    <div className="html-editor">
+                      <div className="editor-toolbar">
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'h1')}
+                          className="toolbar-btn"
+                          title="Heading 1"
+                        >
+                          H1
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'h2')}
+                          className="toolbar-btn"
+                          title="Heading 2"
+                        >
+                          H2
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'h3')}
+                          className="toolbar-btn"
+                          title="Heading 3"
+                        >
+                          H3
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'p')}
+                          className="toolbar-btn"
+                          title="Paragraph"
+                        >
+                          P
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'strong')}
+                          className="toolbar-btn"
+                          title="Bold"
+                        >
+                          <strong>B</strong>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'em')}
+                          className="toolbar-btn"
+                          title="Italic"
+                        >
+                          <em>I</em>
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'ul')}
+                          className="toolbar-btn"
+                          title="Bullet List"
+                        >
+                          UL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'ol')}
+                          className="toolbar-btn"
+                          title="Numbered List"
+                        >
+                          OL
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'a')}
+                          className="toolbar-btn"
+                          title="Link"
+                        >
+                          <LinkIcon size={14} />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'code')}
+                          className="toolbar-btn"
+                          title="Code"
+                        >
+                          &lt;/&gt;
+                        </button>
+                      </div>
+                      <textarea
+                        id={`content-${index}`}
+                        value={block.content}
+                        onChange={(e) => handleContentChange(index, "content", e.target.value)}
+                        className="html-textarea"
+                        placeholder="Write your content here using HTML tags... Use the buttons above to insert formatting."
+                        rows={15}
+                      />
+                      <div className="editor-help">
+                        <small>You can write HTML directly or use the buttons above to insert tags. Example: &lt;p&gt;Your text&lt;/p&gt;</small>
+                      </div>
+                    </div>
                   )}
                   
                   {(block.type === "image" || block.type === "video") && (
