@@ -21,18 +21,12 @@ const TableOfContents = ({ content }) => {
             const text = heading.textContent;
             const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
             
-            // Add id to the heading for anchor linking
-            heading.id = id;
-            
             headingList.push({
               id,
               text,
               level
             });
           });
-          
-          // Update the original content with IDs
-          item.content = tempDiv.innerHTML;
         }
       });
       
@@ -40,7 +34,21 @@ const TableOfContents = ({ content }) => {
     };
 
     extractHeadings();
-  }, [content]);
+    
+    // Add IDs to actual DOM headings after they're rendered
+    const addHeadingIds = () => {
+      headings.forEach((heading) => {
+        const element = document.querySelector(`h${heading.level}:not([id])`);
+        if (element && element.textContent.trim() === heading.text) {
+          element.id = heading.id;
+        }
+      });
+    };
+    
+    if (headings.length > 0) {
+      setTimeout(addHeadingIds, 100);
+    }
+  }, [content, headings]);
 
   useEffect(() => {
     // Set up intersection observer for active heading detection
