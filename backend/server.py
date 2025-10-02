@@ -275,9 +275,21 @@ async def update_article(article_id: str, article_update: ArticleUpdate, current
 
 @api_router.delete("/admin/articles/{article_id}")
 async def delete_article(article_id: str, current_admin: str = Depends(get_current_admin)):
-    result = await db.articles.delete_one({"id": article_id})
-    if result.deleted_count == 0:
+    # Get article before deletion to find its slug
+    article = await db.articles.find_one({"id": article_id})
+    if not article:
         raise HTTPException(status_code=404, detail="Article not found")
+    
+    # Delete the article
+    result = await db.articles.delete_one({"id": article_id})
+    
+    # Also delete associated navigation item
+    try:
+        await db.navigation.delete_one({"target": article["slug"], "type": "article"})
+        logger.info(f"Deleted navigation item for article: {article['slug']}")
+    except Exception as e:
+        logger.error(f"Failed to delete navigation item: {e}")
+    
     return {"message": "Article deleted successfully"}
 
 # Navigation Routes
