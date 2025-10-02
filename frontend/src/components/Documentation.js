@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SearchComponent from "./SearchComponent";
 import TableOfContents from "./TableOfContents";
+import ArticleContent from "./ArticleContent";
 import { Search, Book } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
