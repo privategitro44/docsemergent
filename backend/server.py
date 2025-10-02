@@ -363,53 +363,129 @@ async def shutdown_db_client():
 
 # Sample Data Creation
 async def create_sample_data():
-    """Create minimal sample content"""
+    """Create comprehensive sample content"""
     
-    # Sample articles
+    # Sample articles with rich content
     sample_articles = [
         {
             "id": str(uuid.uuid4()),
-            "title": "Getting Started",
-            "slug": "getting-started",
+            "title": "Welcome to Emergent",
+            "slug": "welcome",
             "content": [
                 {
                     "type": "text",
-                    "content": "<h1>Welcome to Emergent Documentation</h1><p>This is a comprehensive documentation system built with a powerful CMS. You can manage all content through the admin panel.</p>"
+                    "content": "<h1>Welcome to Emergent Documentation</h1><p>Emergent is a powerful, modern documentation platform designed for teams that want to create beautiful, searchable documentation with ease. Built with a comprehensive Content Management System (CMS), it enables you to manage your documentation efficiently.</p><h2>Why Emergent?</h2><p>We built Emergent to solve common documentation challenges:</p><ul><li><strong>Easy Content Management:</strong> Update documentation without touching code</li><li><strong>Rich Media Support:</strong> Include images, videos, and embedded content</li><li><strong>Fast Search:</strong> Help users find what they need instantly</li><li><strong>Clean Design:</strong> Professional, corporate aesthetic that builds trust</li></ul><h2>Key Features</h2><p>Emergent comes with everything you need:</p><blockquote><p>\"Documentation is a love letter that you write to your future self.\" - Damian Conway</p></blockquote><p>Start by exploring the guides in the sidebar, or jump directly to <a href=\"/article/quick-start\">Quick Start Guide</a>.</p>"
                 }
             ],
             "category": "Introduction",
             "order": 1,
-            "meta_description": "Get started with Emergent documentation system",
-            "keywords": ["getting started", "introduction", "emergent"],
+            "meta_description": "Welcome to Emergent documentation platform",
+            "keywords": ["welcome", "introduction", "emergent", "documentation"],
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "published": True
         },
         {
             "id": str(uuid.uuid4()),
-            "title": "Core Features",
-            "slug": "core-features",
+            "title": "Quick Start Guide",
+            "slug": "quick-start",
             "content": [
                 {
                     "type": "text",
-                    "content": "<h1>Core Features</h1><p>Explore the powerful features of our documentation system:</p><ul><li>Rich text editing</li><li>Media management</li><li>Navigation control</li><li>Search functionality</li></ul>"
+                    "content": "<h1>Quick Start Guide</h1><p>Get up and running with Emergent in less than 5 minutes. This guide will walk you through the essential steps to start creating your documentation.</p><h2>Step 1: Access the Admin Panel</h2><p>Navigate to <code>/admin/login</code> and use your credentials to log in to the CMS.</p><p>Default credentials:</p><ul><li>Username: <code>admin</code></li><li>Password: <code>admin123</code></li></ul><h2>Step 2: Create Your First Article</h2><p>Once logged in, you can create articles with rich content including:</p><ol><li>Rich text with HTML formatting</li><li>Images from uploads or external URLs</li><li>Videos (uploaded or embedded)</li><li>Code snippets with syntax highlighting</li></ol><h2>Step 3: Organize Navigation</h2><p>Use the Navigation Manager to structure your documentation:</p><ul><li>Create categories for grouping content</li><li>Add article links</li><li>Include external resources</li><li>Reorder items with drag and drop</li></ul><h2>Step 4: Publish and Share</h2><p>Once your content is ready, publish it and share the documentation with your team. All changes are reflected instantly.</p><h3>Pro Tips</h3><blockquote><p>Use descriptive slugs for better SEO and user experience. Keep titles concise and descriptive.</p></blockquote>"
+                }
+            ],
+            "category": "Introduction",
+            "order": 2,
+            "meta_description": "Get started with Emergent in 5 minutes",
+            "keywords": ["quick start", "getting started", "tutorial", "setup"],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "published": True
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "title": "Content Management",
+            "slug": "content-management",
+            "content": [
+                {
+                    "type": "text",
+                    "content": "<h1>Content Management</h1><p>Learn how to effectively manage your documentation content using the Emergent CMS.</p><h2>Article Structure</h2><p>Each article in Emergent consists of:</p><ul><li><strong>Title:</strong> The main heading displayed to users</li><li><strong>Slug:</strong> URL-friendly identifier for the article</li><li><strong>Content:</strong> Mixed media content blocks</li><li><strong>Category:</strong> Organizational grouping</li><li><strong>Metadata:</strong> SEO description and keywords</li></ul><h2>Content Types</h2><h3>Text Content</h3><p>Use HTML to format your text content. Supported elements include headings, paragraphs, lists, links, and more.</p><h3>Images</h3><p>Add images by uploading them directly or providing external URLs. Each image can have:</p><ul><li>Alt text for accessibility</li><li>Caption for context</li><li>Automatic responsive sizing</li></ul><h3>Videos</h3><p>Include videos in two ways:</p><ol><li><strong>Upload:</strong> Upload MP4 files directly to the system</li><li><strong>Embed:</strong> Use iframe embeds from YouTube, Vimeo, etc.</li></ol><h2>Publishing Workflow</h2><p>Articles can be saved as drafts or published immediately. Unpublished articles are only visible in the admin panel.</p><blockquote><p>Tip: Use the draft feature to prepare content in advance and publish when ready.</p></blockquote>"
                 }
             ],
             "category": "Features",
-            "order": 2,
-            "meta_description": "Learn about core features",
-            "keywords": ["features", "core", "functionality"],
+            "order": 3,
+            "meta_description": "Manage your documentation content effectively",
+            "keywords": ["content", "management", "cms", "articles"],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "published": True
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "title": "Navigation Setup",
+            "slug": "navigation-setup",
+            "content": [
+                {
+                    "type": "text",
+                    "content": "<h1>Navigation Setup</h1><p>Create an intuitive navigation structure that helps users find information quickly.</p><h2>Navigation Types</h2><p>Emergent supports three types of navigation items:</p><h3>1. Categories</h3><p>Categories are organizational labels that group related content. They appear as headers in the sidebar and cannot be clicked.</p><h3>2. Article Links</h3><p>Direct links to articles within your documentation. Specify the article slug to create the connection.</p><h3>3. External Links</h3><p>Links to external resources or websites. These open in a new tab.</p><h2>Hierarchy</h2><p>Build multi-level navigation by setting parent-child relationships:</p><ul><li>Top-level items appear directly in the sidebar</li><li>Child items are nested under their parent</li><li>Use order values to control positioning</li></ul><h2>Best Practices</h2><p>Follow these guidelines for effective navigation:</p><ol><li><strong>Keep it simple:</strong> Limit nesting to 2-3 levels</li><li><strong>Logical grouping:</strong> Group related content together</li><li><strong>Clear labels:</strong> Use descriptive, concise labels</li><li><strong>Consistent order:</strong> Organize by importance or sequence</li></ol><blockquote><p>Good navigation is invisible. Users should find what they need without thinking about the structure.</p></blockquote>"
+                }
+            ],
+            "category": "Features",
+            "order": 4,
+            "meta_description": "Set up navigation for your documentation",
+            "keywords": ["navigation", "sidebar", "menu", "structure"],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "published": True
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "title": "Search Functionality",
+            "slug": "search",
+            "content": [
+                {
+                    "type": "text",
+                    "content": "<h1>Search Functionality</h1><p>Help users find information instantly with powerful search capabilities.</p><h2>How Search Works</h2><p>Emergent's search feature indexes all published articles and searches across:</p><ul><li>Article titles</li><li>Content text</li><li>Keywords and metadata</li></ul><h2>Using Search</h2><p>Users can search from anywhere in the documentation:</p><ol><li>Click the search bar in the header</li><li>Type at least 2 characters</li><li>View real-time results</li><li>Click a result to navigate to that article</li></ol><h2>Search Results</h2><p>Results display:</p><ul><li>Article title</li><li>Content snippet showing context</li><li>Category badge</li></ul><h3>Relevance Ranking</h3><p>Results are ranked based on:</p><ul><li>Title matches (highest priority)</li><li>Keyword matches</li><li>Content matches</li></ul><h2>Optimization Tips</h2><blockquote><p>Add relevant keywords to your articles to improve searchability. Use clear, descriptive titles.</p></blockquote>"
+                }
+            ],
+            "category": "Features",
+            "order": 5,
+            "meta_description": "Learn about search functionality",
+            "keywords": ["search", "find", "lookup", "discovery"],
+            "created_at": datetime.now(timezone.utc).isoformat(),
+            "updated_at": datetime.now(timezone.utc).isoformat(),
+            "published": True
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "title": "API Reference",
+            "slug": "api-reference",
+            "content": [
+                {
+                    "type": "text",
+                    "content": "<h1>API Reference</h1><p>Emergent provides a RESTful API for programmatic access to your documentation.</p><h2>Authentication</h2><p>Most endpoints require authentication using JWT tokens. Obtain a token by logging in through the admin panel.</p><pre><code>POST /api/admin/login\nContent-Type: application/json\n\n{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}</code></pre><h2>Endpoints</h2><h3>Articles</h3><p><code>GET /api/articles</code> - List all published articles</p><p><code>GET /api/articles/{slug}</code> - Get a specific article</p><p><code>POST /api/admin/articles</code> - Create a new article (auth required)</p><p><code>PUT /api/admin/articles/{id}</code> - Update an article (auth required)</p><p><code>DELETE /api/admin/articles/{id}</code> - Delete an article (auth required)</p><h3>Navigation</h3><p><code>GET /api/navigation</code> - Get all navigation items</p><p><code>POST /api/admin/navigation</code> - Create navigation item (auth required)</p><h3>Search</h3><p><code>GET /api/search?q={query}</code> - Search articles</p><h2>Response Format</h2><p>All API responses use JSON format with consistent structure.</p>"
+                }
+            ],
+            "category": "Developers",
+            "order": 6,
+            "meta_description": "API reference documentation",
+            "keywords": ["api", "reference", "endpoints", "rest"],
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat(),
             "published": True
         }
     ]
     
-    # Sample navigation
+    # Sample navigation with proper hierarchy
+    intro_cat_id = str(uuid.uuid4())
+    features_cat_id = str(uuid.uuid4())
+    dev_cat_id = str(uuid.uuid4())
+    
     sample_navigation = [
         {
-            "id": str(uuid.uuid4()),
-            "label": "Introduction",
+            "id": intro_cat_id,
+            "label": "GETTING STARTED",
             "type": "category",
             "target": None,
             "parent_id": None,
@@ -418,30 +494,75 @@ async def create_sample_data():
         },
         {
             "id": str(uuid.uuid4()),
-            "label": "Getting Started",
+            "label": "Welcome",
             "type": "article",
-            "target": "getting-started",
-            "parent_id": None,
+            "target": "welcome",
+            "parent_id": intro_cat_id,
             "order": 2,
-            "icon": "play"
+            "icon": None
         },
         {
             "id": str(uuid.uuid4()),
-            "label": "Features",
+            "label": "Quick Start",
+            "type": "article",
+            "target": "quick-start",
+            "parent_id": intro_cat_id,
+            "order": 3,
+            "icon": None
+        },
+        {
+            "id": features_cat_id,
+            "label": "FEATURES",
             "type": "category",
             "target": None,
             "parent_id": None,
-            "order": 3,
+            "order": 4,
             "icon": "settings"
         },
         {
             "id": str(uuid.uuid4()),
-            "label": "Core Features",
+            "label": "Content Management",
             "type": "article",
-            "target": "core-features",
+            "target": "content-management",
+            "parent_id": features_cat_id,
+            "order": 5,
+            "icon": None
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "label": "Navigation Setup",
+            "type": "article",
+            "target": "navigation-setup",
+            "parent_id": features_cat_id,
+            "order": 6,
+            "icon": None
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "label": "Search",
+            "type": "article",
+            "target": "search",
+            "parent_id": features_cat_id,
+            "order": 7,
+            "icon": None
+        },
+        {
+            "id": dev_cat_id,
+            "label": "DEVELOPERS",
+            "type": "category",
+            "target": None,
             "parent_id": None,
-            "order": 4,
-            "icon": "star"
+            "order": 8,
+            "icon": "code"
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "label": "API Reference",
+            "type": "article",
+            "target": "api-reference",
+            "parent_id": dev_cat_id,
+            "order": 9,
+            "icon": None
         }
     ]
     
