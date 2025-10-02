@@ -554,8 +554,22 @@ const ArticleEditor = ({ onLogout }) => {
                         value={block.content}
                         onChange={(e) => handleContentChange(index, "content", e.target.value)}
                         className="form-input"
-                        placeholder={`Enter ${block.type} URL or upload file`}
+                        placeholder={
+                          block.type === "video" 
+                            ? "Enter video URL (YouTube, Vimeo, or direct .mp4 link)" 
+                            : "Enter image URL or upload file"
+                        }
                       />
+                      
+                      {block.type === "video" && (
+                        <div className="field-help">
+                          <small>
+                            💡 <strong>Video URLs:</strong> Paste YouTube (youtube.com/watch?v=...), 
+                            Vimeo (vimeo.com/...), or direct video file URLs. YouTube and Vimeo links 
+                            will be automatically converted to embeds.
+                          </small>
+                        </div>
+                      )}
                       
                       <div className="media-actions">
                         <label className="upload-btn">
