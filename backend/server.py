@@ -210,6 +210,52 @@ async def create_article(article: ArticleCreate, current_admin: str = Depends(ge
     article_obj = Article(**article.dict())
     article_dict = prepare_for_mongo(article_obj.dict())
     await db.articles.insert_one(article_dict)
+    
+    # Automatically create navigation item for the new article
+    try:
+        # Find or create category based on article category
+        category_nav = await db.navigation.find_one({
+            "type": "category",
+            "label": article.category.upper()
+        })
+        
+        parent_id = None
+        if category_nav:
+            parent_id = category_nav["id"]
+        else:
+            # Create new category if it doesn't exist
+            new_category = {
+                "id": str(uuid.uuid4()),
+                "label": article.category.upper(),
+                "type": "category",
+                "target": None,
+                "parent_id": None,
+                "order": 1000,  # Put new categories at the end
+                "icon": None
+            }
+            await db.navigation.insert_one(new_category)
+            parent_id = new_category["id"]
+        
+        # Get the highest order in this category
+        existing_nav = await db.navigation.find({"parent_id": parent_id}).sort("order", -1).limit(1).to_list(1)
+        next_order = (existing_nav[0]["order"] + 1) if existing_nav else 1
+        
+        # Create navigation item for the article
+        nav_item = {
+            "id": str(uuid.uuid4()),
+            "label": article.title,
+            "type": "article",
+            "target": article.slug,
+            "parent_id": parent_id,
+            "order": next_order,
+            "icon": None
+        }
+        await db.navigation.insert_one(nav_item)
+        logger.info(f"Auto-created navigation item for article: {article.title}")
+    except Exception as e:
+        logger.error(f"Failed to auto-create navigation item: {e}")
+        # Don't fail article creation if navigation fails
+    
     return article_obj
 
 @api_router.put("/admin/articles/{article_id}", response_model=Article)
