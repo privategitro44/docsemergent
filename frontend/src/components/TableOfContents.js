@@ -5,36 +5,41 @@ const TableOfContents = ({ content }) => {
   const [activeHeading, setActiveHeading] = useState("");
 
   useEffect(() => {
-    // Extract headings from content without mutating the original
+    // Extract headings from content
     const extractHeadings = () => {
       const headingList = [];
       
-      content.forEach((item, itemIndex) => {
+      content.forEach((item) => {
         if (item.type === "text") {
           // Parse HTML content to extract headings
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = item.content;
-          
-          const headingElements = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
-          headingElements.forEach((heading, headingIndex) => {
-            const level = parseInt(heading.tagName.charAt(1));
-            const text = heading.textContent;
-            // Create unique ID using content block index and heading index
-            const id = `${itemIndex}-${text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "")}`;
+          try {
+            const tempDiv = document.createElement("div");
+            tempDiv.innerHTML = item.content;
             
-            headingList.push({
-              id,
-              text,
-              level
+            const headingElements = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
+            headingElements.forEach((heading) => {
+              const level = parseInt(heading.tagName.charAt(1));
+              const text = heading.textContent;
+              const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+              
+              headingList.push({
+                id,
+                text,
+                level
+              });
             });
-          });
+          } catch (error) {
+            console.error("Error extracting headings:", error);
+          }
         }
       });
       
       setHeadings(headingList);
     };
 
-    extractHeadings();
+    if (content && content.length > 0) {
+      extractHeadings();
+    }
   }, [content]);
 
   useEffect(() => {
