@@ -5,21 +5,22 @@ const TableOfContents = ({ content }) => {
   const [activeHeading, setActiveHeading] = useState("");
 
   useEffect(() => {
-    // Extract headings from content
+    // Extract headings from content without mutating the original
     const extractHeadings = () => {
       const headingList = [];
       
-      content.forEach((item) => {
+      content.forEach((item, itemIndex) => {
         if (item.type === "text") {
           // Parse HTML content to extract headings
           const tempDiv = document.createElement("div");
           tempDiv.innerHTML = item.content;
           
           const headingElements = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
-          headingElements.forEach((heading) => {
+          headingElements.forEach((heading, headingIndex) => {
             const level = parseInt(heading.tagName.charAt(1));
             const text = heading.textContent;
-            const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+            // Create unique ID using content block index and heading index
+            const id = `${itemIndex}-${text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "")}`;
             
             headingList.push({
               id,
@@ -31,18 +32,6 @@ const TableOfContents = ({ content }) => {
       });
       
       setHeadings(headingList);
-      
-      // Add IDs to actual DOM headings after they're rendered
-      setTimeout(() => {
-        headingList.forEach((heading) => {
-          const elements = document.querySelectorAll(`h${heading.level}`);
-          elements.forEach((element) => {
-            if (element.textContent.trim() === heading.text && !element.id) {
-              element.id = heading.id;
-            }
-          });
-        });
-      }, 100);
     };
 
     extractHeadings();
