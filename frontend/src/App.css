@@ -1528,6 +1528,35 @@ input[type="number"].form-input::-webkit-inner-spin-button {
 }
 
 /* React Quill Overrides */
+.info-banner {
+  display: flex;
+  gap: 12px;
+  padding: 16px 20px;
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-left: 4px solid #3b82f6;
+  border-radius: 8px;
+  margin: 24px 48px;
+  align-items: flex-start;
+}
+
+.info-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.info-content {
+  flex: 1;
+  font-size: 14px;
+  line-height: 1.6;
+  color: #1e40af;
+}
+
+.info-content strong {
+  color: #1e3a8a;
+  font-weight: 600;
+}
+
 .html-editor {
   background: #ffffff;
   border: 1px solid #d1d5db;
