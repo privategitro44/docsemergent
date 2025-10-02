@@ -1649,17 +1649,28 @@ input[type="number"].form-input::-webkit-inner-spin-button {
 }
 
 /* Responsive Design */
+@media (max-width: 1400px) {
+  .table-of-contents {
+    display: none;
+  }
+  
+  .docs-content {
+    max-width: 900px;
+    padding: 0 60px;
+  }
+}
+
 @media (max-width: 1024px) {
   .docs-layout {
     grid-template-columns: 240px 1fr;
   }
 
-  .docs-content {
-    padding: 32px 40px;
+  .docs-main {
+    padding: 32px 20px;
   }
 
-  .table-of-contents {
-    display: none;
+  .docs-content {
+    padding: 0 40px;
   }
 }
 
@@ -1672,8 +1683,12 @@ input[type="number"].form-input::-webkit-inner-spin-button {
     display: none;
   }
 
+  .docs-main {
+    padding: 24px 16px;
+  }
+
   .docs-content {
-    padding: 24px 20px;
+    padding: 0 20px;
   }
 
   .article h1 {
