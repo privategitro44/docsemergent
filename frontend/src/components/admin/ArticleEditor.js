@@ -2,9 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
-import ReactQuill from "react-quill";
-import "react-quill/dist/quill.snow.css";
-import { Save, ArrowLeft, Upload, Link, Eye, EyeOff } from "lucide-react";
+import { Save, ArrowLeft, Upload, Link as LinkIcon, Eye, EyeOff, X, ArrowUp, ArrowDown } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
