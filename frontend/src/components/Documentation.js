@@ -81,10 +81,7 @@ const Documentation = () => {
       switch (item.type) {
         case "text":
           return (
-            <div
-              key={index}
-              dangerouslySetInnerHTML={{ __html: item.content }}
-            />
+            <ArticleContent key={index} content={item.content} />
           );
         case "image":
           return (
