@@ -391,36 +391,46 @@ body {
 }
 
 /* Table of Contents */
-.table-of-contents {
+.docs-toc {
   position: sticky;
   top: 24px;
   width: 240px;
   min-width: 240px;
   flex-shrink: 0;
-  padding: 20px 20px 20px 0;
+  padding: 20px 20px 20px 40px;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   border-left: 1px solid #e5e7eb;
   margin-left: 40px;
-  padding-left: 40px;
 }
 
 /* Custom scrollbar for TOC */
-.table-of-contents::-webkit-scrollbar {
+.docs-toc::-webkit-scrollbar {
   width: 6px;
 }
 
-.table-of-contents::-webkit-scrollbar-track {
+.docs-toc::-webkit-scrollbar-track {
   background: transparent;
 }
 
-.table-of-contents::-webkit-scrollbar-thumb {
+.docs-toc::-webkit-scrollbar-thumb {
   background: #d1d5db;
   border-radius: 3px;
 }
 
-.table-of-contents::-webkit-scrollbar-thumb:hover {
+.docs-toc::-webkit-scrollbar-thumb:hover {
   background: #9ca3af;
+}
+
+.toc-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.toc-item {
+  margin: 0;
+  padding: 0;
 }
 
 .toc-title {
