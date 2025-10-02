@@ -194,15 +194,31 @@ const ArticleEditor = ({ onLogout }) => {
     }
   };
 
-  const quillModules = {
-    toolbar: [
-      [{ 'header': [1, 2, 3, false] }],
-      ['bold', 'italic', 'underline', 'strike'],
-      ['blockquote', 'code-block'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-      ['link'],
-      ['clean']
-    ],
+  // Simple HTML formatting helper
+  const insertFormatting = (index, tag) => {
+    const textarea = document.getElementById(`content-${index}`);
+    if (!textarea) return;
+    
+    const start = textarea.selectionStart;
+    const end = textarea.selectionEnd;
+    const selectedText = textarea.value.substring(start, end);
+    const before = textarea.value.substring(0, start);
+    const after = textarea.value.substring(end);
+    
+    let newText;
+    if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') {
+      newText = `${before}<${tag}>${selectedText || 'Your text here'}</${tag}>${after}`;
+    } else if (tag === 'ul' || tag === 'ol') {
+      newText = `${before}<${tag}>\n  <li>${selectedText || 'List item'}</li>\n</${tag}>${after}`;
+    } else if (tag === 'a') {
+      newText = `${before}<a href="url">${selectedText || 'Link text'}</a>${after}`;
+    } else if (tag === 'code') {
+      newText = `${before}<code>${selectedText || 'code'}</code>${after}`;
+    } else {
+      newText = `${before}<${tag}>${selectedText}</${tag}>${after}`;
+    }
+    
+    handleContentChange(index, 'content', newText);
   };
 
   if (loading) {
