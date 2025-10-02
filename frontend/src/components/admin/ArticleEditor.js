@@ -291,12 +291,12 @@ const ArticleEditor = ({ onLogout }) => {
         </div>
 
         {/* Important Notice */}
-        <div className="info-banner" data-testid="navigation-reminder">
-          <div className="info-icon">ℹ️</div>
+        <div className="info-banner success-banner" data-testid="navigation-reminder">
+          <div className="info-icon">✅</div>
           <div className="info-content">
-            <strong>Important:</strong> After creating this article, you need to add it to the Navigation Manager 
-            so it appears in the sidebar for users. Go to <strong>Navigation</strong> → <strong>Add Navigation Item</strong> 
-            → Set type to "article" and target to your article slug.
+            <strong>Auto-Navigation Enabled:</strong> When you save this article, a navigation item will be 
+            automatically created in the sidebar under the <strong>{article.category || 'specified'}</strong> category. 
+            You can manage navigation items later in the <strong>Navigation Manager</strong>.
           </div>
         </div>
 
