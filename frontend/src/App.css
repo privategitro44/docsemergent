@@ -444,18 +444,42 @@ body {
 
 .toc-link {
   display: block;
+  width: 100%;
+  text-align: left;
   font-size: 13px;
   color: #6b7280;
   text-decoration: none;
-  padding: 6px 0;
+  padding: 6px 0 6px 12px;
   border-left: 2px solid transparent;
-  padding-left: 12px;
   margin-left: -2px;
   transition: all 0.2s;
+  background: none;
+  border-top: none;
+  border-right: none;
+  border-bottom: none;
+  cursor: pointer;
+  font-family: inherit;
+}
+
+.toc-link.level-2 {
+  padding-left: 12px;
+}
+
+.toc-link.level-3 {
+  padding-left: 24px;
+  font-size: 12px;
+}
+
+.toc-link.level-4,
+.toc-link.level-5,
+.toc-link.level-6 {
+  padding-left: 36px;
+  font-size: 12px;
 }
 
 .toc-link:hover {
   color: #1a1a1a;
+  background: #f9fafb;
 }
 
 .toc-link.active {
