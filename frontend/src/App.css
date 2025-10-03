@@ -97,14 +97,18 @@ body {
 /* Sidebar */
 .docs-sidebar {
   grid-column: 1;
-  grid-row: 2;
+  grid-row: 2 / span 1;
   background: #fafafa;
   border-right: 1px solid #e5e7eb;
-  overflow-y: auto;
+  overflow: visible; /* no independent scroll */
   padding: 24px;
   max-width: 304px;
   width: 100%;
   box-sizing: border-box;
+  align-self: start;
+  position: sticky;
+  top: 64px; /* below header */
+  height: fit-content;
 }
 
 .sidebar-section {
