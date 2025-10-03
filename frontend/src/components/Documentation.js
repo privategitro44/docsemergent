@@ -92,7 +92,7 @@ const Documentation = () => {
           case "text":
             if (!item.content) return null;
             return (
-              <ArticleContent key={index} content={item.content} />
+              <ArticleContent key={index} content={item.content} title={currentArticle?.title} />
             );
           case "image":
             return (
