@@ -5,7 +5,7 @@ import SearchComponent from "./SearchComponent";
 import SearchOverlay from "./SearchOverlay";
 import TableOfContents from "./TableOfContents";
 import ArticleContent from "./ArticleContent";
-import { Search } from "lucide-react";
+import { Search, Home, PlayCircle, Hammer, Brain, DollarSign, GitBranch, Bug, Gauge, Briefcase, Gift, Zap, Crown, FileText } from "lucide-react";
 import EmergentLogo from "../assets/Emergent logo.png";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
