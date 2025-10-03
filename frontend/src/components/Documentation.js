@@ -93,14 +93,14 @@ const Documentation = () => {
         switch (item.type) {
           case "text": {
             if (!item.content) return null;
-            const stripDup = !firstTextBlockRendered; // only for the first text block
+            // Remove any H1 matching the article title inside every text block
             firstTextBlockRendered = true;
             return (
               <ArticleContent
                 key={index}
                 content={item.content}
                 title={currentArticle?.title}
-                stripDuplicateTopHeading={stripDup}
+                stripDuplicateTopHeading={true}
               />
             );
           }
