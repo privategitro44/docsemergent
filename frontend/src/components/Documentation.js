@@ -48,11 +48,14 @@ const firstBlockHasMatchingH1 = (article) => {
     if (slug) {
       fetchArticle(slug);
     } else {
-      // Show first article by default
+      // Show Welcome article by default if exists
       if (articles.length > 0) {
-        const firstArticle = articles.find(a => a.published);
-        if (firstArticle) {
-          setCurrentArticle(firstArticle);
+        const welcome = articles.find(a => a.published && (a.slug === 'welcome' || a.title.toLowerCase().includes('welcome')));
+        if (welcome) {
+          setCurrentArticle(welcome);
+        } else {
+          const firstArticle = articles.find(a => a.published);
+          if (firstArticle) setCurrentArticle(firstArticle);
         }
       }
     }
