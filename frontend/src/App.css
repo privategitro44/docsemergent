@@ -1,5 +1,13 @@
 /* Global Styles */
 @supports (font-variation-settings: normal) {
+@font-face {
+  font-family: 'Brockman';
+  src: url('./assets/font/Brockmann-SemiBold.otf') format('opentype');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
   html { font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica Neue, Arial, "Apple Color Emoji", "Segoe UI Emoji"; }
 }
 
