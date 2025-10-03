@@ -135,6 +135,13 @@ body {
   color: #1a1a1a;
 }
 
+.nav-children .nav-item.sub-item.active {
+  background: #E6F0FF;
+  color: #1E66F5;
+  border-left: 3px solid #1E66F5;
+  margin-left: -3px;
+}
+
 .nav-item.active {
   background: #E6F0FF; /* lighter blue background */
   color: #1E66F5; /* blue text */
