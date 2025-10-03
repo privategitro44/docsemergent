@@ -2,6 +2,12 @@ import React, { useEffect, useRef, useMemo } from 'react';
 
 const normalizeText = (str) => (str || '').trim().replace(/\s+/g, ' ').toLowerCase();
 
+const slugify = (text) => (text || '')
+  .trim()
+  .toLowerCase()
+  .replace(/\s+/g, '-')
+  .replace(/[^a-z0-9\-]/g, '');
+
 const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2 }) => {
   if (!html) return '';
   try {
@@ -40,6 +46,17 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
       } else {
         prev = h;
       }
+    });
+
+    // Ensure stable, unique IDs for all headings before HTML is injected
+    const idCounts = new Map();
+    Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6')).forEach((h) => {
+      const base = slugify(h.textContent || '');
+      if (!base) return;
+      const count = (idCounts.get(base) || 0) + 1;
+      idCounts.set(base, count);
+      const finalId = count > 1 ? `${base}-${count}` : base;
+      if (!h.id) h.id = finalId;
     });
 
     return container.innerHTML;
