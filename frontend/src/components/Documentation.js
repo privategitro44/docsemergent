@@ -400,6 +400,13 @@ const firstBlockHasMatchingH1 = (article) => {
         </aside>
       )}
     </div>
+      {/* Search overlay (global) */}
+      <SearchOverlay
+        isOpen={overlayOpen}
+        onClose={() => setOverlayOpen(false)}
+        onNavigate={(slug) => navigate(`/article/${slug}`)}
+      />
+
   );
 };
 
