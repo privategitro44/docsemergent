@@ -495,11 +495,12 @@ body {
 }
 
 .toc-title {
-  font-size: 12px;
+  font-size: 14px;
+  line-height: 20px;
   font-weight: 700;
   color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none; /* sentence case */
+  letter-spacing: 0;
   margin-bottom: 12px;
 }
 
