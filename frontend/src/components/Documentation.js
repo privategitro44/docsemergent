@@ -5,31 +5,47 @@ import SearchComponent from "./SearchComponent";
 import SearchOverlay from "./SearchOverlay";
 import TableOfContents from "./TableOfContents";
 import ArticleContent from "./ArticleContent";
-import { Search, Home, PlayCircle, Hammer, Brain, DollarSign, GitBranch, Bug, Gauge, Briefcase, Gift, Zap, Crown, FileText } from "lucide-react";
 import EmergentLogo from "../assets/Emergent logo.png";
+
+// Heroicons (outline) for UI + sidebar items
+import {
+  MagnifyingGlassIcon,
+  HomeIcon,
+  PlayCircleIcon,
+  WrenchScrewdriverIcon,
+  BoltIcon,
+  BanknotesIcon,
+  Squares2X2Icon,
+  BugAntIcon,
+  ChartBarIcon,
+  BriefcaseIcon,
+  GiftIcon,
+  SparklesIcon,
+  DocumentTextIcon
+} from "@heroicons/react/24/outline";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Documentation = () => {
-// Helper functions for heading duplication checks
-const normalizeText = (str) => (str || "").trim().replace(/\s+/g, " ").toLowerCase();
+  // Helper functions for heading duplication checks
+  const normalizeText = (str) => (str || "").trim().replace(/\s+/g, " ").toLowerCase();
 
-const firstBlockHasMatchingH1 = (article) => {
-  try {
-    if (!article || !Array.isArray(article.content)) return false;
-    const firstText = article.content.find((b) => b && b.type === "text" && typeof b.content === "string");
-    if (!firstText) return false;
-    const temp = document.createElement("div");
-    temp.innerHTML = firstText.content;
-    const h1 = temp.querySelector("h1");
-    if (!h1) return false;
-    return normalizeText(h1.textContent) === normalizeText(article.title);
-  } catch (e) {
-    // Non-blocking
-    return false;
-  }
-};
+  const firstBlockHasMatchingH1 = (article) => {
+    try {
+      if (!article || !Array.isArray(article.content)) return false;
+      const firstText = article.content.find((b) => b && b.type === "text" && typeof b.content === "string");
+      if (!firstText) return false;
+      const temp = document.createElement("div");
+      temp.innerHTML = firstText.content;
+      const h1 = temp.querySelector("h1");
+      if (!h1) return false;
+      return normalizeText(h1.textContent) === normalizeText(article.title);
+    } catch (e) {
+      // Non-blocking
+      return false;
+    }
+  };
 
   const { slug } = useParams();
   const navigate = useNavigate();
@@ -104,8 +120,6 @@ const firstBlockHasMatchingH1 = (article) => {
       return <p>No content available</p>;
     }
 
-    let firstTextBlockRendered = false;
-
     return content.map((item, index) => {
       try {
         if (!item || !item.type) {
@@ -116,8 +130,6 @@ const firstBlockHasMatchingH1 = (article) => {
         switch (item.type) {
           case "text": {
             if (!item.content) return null;
-            // Remove any H1 matching the article title inside every text block
-            firstTextBlockRendered = true;
             return (
               <ArticleContent
                 key={index}
@@ -228,6 +240,23 @@ const firstBlockHasMatchingH1 = (article) => {
     });
   };
 
+  const getIconForLabel = (label = "") => {
+    const l = label.toLowerCase();
+    if (/(intro|welcome|home)/.test(l)) return HomeIcon;
+    if (/(video|getting started|start)/.test(l)) return PlayCircleIcon;
+    if (/(build|basics|setup|install)/.test(l)) return WrenchScrewdriverIcon;
+    if (/(advanced|prompt|boost|optimize|tips)/.test(l)) return BoltIcon;
+    if (/(credit|billing|cost|pricing|optimi)/.test(l)) return BanknotesIcon;
+    if (/(workflow|pattern|flow|process)/.test(l)) return Squares2X2Icon;
+    if (/(debug|bug)/.test(l)) return BugAntIcon;
+    if (/(performance|speed|bench|opt)/.test(l)) return ChartBarIcon;
+    if (/(professional|practice|career|work)/.test(l)) return BriefcaseIcon;
+    if (/(free)/.test(l)) return GiftIcon;
+    if (/(standard)/.test(l)) return BoltIcon;
+    if (/(pro)/.test(l)) return SparklesIcon;
+    return DocumentTextIcon;
+  };
+
   const organizeNavigation = () => {
     const navMap = new Map();
     const rootItems = [];
@@ -262,6 +291,8 @@ const firstBlockHasMatchingH1 = (article) => {
       const isActive = slug === item.target;
       const isCategory = item.type === "category";
 
+      const Icon = getIconForLabel(item.label);
+
       return (
         <div key={item.id}>
           <a
@@ -277,26 +308,31 @@ const firstBlockHasMatchingH1 = (article) => {
             }}
             data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
           >
+            {!isCategory && <Icon className="nav-icon" aria-hidden="true" />}
             {item.label}
           </a>
           {item.children && item.children.length > 0 && (
             <div className="nav-children">
-              {item.children.map((child) => (
-                <a
-                  key={child.id}
-                  href="#"
-                  className={`nav-item sub-item ${
-                    slug === child.target ? "active" : ""
-                  }`}
-                  onClick={(e) => {
-                    e.preventDefault();
-                    handleNavClick(child);
-                  }}
-                  data-testid={`nav-${child.label.toLowerCase().replace(/\s+/g, "-")}`}
-                >
-                  {child.label}
-                </a>
-              ))}
+              {item.children.map((child) => {
+                const ChildIcon = getIconForLabel(child.label);
+                return (
+                  <a
+                    key={child.id}
+                    href="#"
+                    className={`nav-item sub-item ${
+                      slug === child.target ? "active" : ""
+                    }`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleNavClick(child);
+                    }}
+                    data-testid={`nav-${child.label.toLowerCase().replace(/\s+/g, "-")}`}
+                  >
+                    <ChildIcon className="nav-icon" aria-hidden="true" />
+                    {child.label}
+                  </a>
+                );
+              })}
             </div>
           )}
         </div>
@@ -319,11 +355,11 @@ const firstBlockHasMatchingH1 = (article) => {
       {/* Header */}
       <header className="docs-header" data-testid="docs-header">
         <a href="/" className="logo" data-testid="docs-logo" aria-label="Emergent">
-          <img src={EmergentLogo} alt="Emergent" style={{ height: 20 }} />
+          <img src={EmergentLogo} alt="Emergent" style={{ height: 24 }} />
         </a>
         
         <div className="search-container">
-          <Search className="search-icon" size={16} />
+          <MagnifyingGlassIcon className="search-icon" width={16} height={16} />
           <input
             type="text"
             placeholder="Search documentation..."
@@ -346,6 +382,14 @@ const firstBlockHasMatchingH1 = (article) => {
         </div>
 
         <div className="header-actions">
+          <a
+            href="https://app.emergent.sh/landing"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="cta-try"
+          >
+            Try Emergent
+          </a>
           {/* Hidden admin link - only accessible via direct URL */}
         </div>
       </header>

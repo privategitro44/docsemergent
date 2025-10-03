@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
-import { Search, X } from "lucide-react";
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -83,7 +83,7 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate }) => {
     <div className="search-overlay-backdrop" role="dialog" aria-modal="true">
       <div className="search-overlay-container" ref={containerRef}>
         <div className="search-overlay-input-wrap">
-          <Search className="search-overlay-icon" size={18} />
+          <MagnifyingGlassIcon className="search-overlay-icon" width={18} height={18} />
           <input
             ref={inputRef}
             value={query}
@@ -92,7 +92,7 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate }) => {
             className="search-overlay-input"
           />
           <button className="search-overlay-close" onClick={onClose} aria-label="Close search">
-            <X size={18} />
+            <XMarkIcon width={18} height={18} />
           </button>
         </div>
 
