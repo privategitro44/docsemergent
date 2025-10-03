@@ -359,7 +359,9 @@ const firstBlockHasMatchingH1 = (article) => {
         <div className="docs-content" data-testid="docs-content">
           {currentArticle ? (
             <article className="article" data-testid="current-article">
-              <h1 data-testid="article-title">{currentArticle.title}</h1>
+              {!firstBlockHasMatchingH1(currentArticle) && (
+                <h1 data-testid="article-title">{currentArticle.title}</h1>
+              )}
               <div data-testid="article-content">
                 {renderContent(currentArticle.content)}
               </div>
