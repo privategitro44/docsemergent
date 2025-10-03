@@ -334,7 +334,7 @@ const Documentation = () => {
                     data-testid={`nav-${child.label.toLowerCase().replace(/\s+/g, "-")}`}
                   >
                     <ChildIcon className="nav-icon" aria-hidden="true" />
-                    {child.label}
+                    {sentenceCase(child.label)}
                   </a>
                 );
               })}
