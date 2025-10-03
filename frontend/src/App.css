@@ -569,8 +569,14 @@ body {
 .toc-link.level-6 { padding-left: 36px; font-size: 12px; }
 
 .toc-link:hover {
-  color: #1a1a1a;
-  background: #f9fafb;
+  color: #131315; /* darker text on hover */
+  background: transparent; /* no grey fill */
+}
+
+/* Keep active color on hover */
+.toc-link.active:hover {
+  color: #1E66F5;
+  background: transparent;
 }
 
 .toc-link.active {
