@@ -23,9 +23,10 @@ body {
 .docs-layout {
   display: grid;
   grid-template-columns: 304px 1fr 304px;
-  grid-template-rows: 64px 1fr;
-  height: 100vh;
-  overflow: hidden;
+  grid-template-rows: 64px auto;
+  min-height: 100vh;
+  height: auto;
+  overflow: visible;
 }
 
 /* Header */
