@@ -187,10 +187,15 @@ body {
   /* Sentence case: remove all-caps */
   text-transform: none;
   letter-spacing: 0;
-  padding: 12px 16px 8px;
-  margin-top: 16px;
+  padding: 12px 0 8px; /* remove L/R padding */
+  margin-top: 16px; /* default top spacing between categories */
+  margin-left: 0; /* remove L/R margins */
+  margin-right: 0;
   cursor: default;
 }
+
+/* First category should not have top margin */
+.sidebar-section > div:first-child .nav-item.category { margin-top: 0; }
 
 .nav-item.category:hover {
   background: transparent;
