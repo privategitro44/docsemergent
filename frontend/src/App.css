@@ -77,6 +77,25 @@ body {
   margin: 0 auto;
 }
 
+.cta-try {
+  font-family: 'Brockman', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  line-height: 20px;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 14px;
+  color: #ffffff;
+  background: #000000;
+  border-radius: 9999px;
+  text-decoration: none;
+  transition: background 0.2s, transform 0.05s;
+}
+
+.cta-try:hover { background: #111827; }
+.cta-try:active { transform: translateY(1px); }
+
 .docs-header .search-input {
   width: 100%;
   padding: 10px 16px 10px 40px;
