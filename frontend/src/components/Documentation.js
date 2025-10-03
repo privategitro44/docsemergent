@@ -80,20 +80,30 @@ const Documentation = () => {
     if (!content || !Array.isArray(content)) {
       return <p>No content available</p>;
     }
-    
+
+    let firstTextBlockRendered = false;
+
     return content.map((item, index) => {
       try {
         if (!item || !item.type) {
           console.error('Invalid content item:', item);
           return null;
         }
-        
+
         switch (item.type) {
-          case "text":
+          case "text": {
             if (!item.content) return null;
+            const stripDup = !firstTextBlockRendered; // only for the first text block
+            firstTextBlockRendered = true;
             return (
-              <ArticleContent key={index} content={item.content} title={currentArticle?.title} />
+              <ArticleContent
+                key={index}
+                content={item.content}
+                title={currentArticle?.title}
+                stripDuplicateTopHeading={stripDup}
+              />
             );
+          }
           case "image":
             return (
               <div key={index} className="image-container">
@@ -111,11 +121,11 @@ const Documentation = () => {
             // Check if it's a YouTube or Vimeo URL
             const isYouTube = item.content.includes('youtube.com') || item.content.includes('youtu.be');
             const isVimeo = item.content.includes('vimeo.com');
-            
+
             if (isYouTube || isVimeo) {
               // Convert to embed URL if needed
               let embedUrl = item.content;
-              
+
               if (isYouTube) {
                 // Handle various YouTube URL formats
                 if (item.content.includes('watch?v=')) {
@@ -135,7 +145,7 @@ const Documentation = () => {
                   embedUrl = `https://player.vimeo.com/video/${videoId}`;
                 }
               }
-              
+
               return (
                 <div key={index} className="video-container">
                   <div className="video-responsive">
@@ -154,7 +164,7 @@ const Documentation = () => {
                 </div>
               );
             }
-            
+
             // For direct video files (mp4, etc.)
             return (
               <div key={index} className="video-container">
