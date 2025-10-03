@@ -527,6 +527,14 @@ body {
   margin: 0;
 }
 
+/* Reset list spacing, add left border as requested */
+.toc-reset {
+  margin: 0;
+  padding: 0;
+  border-left: 1px solid #e5e7eb;
+  border-radius: 0; /* no corner radius */
+}
+
 .toc-item {
   margin: 0;
   padding: 0;
