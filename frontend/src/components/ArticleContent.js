@@ -1,81 +1,82 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useMemo } from 'react';
 
 const normalizeText = (str) => (str || '').trim().replace(/\s+/g, ' ').toLowerCase();
+
+const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2 }) => {
+  if (!html) return '';
+  try {
+    const container = document.createElement('div');
+    container.innerHTML = html;
+
+    // Remove any H1 that exactly matches the page title
+    if (stripDuplicateTopHeading && title) {
+      const titleNorm = normalizeText(title);
+      container.querySelectorAll('h1').forEach((h1) => {
+        if (normalizeText(h1.textContent) === titleNorm) {
+          h1.remove();
+        }
+      });
+    }
+
+    // Optionally transform remaining H1s to H2s for consistency
+    if (transformH1ToH2) {
+      const remaining = Array.from(container.querySelectorAll('h1'));
+      remaining.forEach((h1) => {
+        const h2 = document.createElement('h2');
+        h2.innerHTML = h1.innerHTML;
+        Array.from(h1.attributes).forEach((attr) => {
+          if (attr.name.toLowerCase() !== 'id') h2.setAttribute(attr.name, attr.value);
+        });
+        h1.parentNode.replaceChild(h2, h1);
+      });
+    }
+
+    // Remove immediate duplicate headings (same level and same text) in document order
+    const all = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
+    let prev = null;
+    all.forEach((h) => {
+      if (prev && prev.tagName === h.tagName && normalizeText(prev.textContent) === normalizeText(h.textContent)) {
+        h.remove();
+      } else {
+        prev = h;
+      }
+    });
+
+    return container.innerHTML;
+  } catch (e) {
+    // If anything fails, return original html
+    return html;
+  }
+};
 
 const ArticleContent = ({ content, title, stripDuplicateTopHeading = true, transformH1ToH2 = true }) => {
   const contentRef = useRef(null);
 
-  useEffect(() => {
-    // Process headings inside the rendered HTML safely
-    if (!contentRef.current || !content) return;
+  // Preprocess before initial paint to avoid flicker/duplicates
+  const processedHtml = useMemo(
+    () => preprocessHtml(content, { title, stripDuplicateTopHeading, transformH1ToH2 }),
+    [content, title, stripDuplicateTopHeading, transformH1ToH2]
+  );
 
+  useEffect(() => {
+    if (!contentRef.current) return;
     try {
       const root = contentRef.current;
-
-      // 1) Remove ANY H1 whose text matches the article title (prevents double title)
-      if (stripDuplicateTopHeading && title) {
-        const titleNorm = normalizeText(title);
-        root.querySelectorAll('h1').forEach((h1) => {
-          if (normalizeText(h1.textContent) === titleNorm) {
-            h1.remove();
-          }
-        });
-      }
-
-      // 2) Optionally transform remaining H1s in body to H2 for semantic consistency
-      if (transformH1ToH2) {
-        const remainingH1s = Array.from(root.querySelectorAll('h1'));
-        remainingH1s.forEach((h1) => {
-          const h2 = document.createElement('h2');
-          h2.innerHTML = h1.innerHTML;
-          // Preserve classes/attrs except ID (will reassign)
-          Array.from(h1.attributes).forEach((attr) => {
-            if (attr.name.toLowerCase() !== 'id') {
-              h2.setAttribute(attr.name, attr.value);
-            }
-          });
-          h1.parentNode.replaceChild(h2, h1);
-        });
-      }
-
-      // 3) Remove immediately repeated duplicate headings across all levels (e.g., <h2>X</h2><h2>X</h2>)
-      const allHeadings = Array.from(root.querySelectorAll('h1, h2, h3, h4, h5, h6'));
-      allHeadings.forEach((heading) => {
-        // Find previous element sibling that is a heading
-        const prev = heading.previousElementSibling;
-        if (prev && /^H[1-6]$/.test(prev.tagName)) {
-          const sameLevel = prev.tagName === heading.tagName;
-          const sameText = normalizeText(prev.textContent) === normalizeText(heading.textContent);
-          if (sameLevel && sameText) {
-            heading.remove();
-          }
-        }
-      });
-
-      // 4) After removals/transform, assign IDs safely for TOC
-      const headingsAfter = root.querySelectorAll('h1, h2, h3, h4, h5, h6');
-      headingsAfter.forEach((h) => {
+      const headings = root.querySelectorAll('h1, h2, h3, h4, h5, h6');
+      headings.forEach((h) => {
         if (!h.id && h.textContent) {
-          const text = h.textContent.trim();
-          if (text) {
-            const id = text
-              .toLowerCase()
-              .replace(/\s+/g, '-')
-              .replace(/[^\w-]/g, '');
-            if (id) h.id = id;
-          }
+          const id = h.textContent.trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+          if (id) h.id = id;
         }
       });
-    } catch (error) {
-      console.error('Error processing headings in ArticleContent:', error);
+    } catch (e) {
+      // non-blocking
     }
-  }, [content, title, stripDuplicateTopHeading, transformH1ToH2]);
+  }, [processedHtml]);
 
-  if (!content) {
-    return null;
-  }
+  if (!content) return null;
 
-  return <div ref={contentRef} dangerouslySetInnerHTML={{ __html: content }} />;
+  return <div ref={contentRef} dangerouslySetInnerHTML={{ __html: processedHtml }} />;
 };
 
 export default ArticleContent;
