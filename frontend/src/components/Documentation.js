@@ -38,6 +38,8 @@ const firstBlockHasMatchingH1 = (article) => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  const [overlayOpen, setOverlayOpen] = useState(false);
+
   // Global hotkey: Ctrl/Cmd + K to open overlay search, Escape to close
   useEffect(() => {
     const onKeyDown = (e) => {
