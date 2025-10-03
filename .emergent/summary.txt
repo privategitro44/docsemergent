@@ -1,112 +1,88 @@
 <analysis>
-The AI engineer was tasked with summarizing its initial work (0 to 1) and then addressing user feedback to improve the documentation application. The initial development included a full-stack documentation platform with a React frontend, FastAPI backend, and MongoDB, complete with an admin CMS. The application was deemed feature-complete with a 94% test success rate.
-
-The trajectory primarily focuses on addressing multiple rounds of user feedback. Key challenges involved redesigning the UI for a professional corporate look, resolving an SSL certificate issue (identified as infrastructure-related), fixing ReactQuill incompatibility with React 19 by replacing it with a simpler HTML editor, implementing automatic article-to-navigation linking, correcting layout/Table of Contents display issues, enhancing video embedding to support YouTube/Vimeo URLs, fixing existing article editing functionality by adding a backend endpoint to fetch by ID, and resolving recurring Script error issues in content rendering by refactoring DOM manipulation into a new  component and adding robust error handling. The engineer diligently addressed each bug, often involving multiple iterations of code modification and verification.
+The AI engineer's work transitioned an MVP documentation platform to a polished application, guided by iterative user feedback. Initial development established a React, FastAPI, MongoDB stack with an admin CMS. The trajectory showcases a systematic approach to enhancing UI/UX and fixing bugs. Key areas addressed include a comprehensive UI redesign (corporate look, proper navigation, typography), resolving persistent Script error issues through content rendering refactoring (), fixing ReactQuill incompatibility, implementing automatic navigation linking, improving video embedding, and rectifying admin panel and layout issues. Recent efforts focused on refining layout, fixing scroll behaviors, implementing a Ctrl+K search overlay, and detailed typography updates. Each request involved targeted CSS and React component modifications, often requiring multiple iterations and explicit user verification. The AI demonstrated diligence in debugging and implementing complex front-end features while maintaining backend integrity.
 </analysis>
 
 <product_requirements>
-The overarching goal is to develop Emergent, a comprehensive documentation platform with a visual style inspired by Replit, strictly in light-mode. It requires an exclusive admin-only Content Management System (CMS) accessible via , while the public-facing documentation should be open to all. The CMS must facilitate creating and editing articles with mixed content (text, images, videos, including external video embeds) using a WYSIWYG editor. Navigation structure management (add, remove, reorder links) is also critical, and the application needs pre-populated sample content.
+The Emergent platform aims to be a comprehensive, light-mode documentation site, visually inspired by Replit, featuring an exclusive admin CMS at  and an open public documentation section. The CMS must allow article creation/editing with mixed content (text, images, external videos) via a WYSIWYG editor, and support navigation structure management (add/remove/reorder links). Sample content is required.
 
-So far, the application has been built with public documentation and a complete admin CMS. Subsequent user feedback led to the following explicit requests and features being implemented:
-1.  **UI Redesign**: Improve the terrible UI, aiming for a professional corporate look (Stripe/Notion inspired), with proper navigation, clean typography, and a modern layout.
-2.  **Admin Panel UI Fixes**: Address alignment and rendering issues in the admin panel.
-3.  **Article Creation Fix**: Resolve  error when creating articles, particularly due to ReactQuill incompatibility.
-4.  **Article Visibility Fix**: Ensure newly created articles are displayed to users, which involved making article-to-navigation linking automatic.
-5.  **Layout Fix**: Resolve the right-most part of the page getting cut off, specifically the in-article navigation (Table of Contents).
-6.  **Article Padding**: Add whitespace to the bottom of articles for natural scrolling.
-7.  **Video Embedding Fix**: Correct YouTube video embedding that was not working, supporting both direct videos and embedded links.
-8.  **Article Editing Fix**: Resolve Failed to load article. Please try again. error when editing existing articles.
-9.  **Mixed Content Display**: Enable display of both text and videos within the same article.
-10. **Persistent Script Errors**: Resolve recurring  issues during content rendering.
-11. **Admin Order Field Input Fix**: Allow correct input for the 'order' field in the article editor, preventing default '0' from persisting.
+Previous implementations addressed:
+1.  **UI Redesign**: Professional, corporate aesthetic (Stripe/Notion inspired).
+2.  **Admin Panel Fixes**: Corrected alignment/rendering.
+3.  **Article Creation/Visibility**: Fixed  error (ReactQuill incompatibility leading to editor replacement), ensured automatic article-to-navigation linking.
+4.  **Layout/Display**: Fixed right-side cutoff (TOC), added article bottom padding, corrected YouTube/Vimeo video embedding, resolved Failed to load article on edit.
+5.  **Content Display**: Mixed text/video content.
+6.  **Script Errors**: Persistent  during rendering (addressed by ).
+7.  **Admin Order Field**: Allowed correct input.
 </product_requirements>
 
 <key_technical_concepts>
--   **Full-Stack Architecture**: React (frontend), FastAPI (Python) (backend), MongoDB (database).
--   **REST API**: Backend uses RESTful endpoints for CRUD operations.
--   **Component-Based UI**: React functional components,  for routing.
--   **Admin Authentication**: Token-based security for CMS.
--   **Styling**: Custom CSS for a modern, corporate look, building on Shadcn UI.
--   **HTML Content Editing**: Manual  with HTML formatting due to  incompatibility.
--   **Dynamic Content Rendering**: Backend provides content in blocks (text, image, video), frontend renders dynamically.
+-   **Full-Stack**: React (frontend), FastAPI (Python) (backend), MongoDB (database).
+-   **REST API**: FastAPI provides CRUD operations.
+-   **Component-Based UI**: React with .
+-   **Styling**: Extensive custom CSS for corporate UI, including .
+-   **Dynamic Content**: Frontend renders mixed content blocks.
+-   **DOM Manipulation**: Handled via  for safe heading ID insertion.
+-   **Typography**: Google Fonts integration (, ).
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a standard monorepo structure with distinct frontend and backend directories.
+The application uses a standard monorepo with  (React) and  (FastAPI) directories.
 
 
--   ****
-    -   **Importance**: Core FastAPI backend defining API routes and logic.
-    -   **Changes**:
-        -   Enhanced  for comprehensive mock content and a mechanism to clear old data.
-        -   Modified  to automatically create a corresponding navigation item.
-        -   Modified  to automatically remove the associated navigation item.
-        -   Added a new  endpoint for fetching articles by ID for admin editing.
 
 -   ****
-    -   **Importance**: Main React entry point and routing setup.
-    -   **Changes**: Initial rewrite for  based routing (public, article, admin).
-
+    -   **Importance**: Defines API routes for articles, navigation, and admin functions.
+    -   **Changes**: Added  endpoint; modified  and  for automatic navigation updates;  for comprehensive mock content.
 -   ****
-    -   **Importance**: Global styles and component-specific styling.
-    -   **Changes**:
-        -   Extensive additions for a professional corporate public documentation UI.
-        -   Comprehensive styling for the admin panel (login, dashboard, forms, layout) to fix alignment and rendering.
-        -   Styles for responsive video embeds.
-        -   Adjustments for the Table of Contents layout, including custom scrollbars and responsive breakpoints.
-        -   Added bottom padding for articles and no-article states.
-        -   Added styles for info/success banners and  class.
-        -   Updated class names to  to match .
-
+    -   **Importance**: Main React entry point, handles global routing, and integrates global search overlay logic.
+    -   **Changes**: Rewritten for  routing; added global keydown listener for Ctrl/Cmd+K to open search overlay.
 -   ****
-    -   **Importance**: Public-facing documentation display, content rendering, and navigation.
-    -   **Changes**:
-        -   Updated  to dynamically detect YouTube/Vimeo URLs and embed them using iframes.
-        -   Refactored  to use the new  component for text blocks, delegating ID addition to headings.
-        -   Added error handling/try-catch blocks in content rendering to prevent script errors.
-
+    -   **Importance**: Global and component-specific styling.
+    -   **Changes**: Extensive updates for professional corporate UI, admin panel fixes, responsive video embeds, TOC layout, scrollbar management, search overlay styling (blur, centering), typography (Inter, Brockman), and active state highlighting for navigation. Namespaced styles to avoid admin panel regression.
+-   ****
+    -   **Importance**: Public-facing documentation display, article rendering, main layout, and navigation.
+    -   **Changes**: Refactored content rendering to use ; added dynamic video embedding; included logic for displaying Welcome article by default; integrated  component; implemented sticky header; replaced placeholder logo with .
 -   ****
     -   **Importance**: Generates and displays in-article navigation.
-    -   **Changes**:
-        -   Modified to prevent mutation of the original content object.
-        -   Adjusted to use an  with try-catch blocks and guards, as heading IDs are now handled by .
-        -   Changed class name usage to .
-
+    -   **Changes**: Uses  (with guards/try-catch) to highlight active sections, relying on IDs from ; adjusted class names and removed direct DOM manipulation; styling updates for active states.
+-   **** (NEW)
+    -   **Importance**: Encapsulates logic for rendering article text content and safely adding IDs to headings.
+    -   **Changes**: Created to address script errors by providing a controlled way to add IDs to headings, preprocesses HTML to prevent duplicate headings, and ensures stable rendering.
 -   ****
-    -   **Importance**: NEW file created to handle rendering of article text content, specifically adding IDs to headings for Table of Contents functionality.
-    -   **Changes**: New component created to safely add IDs to headings within rendered HTML, addressing script errors related to direct DOM manipulation.
-
+    -   **Importance**: Provides inline search functionality in the header.
+    -   **Changes**: Minor styling adjustments.
+-   **** (NEW)
+    -   **Importance**: Provides a full-page, keyboard-activated search interface.
+    -   **Changes**: New component created for modal-like search with blur effect, debounce for search input, and navigation on result click.
 -   ****
-    -   **Importance**: Admin interface for creating and editing articles.
-    -   **Changes**:
-        -   Replaced  dependency with a simpler -based HTML editor solution, including HTML formatting buttons, due to React 19 incompatibility.
-        -   Updated article fetching logic to use the new  endpoint.
-        -   Added info banners to guide admins regarding automatic navigation creation and video embedding.
-        -   Fixed the 'order' input field default value issue, allowing empty string input.
-
--   ****: Minor changes in styling for new CSS.
--   ****: Defines admin routing.
-
+    -   **Importance**: Admin interface for creating/editing articles.
+    -   **Changes**: Replaced  with a simpler  HTML editor; updated article fetching by ID; added info banners; fixed 'order' input field default value.
+-   ****
+    -   **Importance**: Main HTML file for the React application.
+    -   **Changes**: Added Google Fonts link for Inter font.
+-   ****
+    -   **Importance**: New logo for the application.
+    -   **Changes**: Added to assets.
+-   ****
+    -   **Importance**: Custom font for headings.
+    -   **Changes**: Added to assets.
 </code_architecture>
 
 <pending_tasks>
--   No new explicit pending tasks were outlined by the user at the end of the trajectory. The AI engineer was focused on resolving the last reported  and successfully compiled the frontend.
+-   Confirm if the Brockmann SemiBold font should be applied to other headings outside the article body (e.g., sidebar section labels or “On This Page” title).
+-   Confirm if italic/regular weights of Brockmann should be registered and used for other cases.
+-   Confirm if OTF font should be converted to WOFF2 for performance.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was addressing a user-reported Script error occurring when interacting with newly created articles. This was a recurring issue related to how HTML content was parsed and rendered, specifically with the Table of Contents trying to manipulate the DOM directly.
-
-The current work involved:
-1.  **Refactoring Content Rendering**: The AI engineer identified that  was mutating the article content and attempting DOM manipulation directly, causing the script errors.
-2.  **Introducing **: A new React component, , was created. Its purpose is to encapsulate the logic for rendering article text content and safely adding IDs to headings, which  can then reference without direct DOM manipulation.
-3.  **Updating **: The  component was updated to utilize this new  component for rendering text blocks.
-4.  **Error Handling in TOC**:  was simplified to remove direct DOM manipulation and an  was wrapped in try-catch blocks with guards to prevent errors when elements with expected IDs are not found.
-5.  **Fixing Order Field**: The 'order' input field in  was fixed so that its default '0' value would correctly disappear when the input was empty.
-6.  **Addressing Script Error (Iteration)**: The  function in  was restructured and duplicate code was removed to address persistent  issues.
-
-The last action was a successful frontend compilation after these changes, indicating that the immediate bug fixes related to the Script error and the 'order' field should be resolved.
+Immediately prior to this summary, the AI engineer was focused on implementing detailed typography updates as per the user's explicit requests. The specific changes included:
+1.  **Font Files Location**: Successfully located font files for Brockman-Semibold in .
+2.  **Font Registration**: Registered Brockman font family via an  rule in , specifying the path to the OTF file, , , and .
+3.  **Heading Styling**: Applied Brockman font family, , and  to , , and  selectors within . The  font was retained as a fallback.
+4.  **Paragraph Styling**: Updated the  of paragraphs () to  in .
+These changes were applied while preserving the previously set font sizes and line heights (H1: 30/36, H2: 24/32, H3: 20/28, Paragraph: 16/28) and ensuring the changes were scoped to article content to avoid unintended regressions in other areas like the admin panel. The last action was a successful screenshot verification of these font changes on the  page.
 </current_work>
 
 <optional_next_step>
-The next step is to inform the user that the Script error and the 'order' field input issue have been fixed.
+Ask the user to confirm the current typography changes and if Brockmann font should be applied to other UI elements.
 </optional_next_step>
