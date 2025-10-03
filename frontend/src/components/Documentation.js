@@ -94,6 +94,106 @@ const Documentation = () => {
             return (
               <ArticleContent key={index} content={item.content} />
             );
+          case "image":
+            return (
+              <div key={index} className="image-container">
+                <img
+                  src={item.content.startsWith("/") ? `${BACKEND_URL}${item.content}` : item.content}
+                  alt={item.alt || ""}
+                  data-testid="article-image"
+                />
+                {item.caption && (
+                  <p className="image-caption">{item.caption}</p>
+                )}
+              </div>
+            );
+          case "video":
+            // Check if it's a YouTube or Vimeo URL
+            const isYouTube = item.content.includes('youtube.com') || item.content.includes('youtu.be');
+            const isVimeo = item.content.includes('vimeo.com');
+            
+            if (isYouTube || isVimeo) {
+              // Convert to embed URL if needed
+              let embedUrl = item.content;
+              
+              if (isYouTube) {
+                // Handle various YouTube URL formats
+                if (item.content.includes('watch?v=')) {
+                  const videoId = item.content.split('watch?v=')[1].split('&')[0];
+                  embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                } else if (item.content.includes('youtu.be/')) {
+                  const videoId = item.content.split('youtu.be/')[1].split('?')[0];
+                  embedUrl = `https://www.youtube.com/embed/${videoId}`;
+                } else if (!item.content.includes('/embed/')) {
+                  // If it's already an embed URL, use it as is
+                  embedUrl = item.content;
+                }
+              } else if (isVimeo) {
+                // Handle Vimeo URLs
+                if (!item.content.includes('/video/')) {
+                  const videoId = item.content.split('vimeo.com/')[1].split('?')[0];
+                  embedUrl = `https://player.vimeo.com/video/${videoId}`;
+                }
+              }
+              
+              return (
+                <div key={index} className="video-container">
+                  <div className="video-responsive">
+                    <iframe
+                      src={embedUrl}
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                      title={item.caption || 'Video'}
+                      data-testid="article-video-iframe"
+                    />
+                  </div>
+                  {item.caption && (
+                    <p className="video-caption">{item.caption}</p>
+                  )}
+                </div>
+              );
+            }
+            
+            // For direct video files (mp4, etc.)
+            return (
+              <div key={index} className="video-container">
+                <video controls data-testid="article-video">
+                  <source
+                    src={item.content.startsWith("/") ? `${BACKEND_URL}${item.content}` : item.content}
+                    type="video/mp4"
+                  />
+                  Your browser does not support the video tag.
+                </video>
+                {item.caption && (
+                  <p className="video-caption">{item.caption}</p>
+                )}
+              </div>
+            );
+          case "embed":
+            if (!item.content) return null;
+            return (
+              <div key={index} className="embed-container">
+                <div dangerouslySetInnerHTML={{ __html: item.content }} />
+                {item.caption && (
+                  <p className="embed-caption">{item.caption}</p>
+                )}
+              </div>
+            );
+          default:
+            console.warn('Unknown content type:', item.type);
+            return null;
+        }
+      } catch (error) {
+        console.error('Error rendering content block:', error, item);
+        return (
+          <div key={index} style={{ padding: '10px', background: '#fee2e2', borderRadius: '4px', margin: '10px 0' }}>
+            <p style={{ color: '#991b1b', fontSize: '14px' }}>Error rendering content block</p>
+          </div>
+        );
+      }
+    });
+  };
         case "image":
           return (
             <div key={index} className="image-container">
