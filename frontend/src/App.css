@@ -133,7 +133,6 @@ body {
   grid-row: 2 / span 1;
   background: #ffffff; /* plain white */
   border-right: 1px solid #e5e7eb;
-  overflow: visible; /* no independent scroll */
   padding: 24px; /* global padding only */
   max-width: 304px;
   width: 100%;
@@ -141,7 +140,9 @@ body {
   align-self: start;
   position: sticky;
   top: 64px; /* below header */
-  height: fit-content;
+  height: calc(100vh - 64px); /* retain vertical scroller under header */
+  overflow-y: auto; /* enable vertical scroll */
+  overflow-x: hidden;
 }
 
 .sidebar-section {
