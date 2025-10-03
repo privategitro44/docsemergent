@@ -574,10 +574,32 @@ body {
 }
 
 .toc-link.active {
-  color: #1E66F5; /* blue text */
-  border-left-color: #1E66F5; /* left border highlight */
+  color: #1E66F5; /* colored text only */
   font-weight: 600;
-  background: #E6F0FF; /* light blue background */
+  background: transparent; /* no fill */
+}
+
+/* Subtle left vertical line and top connector for active item */
+.toc-link.active::before {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 8px; /* aligns with text padding top */
+  bottom: 8px;
+  width: 2px;
+  background: #e5e7eb; /* subtle grey */
+  border-radius: 2px;
+}
+
+.toc-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0px;
+  top: 0;
+  height: 2px;
+  width: 12px; /* short horizontal connector */
+  background: #e5e7eb;
+  border-radius: 2px;
 }
 
 .toc-link:not(.active) { color: #6B7280; }
