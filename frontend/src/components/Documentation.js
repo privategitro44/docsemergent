@@ -70,6 +70,8 @@ const Documentation = () => {
         const welcome = articles.find(a => a.published && (a.slug === 'welcome' || a.title.toLowerCase().includes('welcome')));
         if (welcome) {
           setCurrentArticle(welcome);
+          // update URL for consistency so nav can match
+          navigate(`/article/${welcome.slug}`, { replace: true });
         } else {
           const firstArticle = articles.find(a => a.published);
           if (firstArticle) setCurrentArticle(firstArticle);
