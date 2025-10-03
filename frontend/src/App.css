@@ -1784,7 +1784,7 @@ input[type="number"].form-input::-webkit-inner-spin-button {
 
 @media (max-width: 1024px) {
   .docs-layout {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 304px 1fr;
   }
 
   .docs-main {
