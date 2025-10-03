@@ -99,7 +99,7 @@ const TableOfContents = ({ content }) => {
   return (
     <div className="docs-toc" data-testid="table-of-contents">
       <div className="toc-title">On this page</div>
-      <ul className="toc-list">
+      <ul className="toc-list toc-reset">
         {headings.map((heading) => (
           <li key={heading.id} className="toc-item">
             <button
