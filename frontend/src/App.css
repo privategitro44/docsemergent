@@ -213,37 +213,41 @@ body {
 }
 
 .article h1 {
+  font-family: 'Brockman', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
   font-size: 30px;
   line-height: 36px;
-  font-weight: 700;
-  color: #1a1a1a;
+  font-weight: 600;
+  color: #131315;
   margin-bottom: 32px;
   letter-spacing: -0.02em;
 }
 
 .article h2 {
+  font-family: 'Brockman', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
   font-size: 24px;
   line-height: 32px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #131315;
   margin-top: 48px;
   margin-bottom: 20px;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 .article h3 {
+  font-family: 'Brockman', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
   font-size: 20px;
   line-height: 28px;
   font-weight: 600;
-  color: #1a1a1a;
+  color: #131315;
   margin-top: 32px;
   margin-bottom: 16px;
+  letter-spacing: -0.02em;
 }
 
 .article p {
   font-size: 16px;
   line-height: 28px;
-  color: #4b5563;
+  color: #3D3D43;
   margin-bottom: 20px;
 }
 
