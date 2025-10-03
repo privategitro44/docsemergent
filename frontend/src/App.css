@@ -518,10 +518,16 @@ body {
 }
 
 .toc-link.active {
-  color: #2563eb;
-  border-left-color: #2563eb;
-  font-weight: 500;
+  color: #1E66F5; /* blue text */
+  border-left-color: #1E66F5; /* left border highlight */
+  font-weight: 600;
+  background: #E6F0FF; /* light blue background */
 }
+
+.toc-link:not(.active) {
+  color: #6B7280; /* grayscale for inactive */
+}
+
 
 /* Admin Styles */
 .admin-layout {
