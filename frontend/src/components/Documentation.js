@@ -404,10 +404,3 @@ const firstBlockHasMatchingH1 = (article) => {
 };
 
 export default Documentation;
-
-      {/* Search overlay (global) */}
-      <SearchOverlay
-        isOpen={overlayOpen}
-        onClose={() => setOverlayOpen(false)}
-        onNavigate={(slug) => navigate(`/article/${slug}`)}
-      />
