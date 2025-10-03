@@ -43,29 +43,34 @@ const TableOfContents = ({ content }) => {
   }, [content]);
 
   useEffect(() => {
-    // Set up intersection observer for active heading detection
     if (headings.length === 0) return;
-    
     try {
+      // If the first heading is in view on load, mark it active immediately
+      const firstId = headings[0]?.id;
+      if (firstId && document.getElementById(firstId)) {
+        setActiveHeading(firstId);
+      }
+
       const observerOptions = {
-        rootMargin: "-20% 0% -80% 0%",
-        threshold: 0
+        rootMargin: "-20% 0% -70% 0%",
+        threshold: [0, 0.25, 0.5, 1.0]
       };
 
+      let lastActive = firstId || "";
       const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            setActiveHeading(entry.target.id);
-          }
-        });
+        // Sort entries by boundingClientRect.top to pick the one closest to top
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
+        if (visible.length > 0) {
+          lastActive = visible[0].target.id;
+          setActiveHeading(lastActive);
+        }
       }, observerOptions);
 
-      // Observe all headings
       headings.forEach((heading) => {
-        const element = document.getElementById(heading.id);
-        if (element) {
-          observer.observe(element);
-        }
+        const el = document.getElementById(heading.id);
+        if (el) observer.observe(el);
       });
 
       return () => observer.disconnect();
