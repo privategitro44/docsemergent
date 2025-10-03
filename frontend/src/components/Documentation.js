@@ -316,7 +316,7 @@ const firstBlockHasMatchingH1 = (article) => {
       {/* Header */}
       <header className="docs-header" data-testid="docs-header">
         <a href="/" className="logo" data-testid="docs-logo">
-          <Book size={20} />
+          <img src={EmergentLogo} alt="Emergent" style={{ height: 20 }} />
           Emergent Docs
         </a>
         
