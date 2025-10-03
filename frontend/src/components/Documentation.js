@@ -171,6 +171,7 @@ const Documentation = () => {
             </div>
           );
         case "embed":
+          if (!item.content) return null;
           return (
             <div key={index} className="embed-container">
               <div dangerouslySetInnerHTML={{ __html: item.content }} />
@@ -180,7 +181,16 @@ const Documentation = () => {
             </div>
           );
         default:
+          console.warn('Unknown content type:', item.type);
           return null;
+      }
+      } catch (error) {
+        console.error('Error rendering content block:', error, item);
+        return (
+          <div key={index} style={{ padding: '10px', background: '#fee2e2', borderRadius: '4px', margin: '10px 0' }}>
+            <p style={{ color: '#991b1b', fontSize: '14px' }}>Error rendering content block</p>
+          </div>
+        );
       }
     });
   };
