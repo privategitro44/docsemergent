@@ -169,8 +169,8 @@ body {
 .docs-main {
   grid-column: 2;
   grid-row: 2;
-  overflow-y: auto;
-  display: block; /* content in its own column */
+  overflow: visible; /* allow page-level scroll */
+  display: block;
   background: #ffffff;
   padding: 48px 40px;
 }
