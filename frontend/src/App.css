@@ -160,8 +160,7 @@ body {
   grid-column: 2;
   grid-row: 2;
   overflow-y: auto;
-  display: flex;
-  justify-content: center;
+  display: block; /* content in its own column */
   background: #ffffff;
   padding: 48px 40px;
 }
