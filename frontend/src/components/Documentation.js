@@ -57,7 +57,6 @@ const firstBlockHasMatchingH1 = (article) => {
     return () => window.removeEventListener('keydown', onKeyDown);
   }, []);
 
-  const [overlayOpen, setOverlayOpen] = useState(false);
 
   useEffect(() => {
     fetchNavigation();
