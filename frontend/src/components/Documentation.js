@@ -379,6 +379,13 @@ const firstBlockHasMatchingH1 = (article) => {
           <TableOfContents content={currentArticle.content} />
         </aside>
       )}
+      {/* Search overlay (global) */}
+      <SearchOverlay
+        isOpen={false}
+        onClose={() => {}}
+        onNavigate={(slug) => navigate(`/article/${slug}`)}
+      />
+
     </div>
   );
 };
