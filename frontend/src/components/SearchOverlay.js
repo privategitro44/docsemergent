@@ -21,6 +21,8 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate }) => {
       document.documentElement.classList.add("search-overlay-open");
     } else {
       document.documentElement.classList.remove("search-overlay-open");
+      setQuery("");
+      setResults([]);
     }
     return () => document.documentElement.classList.remove("search-overlay-open");
   }, [isOpen]);
@@ -91,6 +93,7 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate }) => {
             placeholder="Search..."
             className="search-overlay-input"
           />
+          <div className="search-overlay-esc">ESC</div>
           <button className="search-overlay-close" onClick={onClose} aria-label="Close search">
             <XMarkIcon width={18} height={18} />
           </button>
@@ -103,9 +106,11 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate }) => {
           )}
           {!loading && results.map((r) => (
             <button key={r.id} className="search-overlay-result" onClick={() => handleSelect(r)}>
-              <div className="result-title">{r.title}</div>
-              <div className="result-meta">{r.category}</div>
-              <div className="result-snippet">{r.snippet}</div>
+              <div className="result-row">
+                <div className="result-title">{r.title}</div>
+                <div className="result-meta">{r.category}</div>
+                <div className="result-snippet">{r.snippet}</div>
+              </div>
             </button>
           ))}
         </div>

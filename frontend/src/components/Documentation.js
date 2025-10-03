@@ -54,7 +54,8 @@ const Documentation = () => {
   const [currentArticle, setCurrentArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
-  const [showSearch, setShowSearch] = useState(false);
+  const [showOverlay, setShowOverlay] = useState(false);
+
   useEffect(() => {
     fetchNavigation();
     fetchArticles();
@@ -240,6 +241,11 @@ const Documentation = () => {
     });
   };
 
+  const sentenceCase = (str = "") => {
+    const s = String(str);
+    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+  };
+
   const getIconForLabel = (label = "") => {
     const l = label.toLowerCase();
     if (/(intro|welcome|home)/.test(l)) return HomeIcon;
@@ -255,11 +261,6 @@ const Documentation = () => {
     if (/(standard)/.test(l)) return BoltIcon;
     if (/(pro)/.test(l)) return SparklesIcon;
     return DocumentTextIcon;
-  };
-
-  const sentenceCase = (str = "") => {
-    const s = String(str);
-    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
   };
 
   const organizeNavigation = () => {
@@ -371,19 +372,11 @@ const Documentation = () => {
             className="search-input"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            onFocus={() => setShowSearch(true)}
+            onFocus={() => setShowOverlay(true)}
+            onClick={() => setShowOverlay(true)}
+            readOnly
             data-testid="search-input"
           />
-          {showSearch && searchQuery.trim().length >= 2 && (
-            <SearchComponent
-              query={searchQuery}
-              onClose={() => setShowSearch(false)}
-              onSelect={() => {
-                setShowSearch(false);
-                setSearchQuery("");
-              }}
-            />
-          )}
         </div>
 
         <div className="header-actions">
@@ -395,7 +388,6 @@ const Documentation = () => {
           >
             Try Emergent
           </a>
-          {/* Hidden admin link - only accessible via direct URL */}
         </div>
       </header>
 
@@ -433,8 +425,8 @@ const Documentation = () => {
       )}
       {/* Search overlay (global) */}
       <SearchOverlay
-        isOpen={false}
-        onClose={() => {}}
+        isOpen={showOverlay}
+        onClose={() => setShowOverlay(false)}
         onNavigate={(slug) => navigate(`/article/${slug}`)}
       />
 
