@@ -24,7 +24,7 @@ const firstBlockHasMatchingH1 = (article) => {
     if (!h1) return false;
     return normalizeText(h1.textContent) === normalizeText(article.title);
   } catch (e) {
-    console.warn("Error checking first-block H1:", e);
+    // Non-blocking
     return false;
   }
 };
