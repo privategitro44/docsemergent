@@ -164,6 +164,9 @@ body {
   font-weight: 500;
 }
 
+/* Remove left/right padding and margin for category rows */
+.nav-item.category { padding-left: 0; padding-right: 0; margin-left: 0; margin-right: 0; }
+
 .nav-icon { width: 16px; height: 16px; color: currentColor; flex-shrink: 0; }
 
 .nav-item:hover {
