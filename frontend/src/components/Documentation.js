@@ -38,6 +38,23 @@ const firstBlockHasMatchingH1 = (article) => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [showSearch, setShowSearch] = useState(false);
+  // Global hotkey: Ctrl/Cmd + K to open overlay search, Escape to close
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      const isMac = navigator.platform.toUpperCase().indexOf('MAC') >= 0;
+      const metaPressed = isMac ? e.metaKey : e.ctrlKey;
+      if (metaPressed && (e.key.toLowerCase() === 'k')) {
+        e.preventDefault();
+        setOverlayOpen(true);
+      }
+      if (e.key === 'Escape') {
+        setOverlayOpen(false);
+      }
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, []);
+
   const [overlayOpen, setOverlayOpen] = useState(false);
 
   useEffect(() => {
