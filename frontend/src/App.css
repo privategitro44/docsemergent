@@ -422,19 +422,20 @@ body {
 
 /* Table of Contents */
 .docs-toc {
+  grid-column: 3;
+  grid-row: 2;
   position: sticky;
   top: 24px;
   width: 304px;
   min-width: 304px;
   max-width: 304px;
-  flex-shrink: 0;
   padding: 24px;
   box-sizing: border-box;
   max-height: calc(100vh - 120px);
   overflow-y: auto;
   border-left: 1px solid #e5e7eb;
-  margin-left: 32px;
 }
+
 
 /* Custom scrollbar for TOC */
 .docs-toc::-webkit-scrollbar {
