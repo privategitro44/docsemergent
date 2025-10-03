@@ -224,6 +224,7 @@ body {
   display: block;
   background: #ffffff;
   padding: 48px 40px;
+  border-right: none; /* remove right border next to TOC */
 }
 
 .docs-content {
