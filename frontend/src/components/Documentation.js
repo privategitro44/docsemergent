@@ -344,13 +344,6 @@ const firstBlockHasMatchingH1 = (article) => {
             type="text"
             placeholder="Search documentation..."
             className="search-input"
-      {/* Search overlay */}
-      <SearchOverlay
-        isOpen={overlayOpen}
-        onClose={() => setOverlayOpen(false)}
-        onNavigate={(slug) => navigate(`/article/${slug}`)}
-      />
-
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setShowSearch(true)}
