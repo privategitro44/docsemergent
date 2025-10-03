@@ -558,8 +558,8 @@ body {
   color: #6b7280;
   text-decoration: none;
   padding: 8px 12px;
-  border-left: 4px solid transparent; /* keep structure, but hidden */
-  margin-left: -4px;
+  border-left: none;
+  margin-left: 0;
   transition: all 0.2s;
   background: none;
   border-top: none;
@@ -567,7 +567,7 @@ body {
   border-bottom: none;
   cursor: pointer;
   font-family: inherit;
-  border-radius: 6px;
+  border-radius: 0; /* no radius */
   position: relative; /* allow pseudo elements for active lines */
 }
 
