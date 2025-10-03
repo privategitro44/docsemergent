@@ -314,7 +314,7 @@ const Documentation = () => {
             data-testid={`nav-${item.label.toLowerCase().replace(/\s+/g, "-")}`}
           >
             {!isCategory && <Icon className="nav-icon" aria-hidden="true" />}
-            {item.label}
+            {isCategory ? sentenceCase(item.label) : item.label}
           </a>
           {item.children && item.children.length > 0 && (
             <div className="nav-children">
