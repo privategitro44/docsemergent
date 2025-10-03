@@ -10,6 +10,25 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const Documentation = () => {
+// Helper functions for heading duplication checks
+const normalizeText = (str) => (str || "").trim().replace(/\s+/g, " ").toLowerCase();
+
+const firstBlockHasMatchingH1 = (article) => {
+  try {
+    if (!article || !Array.isArray(article.content)) return false;
+    const firstText = article.content.find((b) => b && b.type === "text" && typeof b.content === "string");
+    if (!firstText) return false;
+    const temp = document.createElement("div");
+    temp.innerHTML = firstText.content;
+    const h1 = temp.querySelector("h1");
+    if (!h1) return false;
+    return normalizeText(h1.textContent) === normalizeText(article.title);
+  } catch (e) {
+    console.warn("Error checking first-block H1:", e);
+    return false;
+  }
+};
+
   const { slug } = useParams();
   const navigate = useNavigate();
   const [navigation, setNavigation] = useState([]);
