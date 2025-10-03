@@ -549,7 +549,7 @@ body {
   color: #6b7280;
   text-decoration: none;
   padding: 8px 12px;
-  border-left: 4px solid transparent;
+  border-left: 4px solid transparent; /* keep structure, but hidden */
   margin-left: -4px;
   transition: all 0.2s;
   background: none;
@@ -559,6 +559,7 @@ body {
   cursor: pointer;
   font-family: inherit;
   border-radius: 6px;
+  position: relative; /* allow pseudo elements for active lines */
 }
 
 .toc-link.level-2 { padding-left: 12px; }
