@@ -318,9 +318,8 @@ const firstBlockHasMatchingH1 = (article) => {
     <div className="docs-layout" data-testid="docs-layout">
       {/* Header */}
       <header className="docs-header" data-testid="docs-header">
-        <a href="/" className="logo" data-testid="docs-logo">
+        <a href="/" className="logo" data-testid="docs-logo" aria-label="Emergent">
           <img src={EmergentLogo} alt="Emergent" style={{ height: 20 }} />
-          Emergent Docs
         </a>
         
         <div className="search-container">
