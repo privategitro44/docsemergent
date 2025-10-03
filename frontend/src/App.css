@@ -95,7 +95,10 @@ body {
   background: #fafafa;
   border-right: 1px solid #e5e7eb;
   overflow-y: auto;
-  padding: 24px 0;
+  padding: 24px;
+  max-width: 304px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .sidebar-section {
