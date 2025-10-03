@@ -131,10 +131,10 @@ body {
 .docs-sidebar {
   grid-column: 1;
   grid-row: 2 / span 1;
-  background: #fafafa;
+  background: #ffffff; /* plain white */
   border-right: 1px solid #e5e7eb;
   overflow: visible; /* no independent scroll */
-  padding: 24px;
+  padding: 24px; /* global padding only */
   max-width: 304px;
   width: 100%;
   box-sizing: border-box;
