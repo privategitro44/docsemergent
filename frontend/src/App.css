@@ -435,15 +435,15 @@ body {
   grid-column: 3;
   grid-row: 2;
   position: sticky;
-  top: 24px;
+  top: 64px; /* align under header */
   width: 304px;
   min-width: 304px;
   max-width: 304px;
   padding: 24px;
   box-sizing: border-box;
-  max-height: calc(100vh - 120px);
-  overflow-y: auto;
   border-left: 1px solid #e5e7eb;
+  height: calc(100vh - 64px);
+  overflow: hidden; /* remove inner scroll */
 }
 
 /* Custom scrollbar for TOC */
