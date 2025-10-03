@@ -167,23 +167,16 @@ body {
 .nav-icon { width: 16px; height: 16px; color: currentColor; flex-shrink: 0; }
 
 .nav-item:hover {
-  background: #f3f4f6;
-  color: #1a1a1a;
+  background: #f3f4f6; /* subtle gray on hover */
+  color: #111827; /* black text hover */
 }
 
-.nav-children .nav-item.sub-item.active {
-  background: #E6F0FF;
-  color: #1E66F5;
-  border-left: 3px solid #1E66F5;
-  margin-left: -3px;
-}
-
+/* Active state: pill blue bg, no left accent */
+.nav-children .nav-item.sub-item.active,
 .nav-item.active {
-  background: #E6F0FF; /* lighter blue background */
+  background: #E6F0FF; /* light blue background */
   color: #1E66F5; /* blue text */
   font-weight: 700;
-  border-left: 4px solid #1E66F5;
-  margin-left: -4px;
 }
 
 .nav-item.category {
