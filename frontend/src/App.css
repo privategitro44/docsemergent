@@ -102,7 +102,7 @@ body {
 }
 
 .sidebar-section {
-  padding: 0 16px;
+  padding: 0; /* Ensure overall sidebar padding remains exactly 24px on all sides */
 }
 
 .nav-item {
