@@ -83,10 +83,9 @@ const TableOfContents = ({ content }) => {
     try {
       const element = document.getElementById(headingId);
       if (element) {
-        element.scrollIntoView({
-          behavior: "smooth",
-          block: "start"
-        });
+        const yOffset = -72; // account for sticky header height with some spacing
+        const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+        window.scrollTo({ top: y, behavior: "smooth" });
       }
     } catch (error) {
       console.error("Error scrolling to heading:", error);
