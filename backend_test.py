@@ -5,7 +5,7 @@ from datetime import datetime
 from typing import Dict, Any, Optional
 
 class DocumentationAPITester:
-    def __init__(self, base_url="https://docs-platform.preview.emergentagent.com"):
+    def __init__(self, base_url="https://docflow-69.preview.emergentagent.com"):
         self.base_url = base_url
         self.api_url = f"{base_url}/api"
         self.token = None
