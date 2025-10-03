@@ -77,12 +77,23 @@ const Documentation = () => {
   };
 
   const renderContent = (content) => {
+    if (!content || !Array.isArray(content)) {
+      return <p>No content available</p>;
+    }
+    
     return content.map((item, index) => {
-      switch (item.type) {
-        case "text":
-          return (
-            <ArticleContent key={index} content={item.content} />
-          );
+      try {
+        if (!item || !item.type) {
+          console.error('Invalid content item:', item);
+          return null;
+        }
+        
+        switch (item.type) {
+          case "text":
+            if (!item.content) return null;
+            return (
+              <ArticleContent key={index} content={item.content} />
+            );
         case "image":
           return (
             <div key={index} className="image-container">
