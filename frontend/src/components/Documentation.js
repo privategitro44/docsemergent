@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
-import SearchComponent from "./SearchComponent";
 import SearchOverlay from "./SearchOverlay";
 import TableOfContents from "./TableOfContents";
 import ArticleContent from "./ArticleContent";
@@ -53,12 +52,25 @@ const Documentation = () => {
   const [articles, setArticles] = useState([]);
   const [currentArticle, setCurrentArticle] = useState(null);
   const [loading, setLoading] = useState(true);
-  const [searchQuery, setSearchQuery] = useState("");
   const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     fetchNavigation();
     fetchArticles();
+  }, []);
+
+  useEffect(() => {
+    // Keyboard shortcut: Ctrl/Cmd + K to open overlay
+    const onKeyDown = (e) => {
+      const isMac = navigator.platform.toUpperCase().includes("MAC");
+      const mod = isMac ? e.metaKey : e.ctrlKey;
+      if (mod && (e.key.toLowerCase() === "k")) {
+        e.preventDefault();
+        setShowOverlay(true);
+      }
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
   }, []);
 
   useEffect(() => {
@@ -329,7 +341,7 @@ const Documentation = () => {
                     key={child.id}
                     href="#"
                     className={`nav-item sub-item ${
-                      slug === child.target ? "active" : ""
+                      activeSlug === child.target ? "active" : ""
                     }`}
                     onClick={(e) => {
                       e.preventDefault();
@@ -359,6 +371,9 @@ const Documentation = () => {
 
   const organizedNavigation = organizeNavigation();
 
+  const isMac = typeof navigator !== 'undefined' && navigator.platform.toUpperCase().includes('MAC');
+  const kbdText = isMac ? '⌘ K' : 'Ctrl K';
+
   return (
     <div className="docs-layout" data-testid="docs-layout">
       {/* Header */}
@@ -371,15 +386,14 @@ const Documentation = () => {
           <MagnifyingGlassIcon className="search-icon" width={16} height={16} />
           <input
             type="text"
-            placeholder="Search documentation..."
+            placeholder="Search..."
             className="search-input"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
             onFocus={() => setShowOverlay(true)}
             onClick={() => setShowOverlay(true)}
             readOnly
             data-testid="search-input"
           />
+          <div className="search-kbd" aria-hidden="true">{kbdText}</div>
         </div>
 
         <div className="header-actions">
