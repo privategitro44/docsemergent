@@ -293,8 +293,9 @@ const Documentation = () => {
   };
 
   const renderNavigation = (navItems) => {
+    const activeSlug = slug || currentArticle?.slug;
     return navItems.map((item) => {
-      const isActive = slug === item.target;
+      const isActive = activeSlug === item.target;
       const isCategory = item.type === "category";
 
       const Icon = getIconForLabel(item.label);
