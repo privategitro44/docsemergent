@@ -583,6 +583,7 @@ body {
 }
 
 /* Keep active color on hover */
+.toc-link.active,
 .toc-link.active:hover {
   color: #1E66F5;
   background: transparent;
@@ -598,23 +599,21 @@ body {
 .toc-link.active::before {
   content: "";
   position: absolute;
-  left: 0px;
+  left: -1px; /* align over UL border */
   top: 8px; /* aligns with text padding top */
   bottom: 8px;
   width: 2px;
   background: #e5e7eb; /* subtle grey */
-  border-radius: 2px;
 }
 
 .toc-link.active::after {
   content: "";
   position: absolute;
-  left: 0px;
+  left: -1px;
   top: 0;
   height: 2px;
   width: 12px; /* short horizontal connector */
   background: #e5e7eb;
-  border-radius: 2px;
 }
 
 .toc-link:not(.active) { color: #6B7280; }
