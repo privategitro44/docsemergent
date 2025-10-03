@@ -352,9 +352,14 @@ const ArticleEditor = ({ onLogout }) => {
                 <input
                   type="number"
                   value={article.order}
-                  onChange={(e) => handleInputChange("order", parseInt(e.target.value) || 0)}
+                  onChange={(e) => {
+                    const value = e.target.value;
+                    handleInputChange("order", value === "" ? 0 : parseInt(value));
+                  }}
+                  onFocus={(e) => e.target.select()}
                   className="form-input"
                   min="0"
+                  placeholder="0"
                   data-testid="article-order"
                 />
               </div>
