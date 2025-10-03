@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SearchComponent from "./SearchComponent";
+import SearchOverlay from "./SearchOverlay";
 import TableOfContents from "./TableOfContents";
 import ArticleContent from "./ArticleContent";
 import { Search, Book } from "lucide-react";
