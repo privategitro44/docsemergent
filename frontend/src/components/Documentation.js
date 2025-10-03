@@ -257,6 +257,11 @@ const Documentation = () => {
     return DocumentTextIcon;
   };
 
+  const sentenceCase = (str = "") => {
+    const lower = String(str).toLowerCase();
+    return lower.charAt(0).toUpperCase() + lower.slice(1);
+  };
+
   const organizeNavigation = () => {
     const navMap = new Map();
     const rootItems = [];
