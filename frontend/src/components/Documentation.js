@@ -373,12 +373,14 @@ const firstBlockHasMatchingH1 = (article) => {
             </div>
           )}
         </div>
-
-        {/* Table of Contents */}
-        {currentArticle && (
-          <TableOfContents content={currentArticle.content} />
-        )}
       </main>
+
+      {/* Right-side TOC as independent column */}
+      {currentArticle && (
+        <aside className="docs-toc" data-testid="table-of-contents">
+          <TableOfContents content={currentArticle.content} />
+        </aside>
+      )}
     </div>
   );
 };
