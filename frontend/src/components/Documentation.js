@@ -258,8 +258,8 @@ const Documentation = () => {
   };
 
   const sentenceCase = (str = "") => {
-    const lower = String(str).toLowerCase();
-    return lower.charAt(0).toUpperCase() + lower.slice(1);
+    const s = String(str);
+    return s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
   };
 
   const organizeNavigation = () => {
