@@ -432,7 +432,6 @@ const Documentation = () => {
         </div>
       </div>
       <div className={`mobile-backdrop ${mobileNavOpen ? 'show' : ''}`} onClick={() => setMobileNavOpen(false)}></div>
-      </header>
 
       {/* Sidebar Navigation */}
       <aside className="docs-sidebar" data-testid="docs-sidebar">
