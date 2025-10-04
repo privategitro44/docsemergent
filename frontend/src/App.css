@@ -1563,6 +1563,25 @@ input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:
 .admin-layout .admin-sidebar {
   background: #ffffff !important;
 
+/* Social Links Manager styles (admin) */
+.admin-layout .social-links-manager .sl-list { display: flex; flex-direction: column; gap: 12px; }
+.admin-layout .social-links-manager .sl-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; padding: 12px; box-shadow: 0 1px 3px rgba(0,0,0,0.03); }
+.admin-layout .social-links-manager .sl-card.dragging { box-shadow: 0 8px 18px rgba(0,0,0,0.08); }
+.admin-layout .social-links-manager .sl-row { display: flex; align-items: center; gap: 12px; }
+.admin-layout .social-links-manager .sl-url-row { margin-top: 8px; }
+.admin-layout .social-links-manager .sl-grip { width: 24px; height: 24px; display: inline-flex; align-items: center; justify-content: center; cursor: grab; color: #9ca3af; }
+.admin-layout .social-links-manager .sl-title { display: flex; align-items: center; gap: 8px; flex: 1; }
+.admin-layout .social-links-manager .sl-label-input { flex: 0 0 200px; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; }
+.admin-layout .social-links-manager .sl-icon-select { padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; background: #fff; }
+.admin-layout .social-links-manager .sl-url-input { flex: 1; padding: 10px 12px; border: 1px solid #e5e7eb; border-radius: 8px; font-size: 14px; }
+.admin-layout .social-links-manager .sl-delete { background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 8px; color: #ef4444; display: inline-flex; align-items: center; justify-content: center; }
+.admin-layout .social-links-manager .sl-delete:hover { background: #fee2e2; }
+.admin-layout .social-links-manager .sl-toggle { width: 44px; height: 24px; background: #e5e7eb; border-radius: 12px; border: none; position: relative; transition: all .2s; }
+.admin-layout .social-links-manager .sl-toggle .sl-thumb { position: absolute; width: 20px; height: 20px; background: #fff; border-radius: 9999px; top: 2px; left: 2px; transition: all .2s; }
+.admin-layout .social-links-manager .sl-toggle.on { background: #10b981; }
+.admin-layout .social-links-manager .sl-toggle.on .sl-thumb { left: 22px; }
+
+
 /* ============== Admin Theme Polishing (CSS-only, safe overrides) ============== */
 /* Scoped to .admin-layout to avoid affecting the public docs site */
 .admin-layout {
