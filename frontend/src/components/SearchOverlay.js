@@ -28,14 +28,11 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [page, setPage] = useState(1);
   const inputRef = useRef(null);
   const containerRef = useRef(null);
   const resultsRef = useRef(null);
   const debounceRef = useRef(null);
 
-  // Reset page when query changes
-  useEffect(() => { setPage(1); }, [query]);
 
   useEffect(() => {
     if (isOpen) {
