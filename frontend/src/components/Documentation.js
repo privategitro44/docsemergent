@@ -71,7 +71,8 @@ const Documentation = () => {
       if (supportRef.current) {
         const header = document.querySelector('.docs-header');
         const headerHeight = header ? header.offsetHeight : 64;
-        supportRef.current.style.top = `${headerHeight}px`;
+        // subtract 1px to visually remove any border gap
+        supportRef.current.style.top = `${Math.max(0, headerHeight - 1)}px`;
       }
     };
     updateTop();
