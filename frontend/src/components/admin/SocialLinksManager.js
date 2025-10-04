@@ -58,12 +58,20 @@ function RowCard({ item, onChange, onDelete, dragHandleProps, draggableProps, in
           <GripHandle />
         </div>
         <div className="sl-title">
-          <input
-            className="sl-label-input"
-            value={local.label}
-            onChange={(e) => setLocal({ ...local, label: e.target.value })}
-            placeholder="Label"
-          />
+          <div className="sl-title-left">
+            <div className={`sl-brand-icon ${local.icon}`} aria-hidden>
+              {local.icon === 'youtube' ? <Youtube size={16}/> : local.icon === 'github' ? <Github size={16}/> : local.icon === 'linkedin' ? <Linkedin size={16}/> : local.icon === 'discord' ? <Discord size={16}/> : <LinkIcon size={16}/>}
+            </div>
+            <input
+              className="sl-label-input"
+              value={local.label}
+              onChange={(e) => setLocal({ ...local, label: e.target.value })}
+              placeholder="Label"
+            />
+            <button className="sl-inline-edit" title="Edit label">
+              <Pencil size={14} />
+            </button>
+          </div>
           <select
             className="sl-icon-select"
             value={local.icon}
@@ -84,6 +92,10 @@ function RowCard({ item, onChange, onDelete, dragHandleProps, draggableProps, in
         <button className="sl-delete" title="Delete" onClick={() => onDelete(item)}>
           <Trash2 size={16} />
         </button>
+      </div>
+      <div className="sl-meta">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden><path d="M3 12h18" stroke="#9ca3af" strokeWidth="2"/></svg>
+        <span>0 clicks</span>
       </div>
     </div>
   );
