@@ -118,35 +118,25 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
           </button>
         </div>
 
-        <div className="search-overlay-results" data-testid="search-overlay-results" ref={resultsRef}>
-          {/* Pagination header */}
-          {!loading && results.length > 0 && (
-            <div className="search-pagination-header" role="navigation" aria-label="Search pagination">
-              <button className="pagination-btn" onClick={goPrev} disabled={page <= 1} aria-label="Previous page">Prev</button>
-              <span className="pagination-sep">•</span>
-              <div className="pagination-status">Page {page} of {totalPages}</div>
-              <span className="pagination-sep">•</span>
-              <button className="pagination-btn" onClick={goNext} disabled={page >= totalPages} aria-label="Next page">Next</button>
-            </div>
-          )}
-
+        <div className="search-overlay-results embedded" data-testid="search-overlay-results" ref={resultsRef}>
           {loading && <div className="search-overlay-loading">Searching...</div>}
           {!loading && query.trim().length >= 2 && results.length === 0 && (
             <div className="search-overlay-empty">No results found</div>
           )}
-          {!loading && pagedResults.map((r) => (
-            <button key={r.id} className="search-overlay-result" onClick={() => handleSelect(r)}>
+          {!loading && results.map((r) => (
+            <button key={r.id} className="search-overlay-result hierarchy" onClick={() => handleSelect(r)}>
               <div className="result-row">
+                {r.breadcrumb && (
+                  <div className="result-crumbs" aria-hidden="true">{r.breadcrumb}</div>
+                )}
                 <div className="result-title">{highlight(r.title || "", query)}</div>
-                <div className="result-meta">{r.category}</div>
-                <div className="result-snippet">{highlight(r.snippet || "", query)}</div>
+                {r.category && <div className="result-meta">{r.category}</div>}
+                {r.snippet && <div className="result-snippet">{highlight(r.snippet || "", query)}</div>}
               </div>
-              <span className="result-chevron" aria-hidden="true">→</span>
+              <ChevronRightIcon className="result-chevron-svg" width={16} height={16} aria-hidden="true" />
             </button>
           ))}
         </div>
-
-        <div className="search-overlay-hint">Press Esc to close • Ctrl/⌘ + K to open</div>
       </div>
     </div>
   );
