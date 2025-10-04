@@ -462,9 +462,32 @@ const Documentation = () => {
       {/* Right-side TOC as independent column */}
       {currentArticle && (
         <aside className="docs-toc" data-testid="table-of-contents">
+          <div className="toc-mobile-header">
+            <button className="toc-mobile-toggle" onClick={() => setMobileTocOpen(true)}>
+              <ListBulletIcon width={18} height={18} />
+              On this page
+            </button>
+          </div>
           <TableOfContents content={currentArticle.content} />
         </aside>
       )}
+
+      {/* Mobile TOC drawer */}
+      {currentArticle && (
+        <div className={`mobile-toc-drawer ${mobileTocOpen ? 'open' : ''}`} aria-hidden={!mobileTocOpen}>
+          <div className="mobile-drawer-header">
+            <div className="drawer-title">On this page</div>
+            <button className="drawer-close" aria-label="Close TOC" onClick={() => setMobileTocOpen(false)}>
+              <XMarkIcon width={22} height={22} />
+            </button>
+          </div>
+          <div className="mobile-drawer-body">
+            <TableOfContents content={currentArticle.content} />
+          </div>
+        </div>
+      )}
+      <div className={`mobile-backdrop ${mobileTocOpen ? 'show' : ''}`} onClick={() => setMobileTocOpen(false)}></div>
+
       {/* Search overlay (global) */}
       <SearchOverlay
         isOpen={showOverlay}
