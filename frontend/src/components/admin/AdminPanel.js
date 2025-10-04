@@ -68,6 +68,8 @@ const AdminPanel = () => {
         <Route path="/articles" element={<ArticleManager onLogout={handleLogout} />} />
         <Route path="/articles/new" element={<ArticleEditor onLogout={handleLogout} />} />
         <Route path="/articles/edit/:id" element={<ArticleEditor onLogout={handleLogout} />} />
+        <Route path="/settings/social" element={<div style={{padding:24}}>Social Links manager (coming soon)</div>} />
+
         <Route path="/navigation" element={<NavigationManager onLogout={handleLogout} />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>
