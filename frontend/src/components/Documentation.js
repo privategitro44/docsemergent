@@ -71,12 +71,19 @@ const Documentation = () => {
   }, []);
   const supportRef = useRef(null);
 
-  // Helper to sync supporting header offset to main header height
+  // Helper to sync supporting header offset to main header height and expose its own height
   const updateSupportHeaderOffset = () => {
-    const header = document.querySelector('.docs-header');
-    const headerHeight = header ? header.offsetHeight : 64;
-    // Use CSS variable so sticky top can reference it
-    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+    try {
+      const header = document.querySelector('.docs-header');
+      const headerHeight = header ? header.offsetHeight : 64;
+      document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+
+      const supEl = supportRef.current || document.querySelector('.supporting-header');
+      const supportHeight = supEl && supEl.offsetHeight ? supEl.offsetHeight : 44; // sensible default
+      document.documentElement.style.setProperty('--support-height', `${supportHeight}px`);
+    } catch (e) {
+      // non-blocking
+    }
   };
 
   useEffect(() => {
