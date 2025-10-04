@@ -137,12 +137,14 @@ class SocialLink(BaseModel):
     icon: str  # name key for frontend to map to an icon (e.g., 'x', 'linkedin', 'github', 'youtube', 'discord')
     url: str
     order: int = 0
+    enabled: bool = True
 
 class SocialLinkCreate(BaseModel):
     label: str
     icon: str
     url: str
     order: int = 0
+    enabled: bool = True
 
 # Helper Functions
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
