@@ -431,6 +431,7 @@ const Documentation = () => {
         </div>
 
         <div className="header-actions">
+          {/* Search icon only visible on mobile/tablet; hidden on desktop via CSS */}
           <button className="icon-button mobile-only" aria-label="Open search" onClick={() => setShowOverlay(true)}>
             <MagnifyingGlassIcon width={18} height={18} />
           </button>
