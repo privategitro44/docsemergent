@@ -438,7 +438,7 @@ const Documentation = () => {
       </header>
 
       {/* Mobile/Tablet supporting header positioned directly under main header */}
-      <div className={`supporting-header mobile-only ${scrolled ? 'glass' : ''}`}>
+      <div ref={supportRef} className={`supporting-header mobile-only ${scrolled ? 'glass' : ''}`}>
         <button className="supporting-hamburger" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}>
           <Bars3Icon width={20} height={20} />
         </button>
