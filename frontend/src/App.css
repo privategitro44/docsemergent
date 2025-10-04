@@ -710,13 +710,20 @@ body {
 }
 
 .search-overlay-results {
-  margin-top: 12px;
+  margin-top: 8px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 12px;
-  max-height: 50vh;
+  max-height: 56vh;
   overflow: auto;
   box-shadow: 0 14px 36px rgba(0,0,0,0.18);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+/* Embedded style so it feels like the same card below the input */
+.search-overlay-results.embedded {
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
 }
 
 .search-overlay-loading,
