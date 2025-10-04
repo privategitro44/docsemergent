@@ -134,10 +134,11 @@ body {
 /* Supporting header (mobile/tablet) */
 .supporting-header { display: none; }
 @media (max-width: 1024px) {
-  .supporting-header { display: flex; align-items: center; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #e5e7eb; background: #fff; position: sticky; top: 64px; z-index: 999; }
+  .supporting-header { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 8px 12px; border-bottom: 1px solid #e5e7eb; background: #fff; position: sticky; top: 64px; z-index: 999; }
+  .supporting-header.glass { background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-bottom-color: rgba(229,231,235,0.6); }
 }
 .supporting-hamburger { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; color: #6b7280; display: inline-flex; align-items: center; justify-content: center; }
-.supporting-breadcrumb { font-size: 13px; color: #9ca3af; display: flex; align-items: center; gap: 6px; }
+.supporting-breadcrumb { font-size: 13px; color: #9ca3af; display: flex; align-items: center; gap: 6px; flex: 1; padding-left: 4px; }
 .crumb-cat { color: #6b7280; }
 .crumb-sep { color: #d1d5db; }
 .crumb-title { color: #6b7280; }
