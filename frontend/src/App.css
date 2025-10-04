@@ -328,6 +328,10 @@ body {
   .docs-main { padding: 24px 16px; }
   .docs-content { padding: 0 16px !important; }
 }
+@media (max-width: 640px) {
+  .docs-main { padding-left: 16px; padding-right: 16px; }
+}
+
 
 .docs-content {
   flex: 1;
