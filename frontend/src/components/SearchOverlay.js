@@ -70,6 +70,23 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
     };
   }, [isOpen, onClose]);
 
+  // Build breadcrumb (slug -> path) from provided nav tree
+  const crumbMap = useMemo(() => {
+    const map = {};
+    const dfs = (nodes = [], trail = []) => {
+      nodes.forEach((n) => {
+        const currentTrail = [...trail, n.label];
+        if (n.type !== "category" && n.target) {
+          // include the page label at the end to match reference
+          map[n.target] = currentTrail.join(" > ");
+        }
+        if (Array.isArray(n.children) && n.children.length) dfs(n.children, currentTrail);
+      });
+    };
+    dfs(navTree || [], []);
+    return map;
+  }, [navTree]);
+
   useEffect(() => {
     if (!isOpen) return;
     if (debounceRef.current) clearTimeout(debounceRef.current);
@@ -81,7 +98,10 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
       setLoading(true);
       try {
         const res = await axios.get(`${API}/search`, { params: { q: query } });
-        setResults(res.data || []);
+        const data = Array.isArray(res.data) ? res.data : [];
+        // enrich with breadcrumb if available
+        const enriched = data.map((r) => ({ ...r, breadcrumb: crumbMap[r.slug] || r.breadcrumb || r.category || "" }));
+        setResults(enriched);
       } catch (err) {
         console.error("Search overlay error:", err);
         setResults([]);
@@ -91,7 +111,7 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
     }, 250);
 
     return () => debounceRef.current && clearTimeout(debounceRef.current);
-  }, [isOpen, query]);
+  }, [isOpen, query, crumbMap]);
 
   const handleSelect = (item) => {
     if (onNavigate) onNavigate(item.slug);
