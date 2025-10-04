@@ -46,11 +46,8 @@ body {
   .docs-layout { grid-template-columns: 0 1fr 0; }
   .docs-sidebar { display: none; }
   .docs-toc { display: none; }
-  .docs-content { padding: 0; }
   .docs-header { padding: 8px 12px; }
   .docs-header .search-container { max-width: none; }
-  /* Ensure supporting header sits directly under sticky main header */
-  .supporting-header { top: 64px !important; }
 }
 
 @media (max-width: 640px) {
