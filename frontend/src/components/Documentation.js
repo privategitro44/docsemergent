@@ -446,6 +446,7 @@ const Documentation = () => {
         isOpen={showOverlay}
         onClose={() => setShowOverlay(false)}
         onNavigate={(slug) => navigate(`/article/${slug}`)}
+        navTree={organizedNavigation}
       />
 
     </div>
