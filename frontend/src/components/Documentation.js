@@ -427,7 +427,7 @@ const Documentation = () => {
             Try Emergent
           </a>
       {/* Mobile/Tablet supporting header with breadcrumb and hamburger */}
-      <div className="supporting-header mobile-only">
+      <div className={`supporting-header mobile-only ${scrolled ? 'glass' : ''}`}>
         <button className="supporting-hamburger" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}>
           <Bars3Icon width={20} height={20} />
         </button>
@@ -441,11 +441,10 @@ const Documentation = () => {
           ) : (
             <span>&nbsp;</span>
           )}
+        </div>
         <button className="supporting-search mobile-only" aria-label="Open search" onClick={() => setShowOverlay(true)}>
           <MagnifyingGlassIcon width={18} height={18} />
         </button>
-
-        </div>
       </div>
 
         </div>
