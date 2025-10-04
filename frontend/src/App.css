@@ -1638,6 +1638,28 @@ input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:
 .admin-layout .btn-primary { background: #000000; color: #ffffff; border-radius: 9999px; }
 .admin-layout .btn-primary:hover:not(:disabled) { background: #111827; }
 .admin-layout .btn-secondary { background: #ffffff; color: #374151; border: 1.5px solid var(--admin-border); }
+/* Brand-colored icon badges for common platforms */
+.admin-layout .social-links-manager .sl-brand-icon.youtube { background: #fef2f2; color: #ef4444; border-color: #fee2e2; }
+.admin-layout .social-links-manager .sl-brand-icon.github { background: #f3f4f6; color: #111827; border-color: #e5e7eb; }
+.admin-layout .social-links-manager .sl-brand-icon.linkedin { background: #eef2ff; color: #2563eb; border-color: #dbeafe; }
+.admin-layout .social-links-manager .sl-brand-icon.discord { background: #eef2ff; color: #6366f1; border-color: #e0e7ff; }
+
+/* Hover states for row */
+.admin-layout .social-links-manager .sl-card:hover { border-color: #d1d5db; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+
+/* Inputs: consistent with docs */
+.admin-layout .social-links-manager .sl-label-input:focus,
+.admin-layout .social-links-manager .sl-url-input:focus,
+.admin-layout .social-links-manager .sl-icon-select:focus { border-color: #1E66F5; box-shadow: 0 0 0 3px rgba(30,102,245,0.12); outline: none; }
+
+/* Place delete button right without growing */
+.admin-layout .social-links-manager .sl-url-row { justify-content: space-between; }
+.admin-layout .social-links-manager .sl-url-row .sl-delete { flex: 0 0 auto; }
+
+/* Tighten header typography to match docs */
+.admin-layout .social-links-manager .manager-title { letter-spacing: -0.02em; }
+.admin-layout .social-links-manager .manager-subtitle { color: #6b7280; }
+
 .admin-layout .btn-secondary:hover { background: #f9fafb; }
 .admin-layout .btn-danger { background: #fee2e2; color: #dc2626; }
 
