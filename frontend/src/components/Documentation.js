@@ -415,6 +415,20 @@ const Documentation = () => {
             className="cta-try"
           >
             Try Emergent
+      {/* Mobile slide-over nav */}
+      <div className={`mobile-drawer ${mobileNavOpen ? 'open' : ''}`} aria-hidden={!mobileNavOpen}>
+        <div className="mobile-drawer-header">
+          <div className="drawer-title">Docs</div>
+          <button className="drawer-close" aria-label="Close navigation" onClick={() => setMobileNavOpen(false)}>
+            <XMarkIcon width={22} height={22} />
+          </button>
+        </div>
+        <div className="mobile-drawer-body">
+          {renderNavigation(organizedNavigation)}
+        </div>
+      </div>
+      <div className={`mobile-backdrop ${mobileNavOpen ? 'show' : ''}`} onClick={() => setMobileNavOpen(false)}></div>
+
           </a>
         </div>
       </header>
