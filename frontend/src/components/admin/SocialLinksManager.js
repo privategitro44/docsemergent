@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
-import { Plus, Trash2 } from "lucide-react";
+import { Plus, Trash2, Pencil, Link as LinkIcon, Youtube, Github, Linkedin, Discord } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
