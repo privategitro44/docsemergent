@@ -667,7 +667,8 @@ body {
   align-items: center;
   background: #ffffff;
   border: 1.5px solid #e5e7eb;
-  border-radius: 14px;
+  border-bottom: none; /* visually attaches to results */
+  border-radius: 14px 14px 0 0; /* rounded top only */
   padding: 8px 48px 8px 44px; /* room for icon + ESC */
   box-shadow: 0 14px 36px rgba(0,0,0,0.18);
 }
