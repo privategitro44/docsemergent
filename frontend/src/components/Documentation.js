@@ -64,6 +64,16 @@ const Documentation = () => {
     window.addEventListener('scroll', onScroll);
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
+  const supportRef = useRef(null);
+  useEffect(() => {
+    // Ensure supporting header renders below main header with exact offset
+    if (supportRef.current) {
+      const header = document.querySelector('.docs-header');
+      const headerHeight = header ? header.offsetHeight : 64;
+      supportRef.current.style.top = `${headerHeight}px`;
+    }
+  }, []);
+
 
   const [loading, setLoading] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
