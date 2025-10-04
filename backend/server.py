@@ -72,6 +72,8 @@ class Article(BaseModel):
     created_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     published: bool = True
+    likes: int = 0
+    dislikes: int = 0
 
 class ArticleCreate(BaseModel):
     title: str
@@ -92,6 +94,8 @@ class ArticleUpdate(BaseModel):
     meta_description: Optional[str] = None
     keywords: Optional[List[str]] = None
     published: Optional[bool] = None
+    likes: Optional[int] = None
+    dislikes: Optional[int] = None
 
 class NavigationItem(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
@@ -118,6 +122,28 @@ class SearchResult(BaseModel):
     snippet: str
     relevance: float
 
+class FeedbackRequest(BaseModel):
+    slug: str
+    type: str  # 'like' or 'dislike'
+
+class FeedbackResponse(BaseModel):
+    slug: str
+    likes: int
+    dislikes: int
+
+class SocialLink(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    label: str
+    icon: str  # name key for frontend to map to an icon (e.g., 'x', 'linkedin', 'github', 'youtube', 'discord')
+    url: str
+    order: int = 0
+
+class SocialLinkCreate(BaseModel):
+    label: str
+    icon: str
+    url: str
+    order: int = 0
+
 # Helper Functions
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     to_encode = data.copy()
@@ -139,8 +165,8 @@ async def get_current_admin(credentials: HTTPAuthorizationCredentials = Depends(
     except jwt.PyJWTError:
         raise HTTPException(status_code=401, detail="Invalid authentication credentials")
 
+# Mongo helpers for datetime serialization
 def prepare_for_mongo(data: Dict[str, Any]) -> Dict[str, Any]:
-    """Convert datetime objects to ISO strings for MongoDB storage"""
     if isinstance(data, dict):
         result = {}
         for key, value in data.items():
@@ -156,7 +182,6 @@ def prepare_for_mongo(data: Dict[str, Any]) -> Dict[str, Any]:
     return data
 
 def parse_from_mongo(item: Dict[str, Any]) -> Dict[str, Any]:
-    """Convert ISO strings back to datetime objects from MongoDB"""
     if isinstance(item, dict):
         result = {}
         for key, value in item.items():
@@ -180,7 +205,6 @@ async def admin_login(credentials: AdminLogin):
     password_hash = hashlib.sha256(credentials.password.encode()).hexdigest()
     if credentials.username != ADMIN_USERNAME or password_hash != ADMIN_PASSWORD_HASH:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    
     access_token = create_access_token(data={"sub": credentials.username})
     return {"access_token": access_token, "token_type": "bearer"}
 
@@ -211,45 +235,34 @@ async def get_article_by_id(article_id: str, current_admin: str = Depends(get_cu
 
 @api_router.post("/admin/articles", response_model=Article)
 async def create_article(article: ArticleCreate, current_admin: str = Depends(get_current_admin)):
-    # Check if slug already exists
     existing = await db.articles.find_one({"slug": article.slug})
     if existing:
         raise HTTPException(status_code=400, detail="Article with this slug already exists")
-    
     article_obj = Article(**article.dict())
     article_dict = prepare_for_mongo(article_obj.dict())
     await db.articles.insert_one(article_dict)
-    
-    # Automatically create navigation item for the new article
+
+    # Auto create nav item under category
     try:
-        # Find or create category based on article category
-        category_nav = await db.navigation.find_one({
-            "type": "category",
-            "label": article.category.upper()
-        })
-        
+        category_label = article.category.upper()
+        category_nav = await db.navigation.find_one({"type": "category", "label": category_label})
         parent_id = None
         if category_nav:
             parent_id = category_nav["id"]
         else:
-            # Create new category if it doesn't exist
             new_category = {
                 "id": str(uuid.uuid4()),
-                "label": article.category.upper(),
+                "label": category_label,
                 "type": "category",
                 "target": None,
                 "parent_id": None,
-                "order": 1000,  # Put new categories at the end
+                "order": 1000,
                 "icon": None
             }
             await db.navigation.insert_one(new_category)
             parent_id = new_category["id"]
-        
-        # Get the highest order in this category
         existing_nav = await db.navigation.find({"parent_id": parent_id}).sort("order", -1).limit(1).to_list(1)
         next_order = (existing_nav[0]["order"] + 1) if existing_nav else 1
-        
-        # Create navigation item for the article
         nav_item = {
             "id": str(uuid.uuid4()),
             "label": article.title,
@@ -263,8 +276,7 @@ async def create_article(article: ArticleCreate, current_admin: str = Depends(ge
         logger.info(f"Auto-created navigation item for article: {article.title}")
     except Exception as e:
         logger.error(f"Failed to auto-create navigation item: {e}")
-        # Don't fail article creation if navigation fails
-    
+
     return article_obj
 
 @api_router.put("/admin/articles/{article_id}", response_model=Article)
@@ -272,33 +284,25 @@ async def update_article(article_id: str, article_update: ArticleUpdate, current
     article = await db.articles.find_one({"id": article_id})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
-    
     update_data = {k: v for k, v in article_update.dict().items() if v is not None}
     if update_data:
         update_data["updated_at"] = datetime.now(timezone.utc)
         prepared_data = prepare_for_mongo(update_data)
         await db.articles.update_one({"id": article_id}, {"$set": prepared_data})
-    
     updated_article = await db.articles.find_one({"id": article_id})
     return Article(**parse_from_mongo(updated_article))
 
 @api_router.delete("/admin/articles/{article_id}")
 async def delete_article(article_id: str, current_admin: str = Depends(get_current_admin)):
-    # Get article before deletion to find its slug
     article = await db.articles.find_one({"id": article_id})
     if not article:
         raise HTTPException(status_code=404, detail="Article not found")
-    
-    # Delete the article
-    result = await db.articles.delete_one({"id": article_id})
-    
-    # Also delete associated navigation item
+    await db.articles.delete_one({"id": article_id})
     try:
         await db.navigation.delete_one({"target": article["slug"], "type": "article"})
         logger.info(f"Deleted navigation item for article: {article['slug']}")
     except Exception as e:
         logger.error(f"Failed to delete navigation item: {e}")
-    
     return {"message": "Article deleted successfully"}
 
 # Navigation Routes
@@ -318,7 +322,6 @@ async def update_navigation_item(nav_id: str, nav_update: NavigationCreate, curr
     result = await db.navigation.update_one({"id": nav_id}, {"$set": nav_update.dict()})
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="Navigation item not found")
-    
     updated_nav = await db.navigation.find_one({"id": nav_id})
     return NavigationItem(**updated_nav)
 
@@ -334,18 +337,12 @@ async def delete_navigation_item(nav_id: str, current_admin: str = Depends(get_c
 async def upload_media(file: UploadFile = File(...), current_admin: str = Depends(get_current_admin)):
     if not file.filename:
         raise HTTPException(status_code=400, detail="No file provided")
-    
-    # Generate unique filename
     file_extension = file.filename.split('.')[-1] if '.' in file.filename else ''
     unique_filename = f"{uuid.uuid4()}.{file_extension}"
     file_path = uploads_dir / unique_filename
-    
-    # Save file
     async with aiofiles.open(file_path, 'wb') as buffer:
         content = await file.read()
         await buffer.write(content)
-    
-    # Return file URL
     file_url = f"/uploads/{unique_filename}"
     return {"url": file_url, "filename": unique_filename}
 
@@ -354,7 +351,6 @@ async def upload_media(file: UploadFile = File(...), current_admin: str = Depend
 async def search_articles(q: str, limit: int = 10):
     if not q or len(q.strip()) < 2:
         return []
-    
     search_query = {
         "$and": [
             {"published": True},
@@ -367,20 +363,15 @@ async def search_articles(q: str, limit: int = 10):
             }
         ]
     }
-    
     articles = await db.articles.find(search_query).limit(limit).to_list(limit)
     results = []
-    
     for article in articles:
-        # Create snippet from content
         content_text = ""
         for content_item in article.get("content", []):
             if content_item.get("type") == "text":
                 content_text += content_item.get("content", "") + " "
-        
         snippet = content_text[:200] + "..." if len(content_text) > 200 else content_text
-        relevance = 1.0  # Simple relevance for now
-        
+        relevance = 1.0
         results.append(SearchResult(
             id=article["id"],
             title=article["title"],
@@ -389,8 +380,52 @@ async def search_articles(q: str, limit: int = 10):
             snippet=snippet,
             relevance=relevance
         ))
-    
     return results
+
+# Feedback Routes
+@api_router.post("/feedback", response_model=FeedbackResponse)
+async def submit_feedback(req: FeedbackRequest):
+    if req.type not in ("like", "dislike"):
+        raise HTTPException(status_code=400, detail="Invalid feedback type")
+    inc_field = "likes" if req.type == "like" else "dislikes"
+    result = await db.articles.find_one_and_update({"slug": req.slug}, {"$inc": {inc_field: 1}}, return_document=True)
+    # If article missing (shouldn't happen), return error
+    updated = await db.articles.find_one({"slug": req.slug})
+    if not updated:
+        raise HTTPException(status_code=404, detail="Article not found")
+    return FeedbackResponse(slug=req.slug, likes=int(updated.get("likes", 0)), dislikes=int(updated.get("dislikes", 0)))
+
+# Social Links Routes
+@api_router.get("/social-links", response_model=List[SocialLink])
+async def list_social_links():
+    links = await db.social_links.find().sort("order", 1).to_list(100)
+    return [SocialLink(**l) for l in links]
+
+@api_router.get("/admin/social-links", response_model=List[SocialLink])
+async def admin_list_social_links(current_admin: str = Depends(get_current_admin)):
+    links = await db.social_links.find().sort("order", 1).to_list(100)
+    return [SocialLink(**l) for l in links]
+
+@api_router.post("/admin/social-links", response_model=SocialLink)
+async def create_social_link(link: SocialLinkCreate, current_admin: str = Depends(get_current_admin)):
+    obj = SocialLink(**link.dict())
+    await db.social_links.insert_one(obj.dict())
+    return obj
+
+@api_router.put("/admin/social-links/{link_id}", response_model=SocialLink)
+async def update_social_link(link_id: str, link: SocialLinkCreate, current_admin: str = Depends(get_current_admin)):
+    result = await db.social_links.update_one({"id": link_id}, {"$set": link.dict()})
+    if result.matched_count == 0:
+        raise HTTPException(status_code=404, detail="Social link not found")
+    updated = await db.social_links.find_one({"id": link_id})
+    return SocialLink(**updated)
+
+@api_router.delete("/admin/social-links/{link_id}")
+async def delete_social_link(link_id: str, current_admin: str = Depends(get_current_admin)):
+    result = await db.social_links.delete_one({"id": link_id})
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Social link not found")
+    return {"message": "Deleted"}
 
 # Health check
 @api_router.get("/health")
@@ -418,7 +453,6 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_event():
-    # Create sample data if none exists
     article_count = await db.articles.count_documents({})
     if article_count == 0:
         await create_sample_data()
@@ -431,8 +465,6 @@ async def shutdown_db_client():
 # Sample Data Creation
 async def create_sample_data():
     """Create comprehensive sample content"""
-    
-    # Sample articles with rich content
     sample_articles = [
         {
             "id": str(uuid.uuid4()),
@@ -450,7 +482,9 @@ async def create_sample_data():
             "keywords": ["welcome", "introduction", "emergent", "documentation"],
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat(),
-            "published": True
+            "published": True,
+            "likes": 0,
+            "dislikes": 0
         },
         {
             "id": str(uuid.uuid4()),
@@ -459,7 +493,7 @@ async def create_sample_data():
             "content": [
                 {
                     "type": "text",
-                    "content": "<h1>Quick Start Guide</h1><p>Get up and running with Emergent in less than 5 minutes. This guide will walk you through the essential steps to start creating your documentation.</p><h2>Step 1: Access the Admin Panel</h2><p>Navigate to <code>/admin/login</code> and use your credentials to log in to the CMS.</p><p>Default credentials:</p><ul><li>Username: <code>admin</code></li><li>Password: <code>admin123</code></li></ul><h2>Step 2: Create Your First Article</h2><p>Once logged in, you can create articles with rich content including:</p><ol><li>Rich text with HTML formatting</li><li>Images from uploads or external URLs</li><li>Videos (uploaded or embedded)</li><li>Code snippets with syntax highlighting</li></ol><h2>Step 3: Organize Navigation</h2><p>Use the Navigation Manager to structure your documentation:</p><ul><li>Create categories for grouping content</li><li>Add article links</li><li>Include external resources</li><li>Reorder items with drag and drop</li></ul><h2>Step 4: Publish and Share</h2><p>Once your content is ready, publish it and share the documentation with your team. All changes are reflected instantly.</p><h3>Pro Tips</h3><blockquote><p>Use descriptive slugs for better SEO and user experience. Keep titles concise and descriptive.</p></blockquote>"
+                    "content": "<h1>Quick Start Guide</h1><p>Get up and running with Emergent in less than 5 minutes. This guide will walk you through the essential steps to start creating your documentation.</p>"
                 }
             ],
             "category": "Introduction",
@@ -468,87 +502,16 @@ async def create_sample_data():
             "keywords": ["quick start", "getting started", "tutorial", "setup"],
             "created_at": datetime.now(timezone.utc).isoformat(),
             "updated_at": datetime.now(timezone.utc).isoformat(),
-            "published": True
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "title": "Content Management",
-            "slug": "content-management",
-            "content": [
-                {
-                    "type": "text",
-                    "content": "<h1>Content Management</h1><p>Learn how to effectively manage your documentation content using the Emergent CMS.</p><h2>Article Structure</h2><p>Each article in Emergent consists of:</p><ul><li><strong>Title:</strong> The main heading displayed to users</li><li><strong>Slug:</strong> URL-friendly identifier for the article</li><li><strong>Content:</strong> Mixed media content blocks</li><li><strong>Category:</strong> Organizational grouping</li><li><strong>Metadata:</strong> SEO description and keywords</li></ul><h2>Content Types</h2><h3>Text Content</h3><p>Use HTML to format your text content. Supported elements include headings, paragraphs, lists, links, and more.</p><h3>Images</h3><p>Add images by uploading them directly or providing external URLs. Each image can have:</p><ul><li>Alt text for accessibility</li><li>Caption for context</li><li>Automatic responsive sizing</li></ul><h3>Videos</h3><p>Include videos in two ways:</p><ol><li><strong>Upload:</strong> Upload MP4 files directly to the system</li><li><strong>Embed:</strong> Use iframe embeds from YouTube, Vimeo, etc.</li></ol><h2>Publishing Workflow</h2><p>Articles can be saved as drafts or published immediately. Unpublished articles are only visible in the admin panel.</p><blockquote><p>Tip: Use the draft feature to prepare content in advance and publish when ready.</p></blockquote>"
-                }
-            ],
-            "category": "Features",
-            "order": 3,
-            "meta_description": "Manage your documentation content effectively",
-            "keywords": ["content", "management", "cms", "articles"],
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "published": True
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "title": "Navigation Setup",
-            "slug": "navigation-setup",
-            "content": [
-                {
-                    "type": "text",
-                    "content": "<h1>Navigation Setup</h1><p>Create an intuitive navigation structure that helps users find information quickly.</p><h2>Navigation Types</h2><p>Emergent supports three types of navigation items:</p><h3>1. Categories</h3><p>Categories are organizational labels that group related content. They appear as headers in the sidebar and cannot be clicked.</p><h3>2. Article Links</h3><p>Direct links to articles within your documentation. Specify the article slug to create the connection.</p><h3>3. External Links</h3><p>Links to external resources or websites. These open in a new tab.</p><h2>Hierarchy</h2><p>Build multi-level navigation by setting parent-child relationships:</p><ul><li>Top-level items appear directly in the sidebar</li><li>Child items are nested under their parent</li><li>Use order values to control positioning</li></ul><h2>Best Practices</h2><p>Follow these guidelines for effective navigation:</p><ol><li><strong>Keep it simple:</strong> Limit nesting to 2-3 levels</li><li><strong>Logical grouping:</strong> Group related content together</li><li><strong>Clear labels:</strong> Use descriptive, concise labels</li><li><strong>Consistent order:</strong> Organize by importance or sequence</li></ol><blockquote><p>Good navigation is invisible. Users should find what they need without thinking about the structure.</p></blockquote>"
-                }
-            ],
-            "category": "Features",
-            "order": 4,
-            "meta_description": "Set up navigation for your documentation",
-            "keywords": ["navigation", "sidebar", "menu", "structure"],
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "published": True
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "title": "Search Functionality",
-            "slug": "search",
-            "content": [
-                {
-                    "type": "text",
-                    "content": "<h1>Search Functionality</h1><p>Help users find information instantly with powerful search capabilities.</p><h2>How Search Works</h2><p>Emergent's search feature indexes all published articles and searches across:</p><ul><li>Article titles</li><li>Content text</li><li>Keywords and metadata</li></ul><h2>Using Search</h2><p>Users can search from anywhere in the documentation:</p><ol><li>Click the search bar in the header</li><li>Type at least 2 characters</li><li>View real-time results</li><li>Click a result to navigate to that article</li></ol><h2>Search Results</h2><p>Results display:</p><ul><li>Article title</li><li>Content snippet showing context</li><li>Category badge</li></ul><h3>Relevance Ranking</h3><p>Results are ranked based on:</p><ul><li>Title matches (highest priority)</li><li>Keyword matches</li><li>Content matches</li></ul><h2>Optimization Tips</h2><blockquote><p>Add relevant keywords to your articles to improve searchability. Use clear, descriptive titles.</p></blockquote>"
-                }
-            ],
-            "category": "Features",
-            "order": 5,
-            "meta_description": "Learn about search functionality",
-            "keywords": ["search", "find", "lookup", "discovery"],
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "published": True
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "title": "API Reference",
-            "slug": "api-reference",
-            "content": [
-                {
-                    "type": "text",
-                    "content": "<h1>API Reference</h1><p>Emergent provides a RESTful API for programmatic access to your documentation.</p><h2>Authentication</h2><p>Most endpoints require authentication using JWT tokens. Obtain a token by logging in through the admin panel.</p><pre><code>POST /api/admin/login\nContent-Type: application/json\n\n{\n  \"username\": \"admin\",\n  \"password\": \"admin123\"\n}</code></pre><h2>Endpoints</h2><h3>Articles</h3><p><code>GET /api/articles</code> - List all published articles</p><p><code>GET /api/articles/{slug}</code> - Get a specific article</p><p><code>POST /api/admin/articles</code> - Create a new article (auth required)</p><p><code>PUT /api/admin/articles/{id}</code> - Update an article (auth required)</p><p><code>DELETE /api/admin/articles/{id}</code> - Delete an article (auth required)</p><h3>Navigation</h3><p><code>GET /api/navigation</code> - Get all navigation items</p><p><code>POST /api/admin/navigation</code> - Create navigation item (auth required)</p><h3>Search</h3><p><code>GET /api/search?q={query}</code> - Search articles</p><h2>Response Format</h2><p>All API responses use JSON format with consistent structure.</p>"
-                }
-            ],
-            "category": "Developers",
-            "order": 6,
-            "meta_description": "API reference documentation",
-            "keywords": ["api", "reference", "endpoints", "rest"],
-            "created_at": datetime.now(timezone.utc).isoformat(),
-            "updated_at": datetime.now(timezone.utc).isoformat(),
-            "published": True
+            "published": True,
+            "likes": 0,
+            "dislikes": 0
         }
     ]
-    
-    # Sample navigation with proper hierarchy
+
     intro_cat_id = str(uuid.uuid4())
     features_cat_id = str(uuid.uuid4())
     dev_cat_id = str(uuid.uuid4())
-    
+
     sample_navigation = [
         {
             "id": intro_cat_id,
@@ -588,42 +551,6 @@ async def create_sample_data():
         },
         {
             "id": str(uuid.uuid4()),
-            "label": "Content Management",
-            "type": "article",
-            "target": "content-management",
-            "parent_id": features_cat_id,
-            "order": 5,
-            "icon": None
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "label": "Navigation Setup",
-            "type": "article",
-            "target": "navigation-setup",
-            "parent_id": features_cat_id,
-            "order": 6,
-            "icon": None
-        },
-        {
-            "id": str(uuid.uuid4()),
-            "label": "Search",
-            "type": "article",
-            "target": "search",
-            "parent_id": features_cat_id,
-            "order": 7,
-            "icon": None
-        },
-        {
-            "id": dev_cat_id,
-            "label": "DEVELOPERS",
-            "type": "category",
-            "target": None,
-            "parent_id": None,
-            "order": 8,
-            "icon": "code"
-        },
-        {
-            "id": str(uuid.uuid4()),
             "label": "API Reference",
             "type": "article",
             "target": "api-reference",
@@ -632,9 +559,7 @@ async def create_sample_data():
             "icon": None
         }
     ]
-    
-    # Insert sample data
+
     await db.articles.insert_many(sample_articles)
     await db.navigation.insert_many(sample_navigation)
-    
     logger.info("Sample data created successfully")
