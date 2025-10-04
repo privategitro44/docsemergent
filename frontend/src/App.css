@@ -339,6 +339,11 @@ body {
 @media (max-width: 640px) {
   .docs-main { padding-left: 16px; padding-right: 16px; }
 }
+/* Add extra top padding under supporting header on tablet/mobile so title/tagline is not obscured */
+@media (max-width: 1024px) {
+  .docs-main { padding-top: calc(24px + var(--support-height, 44px)); }
+}
+
 
 
 .docs-content {
