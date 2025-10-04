@@ -72,6 +72,13 @@ const Documentation = () => {
     const updateTop = () => {
       if (supportRef.current) {
         const header = document.querySelector('.docs-header');
+  useEffect(() => {
+    const header = document.querySelector('.docs-header');
+    if (header) {
+      document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
+    }
+  }, [showOverlay]);
+
         const headerHeight = header ? header.offsetHeight : 64;
         supportRef.current.style.top = `${Math.max(0, headerHeight - 1)}px`;
       }
