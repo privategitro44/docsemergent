@@ -1562,6 +1562,121 @@ input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:
 .admin-content > .admin-sidebar,
 .admin-layout .admin-sidebar {
   background: #ffffff !important;
+
+/* ============== Admin Theme Polishing (CSS-only, safe overrides) ============== */
+/* Scoped to .admin-layout to avoid affecting the public docs site */
+.admin-layout {
+  --admin-brand: #1E66F5;
+  --admin-brand-surface: #E6F0FF;
+  --admin-ink: #111827;
+  --admin-muted: #6b7280;
+  --admin-border: #e5e7eb;
+  --admin-bg: #ffffff;
+  --admin-shadow: 0 12px 24px rgba(0,0,0,0.06);
+  --admin-radius: 12px;
+}
+
+/* Header: subtle glass, sticky, light border */
+.admin-layout .admin-header {
+  background: rgba(255,255,255,0.8);
+  -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border-bottom: 1px solid rgba(229,231,235,0.8);
+}
+
+/* Sidebar nav: pill active state, smooth hover */
+.admin-layout .admin-nav { padding: 16px 8px; }
+.admin-layout .admin-nav-item {
+  border-radius: 8px;
+  transition: all 0.15s ease;
+  margin: 2px 8px;
+}
+.admin-layout .admin-nav-item:hover { background: #f9fafb; color: #1a1a1a; }
+.admin-layout .admin-nav-item.active {
+  background: var(--admin-brand-surface) !important;
+  color: var(--admin-brand) !important;
+  border-left-color: transparent !important;
+  font-weight: 700;
+}
+
+/* Cards/panels unify: soft borders and light elevation */
+.admin-layout .dashboard-section,
+.admin-layout .manager-content,
+.admin-layout .editor-container,
+.admin-layout .nav-manager-form {
+  border: 1.5px solid var(--admin-border);
+  border-radius: var(--admin-radius);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+}
+
+/* Buttons */
+.admin-layout .btn { border-radius: 10px; transition: all 0.15s ease; }
+.admin-layout .btn-primary { background: #000000; color: #ffffff; border-radius: 9999px; }
+.admin-layout .btn-primary:hover:not(:disabled) { background: #111827; }
+.admin-layout .btn-secondary { background: #ffffff; color: #374151; border: 1.5px solid var(--admin-border); }
+.admin-layout .btn-secondary:hover { background: #f9fafb; }
+.admin-layout .btn-danger { background: #fee2e2; color: #dc2626; }
+
+/* Icon action buttons */
+.admin-layout .action-btn { border: 1.5px solid var(--admin-border); border-radius: 8px; transition: all 0.15s ease; }
+.admin-layout .action-btn:hover { background: #f9fafb; }
+
+/* Focus-visible ring (accessibility) */
+.admin-layout .btn:focus-visible,
+.admin-layout .action-btn:focus-visible,
+.admin-layout .form-input:focus-visible,
+.admin-layout .textarea-input:focus-visible,
+.admin-layout select.form-input:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(30,102,245,0.15);
+  border-color: var(--admin-brand);
+}
+
+/* Inputs unify with docs focus style */
+.admin-layout .form-input:focus,
+.admin-layout .textarea-input:focus,
+.admin-layout select.form-input:focus {
+  border-color: var(--admin-brand);
+  box-shadow: 0 0 0 3px rgba(30,102,245,0.12);
+}
+
+/* Tables: sticky header, subtle separators, row hover */
+.admin-layout .manager-content { overflow: hidden; }
+.admin-layout .manager-content .table-header {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  background: #ffffff;
+  border-bottom: 1.5px solid var(--admin-border);
+}
+.admin-layout .table-row:hover { background: #f9fafb; }
+.admin-layout .table-cell { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Status chips, toggles alignment */
+.admin-layout .status-badge { border-radius: 9999px; padding: 6px 10px; font-weight: 600; }
+.admin-layout .status-toggle { border-radius: 9999px; }
+
+/* Editor tags and helpers */
+.admin-layout .block-type-label { color: #6b7280; }
+.admin-layout .editor-section { border-radius: 10px; }
+
+/* Search / filters bar styling (if text inputs are present) */
+.admin-layout .manager-controls .search-container .form-input,
+.admin-layout .manager-controls .search-container input[type="search"] {
+  background: transparent;
+  border: 1.5px solid var(--admin-border);
+  border-radius: 14px;
+}
+
+/* Responsive paddings */
+@media (max-width: 640px) {
+  .admin-layout .admin-main { padding: 24px 16px; }
+}
+
+/* Small micro-interactions */
+.admin-layout .btn:active { transform: translateY(1px); }
+.admin-layout .action-btn:active { transform: translateY(1px); }
+
   color: #1a1a1a !important;
   border-right: 1px solid #e5e7eb !important;
 }
