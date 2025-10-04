@@ -26,7 +26,7 @@ const highlight = (text = "", query = "") => {
   );
 };
 
-const SearchOverlay = ({ isOpen, onClose, onNavigate }) => {
+const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
   const [query, setQuery] = useState("");
   const [results, setResults] = useState([]);
   const [loading, setLoading] = useState(false);
