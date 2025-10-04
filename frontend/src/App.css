@@ -56,7 +56,7 @@ body {
   .docs-header { gap: 8px; }
   .mobile-left { display: flex; align-items: center; gap: 8px; }
   .mobile-nav-toggle { display: inline-flex; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; color: #6b7280; }
-  .header-actions { display: none; }
+  .header-actions { display: inline-flex; align-items: center; gap: 8px; }
   .docs-header .search-input { padding-right: 44px; }
 }
 
