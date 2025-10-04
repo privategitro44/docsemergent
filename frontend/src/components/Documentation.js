@@ -542,7 +542,9 @@ const Documentation = () => {
               </div>
             </div>
             <div className="social-links" id="social-links">
-              {/* TODO: fetch from /api/social-links and render icons */}
+              {socialLinks.map((l) => (
+                <a key={l.id} href={l.url} target="_blank" rel="noopener noreferrer">{l.label}</a>
+              ))}
             </div>
             <div className="prev-next">
               {(() => {
