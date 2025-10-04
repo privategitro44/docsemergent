@@ -622,14 +622,6 @@ const Documentation = () => {
         </aside>
       )}
 
-              <ListBulletIcon width={18} height={18} />
-              On this page
-            </button>
-          </div>
-          <TableOfContents content={currentArticle.content} />
-        </aside>
-      )}
-
       {/* Mobile TOC drawer */}
       {currentArticle && (
         <div className={`mobile-toc-drawer ${mobileTocOpen ? 'open' : ''}`} aria-hidden={!mobileTocOpen}>
