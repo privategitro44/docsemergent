@@ -5,8 +5,6 @@ import { MagnifyingGlassIcon, XMarkIcon, ChevronRightIcon } from "@heroicons/rea
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const PAGE_SIZE = 10; // user-approved page size
-
 // Escape regex special characters in query
 const escapeRegExp = (str = "") => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
