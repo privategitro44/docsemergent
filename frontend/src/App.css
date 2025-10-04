@@ -608,7 +608,7 @@ body {
   background: transparent;
 }
 
-/* Subtle left vertical line and top connector for active item */
+/* Active left border becomes blue, no horizontal connector */
 .toc-link.active::before {
   content: "";
   position: absolute;
@@ -616,18 +616,11 @@ body {
   top: 8px; /* aligns with text padding top */
   bottom: 8px;
   width: 2px;
-  background: #e5e7eb; /* subtle grey */
+  background: #1E66F5; /* active blue, same width as grey */
 }
 
-.toc-link.active::after {
-  content: "";
-  position: absolute;
-  left: -1px;
-  top: 0;
-  height: 2px;
-  width: 12px; /* short horizontal connector */
-  background: #e5e7eb;
-}
+/* Remove top horizontal line */
+.toc-link.active::after { display: none; content: none; }
 
 .toc-link:not(.active) { color: #6B7280; }
 
