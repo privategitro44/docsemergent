@@ -408,8 +408,6 @@ const Documentation = () => {
             placeholder="Search..."
             className="search-input"
             onFocus={() => setShowOverlay(true)}
-        {/* Mobile search icon moved into supporting header */}
-
             onClick={() => setShowOverlay(true)}
             readOnly
             data-testid="search-input"
