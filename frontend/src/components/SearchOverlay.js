@@ -126,39 +126,41 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
   return (
     <div className="search-overlay-backdrop" role="dialog" aria-modal="true">
       <div className="search-overlay-container" ref={containerRef}>
-        <div className="search-overlay-input-wrap">
-          <MagnifyingGlassIcon className="search-overlay-icon" width={18} height={18} />
-          <input
-            ref={inputRef}
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            placeholder="Search..."
-            className="search-overlay-input"
-          />
-          <div className="search-overlay-esc">ESC</div>
-          <button className="search-overlay-close" onClick={onClose} aria-label="Close search">
-            <XMarkIcon width={18} height={18} />
-          </button>
-        </div>
-
-        <div className="search-overlay-results embedded" data-testid="search-overlay-results" ref={resultsRef}>
-          {loading && <div className="search-overlay-loading">Searching...</div>}
-          {!loading && query.trim().length >= 2 && results.length === 0 && (
-            <div className="search-overlay-empty">No results found</div>
-          )}
-          {!loading && results.map((r) => (
-            <button key={r.id} className="search-overlay-result hierarchy" onClick={() => handleSelect(r)}>
-              <div className="result-row">
-                {r.breadcrumb && (
-                  <div className="result-crumbs" aria-hidden="true">{r.breadcrumb}</div>
-                )}
-                <div className="result-title">{highlight(r.title || "", query)}</div>
-                {r.category && <div className="result-meta">{r.category}</div>}
-                {r.snippet && <div className="result-snippet">{highlight(stripHtml(r.snippet || ""), query)}</div>}
-              </div>
-              <ChevronRightIcon className="result-chevron-svg" width={16} height={16} aria-hidden="true" />
+        <div className="search-overlay-card">
+          <div className="search-overlay-input-wrap">
+            <MagnifyingGlassIcon className="search-overlay-icon" width={18} height={18} />
+            <input
+              ref={inputRef}
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search..."
+              className="search-overlay-input"
+            />
+            <div className="search-overlay-esc">ESC</div>
+            <button className="search-overlay-close" onClick={onClose} aria-label="Close search">
+              <XMarkIcon width={18} height={18} />
             </button>
-          ))}
+          </div>
+
+          <div className="search-overlay-results inside" data-testid="search-overlay-results" ref={resultsRef}>
+            {loading && <div className="search-overlay-loading">Searching...</div>}
+            {!loading && query.trim().length >= 2 && results.length === 0 && (
+              <div className="search-overlay-empty">No results found</div>
+            )}
+            {!loading && results.map((r) => (
+              <button key={r.id} className="search-overlay-result hierarchy" onClick={() => handleSelect(r)}>
+                <div className="result-row">
+                  {r.breadcrumb && (
+                    <div className="result-crumbs" aria-hidden="true">{r.breadcrumb}</div>
+                  )}
+                  <div className="result-title one-line">{highlight(r.title || "", query)}</div>
+                  {r.category && <div className="result-meta one-line">{r.category}</div>}
+                  {r.snippet && <div className="result-snippet one-line">{highlight(stripHtml(r.snippet || ""), query)}</div>}
+                </div>
+                <ChevronRightIcon className="result-chevron-svg" width={24} height={24} aria-hidden="true" />
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>
