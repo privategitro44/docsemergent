@@ -49,6 +49,11 @@ body {
   .docs-header { padding: 8px 12px; }
   .docs-header .search-container { max-width: none; }
 }
+  /* On tablet/mobile, allocate a separate grid row for supporting header */
+  .docs-layout { grid-template-rows: 64px auto auto; }
+  .supporting-header { grid-row: 2; }
+  .docs-main { grid-row: 3; }
+
 
 @media (max-width: 640px) {
   .docs-header { gap: 8px; }
