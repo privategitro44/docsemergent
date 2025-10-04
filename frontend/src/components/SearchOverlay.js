@@ -8,6 +8,9 @@ const API = `${BACKEND_URL}/api`;
 // Escape regex special characters in query
 const escapeRegExp = (str = "") => str.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
+// Strip HTML tags for clean snippets
+const stripHtml = (str = "") => str.replace(/<[^>]*>/g, " ").replace(/\s+/g, " ").trim();
+
 // Highlight helper that returns React nodes (no dangerouslySetInnerHTML)
 const highlight = (text = "", query = "") => {
   if (!query) return text;
