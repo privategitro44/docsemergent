@@ -224,7 +224,8 @@ body {
 }
 
 .nav-item.sub-item {
-  font-size: 13px;
+  font-size: 14px; /* updated per spec */
+  line-height: 20px; /* updated per spec */
   padding: 6px 12px;
 }
 
