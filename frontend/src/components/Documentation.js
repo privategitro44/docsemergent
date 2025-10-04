@@ -426,6 +426,9 @@ const Documentation = () => {
         </div>
 
         <div className="header-actions">
+          <button className="icon-button mobile-only" aria-label="Open search" onClick={() => setShowOverlay(true)}>
+            <MagnifyingGlassIcon width={18} height={18} />
+          </button>
           <a
             href="https://app.emergent.sh/landing"
             target="_blank"
