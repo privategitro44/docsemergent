@@ -66,12 +66,17 @@ const Documentation = () => {
   }, []);
   const supportRef = useRef(null);
   useEffect(() => {
-    // Ensure supporting header renders below main header with exact offset
-    if (supportRef.current) {
-      const header = document.querySelector('.docs-header');
-      const headerHeight = header ? header.offsetHeight : 64;
-      supportRef.current.style.top = `${headerHeight}px`;
-    }
+    // Ensure supporting header renders directly below main header with exact offset
+    const updateTop = () => {
+      if (supportRef.current) {
+        const header = document.querySelector('.docs-header');
+        const headerHeight = header ? header.offsetHeight : 64;
+        supportRef.current.style.top = `${headerHeight}px`;
+      }
+    };
+    updateTop();
+    window.addEventListener('resize', updateTop);
+    return () => window.removeEventListener('resize', updateTop);
   }, []);
 
 
