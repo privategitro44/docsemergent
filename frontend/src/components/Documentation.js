@@ -65,39 +65,25 @@ const Documentation = () => {
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
   const supportRef = useRef(null);
-  useEffect(() => {
-    // Ensure supporting header renders directly below main header with exact offset
-  useEffect(() => {
-    // Also update top offset when search overlay toggles since header height can shift
-    const updateTop = () => {
-      if (supportRef.current) {
-        const header = document.querySelector('.docs-header');
-  useEffect(() => {
+
+  // Helper to sync supporting header offset to main header height
+  const updateSupportHeaderOffset = () => {
     const header = document.querySelector('.docs-header');
-    if (header) {
-      document.documentElement.style.setProperty('--header-height', `${header.offsetHeight}px`);
-    }
-  }, [showOverlay]);
+    const headerHeight = header ? header.offsetHeight : 64;
+    // Use CSS variable so sticky top can reference it
+    document.documentElement.style.setProperty('--header-height', `${headerHeight}px`);
+  };
 
-        const headerHeight = header ? header.offsetHeight : 64;
-        supportRef.current.style.top = `${Math.max(0, headerHeight - 1)}px`;
-      }
-    };
-    updateTop();
-  }, [showOverlay]);
-
-    const updateTop = () => {
-      if (supportRef.current) {
-        const header = document.querySelector('.docs-header');
-        const headerHeight = header ? header.offsetHeight : 64;
-        // subtract 1px to visually remove any border gap
-        supportRef.current.style.top = `${Math.max(0, headerHeight - 1)}px`;
-      }
-    };
-    updateTop();
-    window.addEventListener('resize', updateTop);
-    return () => window.removeEventListener('resize', updateTop);
+  useEffect(() => {
+    updateSupportHeaderOffset();
+    window.addEventListener('resize', updateSupportHeaderOffset);
+    return () => window.removeEventListener('resize', updateSupportHeaderOffset);
   }, []);
+
+  // Recompute when overlay toggles (header height may change)
+  useEffect(() => {
+    updateSupportHeaderOffset();
+  }, [showOverlay]);
 
 
   const [loading, setLoading] = useState(true);
