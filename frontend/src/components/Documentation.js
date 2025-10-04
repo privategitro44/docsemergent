@@ -59,6 +59,7 @@ const Documentation = () => {
   const [showOverlay, setShowOverlay] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
   const [mobileTocOpen, setMobileTocOpen] = useState(false);
+  const [socialLinks, setSocialLinks] = useState([]);
 
   useEffect(() => {
     const onScroll = () => {
