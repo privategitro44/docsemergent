@@ -518,6 +518,45 @@ const Documentation = () => {
               On this page
             </button>
           </div>
+          {/* Feedback + Social + Prev/Next at bottom of content */}
+          <div className="article-footer">
+            <div className="feedback-block">
+              <div className="feedback-title">Was this page helpful?</div>
+              <div className="feedback-actions">
+                <button className="btn-feedback like" onClick={async () => { try { await axios.post(`${API}/feedback`, { slug: currentArticle.slug, type: 'like' }); } catch(e){} }}>Yes</button>
+                <button className="btn-feedback dislike" onClick={async () => { try { await axios.post(`${API}/feedback`, { slug: currentArticle.slug, type: 'dislike' }); } catch(e){} }}>No</button>
+              </div>
+            </div>
+            <div className="social-links" id="social-links">
+              {/* TODO: fetch from /api/social-links and render icons */}
+            </div>
+            <div className="prev-next">
+              {(() => {
+                try {
+                  const all = organizedNavigation;
+                  let prev=null, next=null;
+                  for (const cat of all) {
+                    if (cat.type === 'category') {
+                      const items = cat.children || [];
+                      const idx = items.findIndex(i => i.type==='article' && i.target===currentArticle.slug);
+                      if (idx !== -1) { prev = items[idx-1]; next = items[idx+1]; break; }
+                    }
+                  }
+                  return (
+                    <div className="pn-grid">
+                      <div className="pn-item left">
+                        {prev ? <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${prev.target}`);}}><span className="pn-label">Previous</span><span className="pn-title">{prev.label}</span></a> : <span/>}
+                      </div>
+                      <div className="pn-item right">
+                        {next ? <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${next.target}`);}}><span className="pn-label">Next</span><span className="pn-title">{next.label}</span></a> : <span/>}
+                      </div>
+                    </div>
+                  );
+                } catch(e) { return null; }
+              })()}
+            </div>
+          </div>
+
           <TableOfContents content={currentArticle.content} />
         </aside>
       )}
