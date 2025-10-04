@@ -98,27 +98,6 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
     onClose();
   };
 
-  const totalPages = useMemo(() => Math.max(1, Math.ceil(results.length / PAGE_SIZE)), [results.length]);
-  const pagedResults = useMemo(() => {
-    const start = (page - 1) * PAGE_SIZE;
-    return results.slice(start, start + PAGE_SIZE);
-  }, [results, page]);
-
-  const goPrev = () => {
-    setPage((p) => {
-      const np = Math.max(1, p - 1);
-      if (resultsRef.current) resultsRef.current.scrollTop = 0;
-      return np;
-    });
-  };
-  const goNext = () => {
-    setPage((p) => {
-      const np = Math.min(totalPages, p + 1);
-      if (resultsRef.current) resultsRef.current.scrollTop = 0;
-      return np;
-    });
-  };
-
   if (!isOpen) return null;
 
   return (
