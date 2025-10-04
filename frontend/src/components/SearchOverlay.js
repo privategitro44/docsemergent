@@ -154,7 +154,7 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
                 )}
                 <div className="result-title">{highlight(r.title || "", query)}</div>
                 {r.category && <div className="result-meta">{r.category}</div>}
-                {r.snippet && <div className="result-snippet">{highlight(r.snippet || "", query)}</div>}
+                {r.snippet && <div className="result-snippet">{highlight(stripHtml(r.snippet || ""), query)}</div>}
               </div>
               <ChevronRightIcon className="result-chevron-svg" width={16} height={16} aria-hidden="true" />
             </button>
