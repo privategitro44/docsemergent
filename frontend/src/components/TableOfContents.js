@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { ListBulletIcon } from "@heroicons/react/24/outline";
 
 const TableOfContents = ({ content }) => {
   const [headings, setHeadings] = useState([]);
@@ -98,7 +99,7 @@ const TableOfContents = ({ content }) => {
 
   return (
     <div className="docs-toc" data-testid="table-of-contents">
-      <div className="toc-title">On this page</div>
+      <div className="toc-title"><ListBulletIcon className="toc-title-icon" width={16} height={16} />On this page</div>
       <ul className="toc-list toc-reset">
         {headings.map((heading) => (
           <li key={heading.id} className="toc-item">
