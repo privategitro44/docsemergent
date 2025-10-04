@@ -556,10 +556,20 @@ const Documentation = () => {
                     return (
                       <div className="pn-grid">
                         <div className="pn-item left">
-                          {prev ? <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${prev.target}`);}}><span className="pn-label">Previous</span><span className="pn-title">{prev.label}</span></a> : <span/>}
+                          {prev ? (
+                            <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${prev.target}`);}} className="pn-link">
+                              <ChevronLeftIcon className="pn-arrow" width={18} height={18} aria-hidden="true" />
+                              <span className="pn-title">{prev.label}</span>
+                            </a>
+                          ) : <span/>}
                         </div>
                         <div className="pn-item right">
-                          {next ? <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${next.target}`);}}><span className="pn-label">Next</span><span className="pn-title">{next.label}</span></a> : <span/>}
+                          {next ? (
+                            <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${next.target}`);}} className="pn-link pn-next">
+                              <span className="pn-title">{next.label}</span>
+                              <ChevronRightIcon className="pn-arrow" width={18} height={18} aria-hidden="true" />
+                            </a>
+                          ) : <span/>}
                         </div>
                       </div>
                     );
