@@ -67,6 +67,18 @@ const Documentation = () => {
   const supportRef = useRef(null);
   useEffect(() => {
     // Ensure supporting header renders directly below main header with exact offset
+  useEffect(() => {
+    // Also update top offset when search overlay toggles since header height can shift
+    const updateTop = () => {
+      if (supportRef.current) {
+        const header = document.querySelector('.docs-header');
+        const headerHeight = header ? header.offsetHeight : 64;
+        supportRef.current.style.top = `${Math.max(0, headerHeight - 1)}px`;
+      }
+    };
+    updateTop();
+  }, [showOverlay]);
+
     const updateTop = () => {
       if (supportRef.current) {
         const header = document.querySelector('.docs-header');
