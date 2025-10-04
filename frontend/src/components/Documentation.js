@@ -56,6 +56,8 @@ const Documentation = () => {
   const [currentArticle, setCurrentArticle] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileTocOpen, setMobileTocOpen] = useState(false);
 
   useEffect(() => {
     fetchNavigation();
