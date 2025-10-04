@@ -316,7 +316,7 @@ body {
 /* Tablet/Desktop retain 40px padding; override for mobile */
 @media (max-width: 640px) {
   .docs-main { padding: 24px 16px; }
-  .docs-content { padding: 0; }
+  .docs-content { padding: 0 16px !important; }
 }
 
 .docs-content {
