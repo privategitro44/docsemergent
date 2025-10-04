@@ -390,7 +390,7 @@ const Documentation = () => {
           </a>
         </div>
         
-        <div className="search-container">
+        <div className="search-container desktop-only">
           <MagnifyingGlassIcon className="search-icon" width={16} height={16} />
           <input
             type="text"
@@ -405,6 +405,9 @@ const Documentation = () => {
         </div>
 
         <div className="header-actions">
+          <button className="icon-button mobile-only" aria-label="Open search" onClick={() => setShowOverlay(true)}>
+            <MagnifyingGlassIcon width={18} height={18} />
+          </button>
           <a
             href="https://app.emergent.sh/landing"
             target="_blank"
@@ -412,6 +415,10 @@ const Documentation = () => {
             className="cta-try"
           >
             Try Emergent
+          </a>
+        </div>
+      </header>
+
       {/* Mobile slide-over nav */}
       <div className={`mobile-drawer ${mobileNavOpen ? 'open' : ''}`} aria-hidden={!mobileNavOpen}>
         <div className="mobile-drawer-header">
@@ -425,9 +432,6 @@ const Documentation = () => {
         </div>
       </div>
       <div className={`mobile-backdrop ${mobileNavOpen ? 'show' : ''}`} onClick={() => setMobileNavOpen(false)}></div>
-
-          </a>
-        </div>
       </header>
 
       {/* Sidebar Navigation */}
