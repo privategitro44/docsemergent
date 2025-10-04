@@ -131,7 +131,7 @@ body {
 }
 @media (min-width: 1025px) {
   /* Ensure any mobile icon button never shows on desktop */
-  .icon-button.mobile-only, .supporting-search { display: none !important; }
+  .icon-button.mobile-only, .plain-icon.mobile-only, .supporting-search { display: none !important; }
 }
 
 /* Ensure CSS variable has default */
