@@ -90,11 +90,6 @@ const Documentation = () => {
   }, [showOverlay]);
 
 
-  const [loading, setLoading] = useState(true);
-  const [showOverlay, setShowOverlay] = useState(false);
-  const [mobileNavOpen, setMobileNavOpen] = useState(false);
-  const [mobileTocOpen, setMobileTocOpen] = useState(false);
-
   useEffect(() => {
     fetchNavigation();
     fetchArticles();
