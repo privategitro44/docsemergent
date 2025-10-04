@@ -514,6 +514,55 @@ const Documentation = () => {
         <aside className="docs-toc" data-testid="table-of-contents">
           <div className="toc-mobile-header">
             <button className="toc-mobile-toggle" onClick={() => setMobileTocOpen(true)}>
+          {/* Feedback + Social + Prev/Next */}
+          <div className="article-footer">
+            <div className="feedback-block">
+              <div className="feedback-title">Was this page helpful?</div>
+              <div className="feedback-actions">
+                <button className="btn-feedback like" onClick={async () => {
+                  try { await axios.post(`${API}/feedback`, { slug: currentArticle.slug, type: 'like' }); } catch(e){}
+                }}>Yes</button>
+                <button className="btn-feedback dislike" onClick={async () => {
+                  try { await axios.post(`${API}/feedback`, { slug: currentArticle.slug, type: 'dislike' }); } catch(e){}
+                }}>No</button>
+              </div>
+            </div>
+            <div className="social-links" id="social-links">
+              {/* Will fetch from API and render icons; placeholder anchor tags for now */}
+            </div>
+            <div className="prev-next">
+              {/* Compute based on navigation order within same category */}
+              {(() => {
+                try {
+                  const all = organizedNavigation;
+                  // Flatten within same category of current article
+                  let prev=null, next=null;
+                  for (const cat of all) {
+                    if (cat.type === 'category') {
+                      const items = cat.children || [];
+                      const idx = items.findIndex(i => i.type==='article' && i.target===currentArticle.slug);
+                      if (idx !== -1) {
+                        prev = items[idx-1];
+                        next = items[idx+1];
+                        break;
+                      }
+                    }
+                  }
+                  return (
+                    <div className="pn-grid">
+                      <div className="pn-item left">
+                        {prev ? <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${prev.target}`);}}><span className="pn-label">Previous</span><span className="pn-title">{prev.label}</span></a> : <span/>}
+                      </div>
+                      <div className="pn-item right">
+                        {next ? <a href="#" onClick={(e)=>{e.preventDefault(); navigate(`/article/${next.target}`);}}><span className="pn-label">Next</span><span className="pn-title">{next.label}</span></a> : <span/>}
+                      </div>
+                    </div>
+                  );
+                } catch(e) { return null; }
+              })()}
+            </div>
+          </div>
+
               <ListBulletIcon width={18} height={18} />
               On this page
             </button>
