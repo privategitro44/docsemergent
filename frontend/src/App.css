@@ -139,6 +139,9 @@ body {
 .supporting-breadcrumb { font-size: 13px; color: #9ca3af; display: flex; align-items: center; gap: 6px; flex: 1; padding-left: 4px; }
 .crumb-cat { color: #6b7280; }
 .crumb-sep { color: #d1d5db; }
+.supporting-search { background: transparent; border: none; padding: 6px; color: #6b7280; display: inline-flex; align-items: center; justify-content: center; }
+.supporting-search:hover, .supporting-hamburger:hover { color: #374151; }
+
 .crumb-title { color: #6b7280; }
 
 .docs-header .search-input {
