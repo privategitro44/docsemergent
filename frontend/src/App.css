@@ -147,7 +147,7 @@ body {
 /* Supporting header (mobile/tablet) */
 .supporting-header { display: none; }
 @media (max-width: 1024px) {
-  .supporting-header { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 16px 12px; border-bottom: 1px solid #e5e7eb; background: #fff; position: sticky; top: var(--header-height, 64px); z-index: 999; margin: 0; width: 100%; }
+  .supporting-header { grid-column: 1 / -1; display: flex; align-items: center; justify-content: space-between; gap: 8px; height:fit-content; Padding: 8px 12px; border-bottom: 1px solid #e5e7eb; background: #fff; position: sticky; top: var(--header-height, 64px); z-index: 999; margin: 0; width: 100%; }
   .supporting-header.glass { background: rgba(255,255,255,0.6); -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px); border-bottom-color: rgba(229,231,235,0.6); }
 }
 .supporting-hamburger { background: transparent; border: none; padding: 6px; color: #6b7280; display: inline-flex; align-items: center; justify-content: center; }
