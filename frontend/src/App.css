@@ -703,6 +703,10 @@ body {
   justify-content: center;
   padding-top: 64px; /* space from top */
 }
+@media (max-width: 640px) {
+  .search-overlay-backdrop { padding-top: 24px; align-items: flex-start; }
+  .search-overlay-container { width: min(94vw, 640px); }
+}
 
 .search-overlay-container {
   width: min(646px, 90vw); /* updated per spec */
