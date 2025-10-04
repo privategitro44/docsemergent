@@ -42,7 +42,6 @@ const SearchOverlay = ({ isOpen, onClose, onNavigate, navTree = [] }) => {
       document.documentElement.classList.remove("search-overlay-open");
       setQuery("");
       setResults([]);
-      setPage(1);
     }
     return () => document.documentElement.classList.remove("search-overlay-open");
   }, [isOpen]);
