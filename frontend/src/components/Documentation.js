@@ -151,6 +151,7 @@ const Documentation = () => {
                 content={item.content}
                 title={currentArticle?.title}
                 stripDuplicateTopHeading={true}
+                transformH1ToH2={false}
               />
             );
           }
@@ -420,7 +421,7 @@ const Documentation = () => {
         <div className="docs-content" data-testid="docs-content">
           {currentArticle ? (
             <article className="article" data-testid="current-article">
-              <h1 id={(currentArticle?.title || '').toLowerCase().trim().replace(/\s+/g,'-').replace(/[^a-z0-9\-]/g,'')} data-testid="article-title">{currentArticle.title}</h1>
+              <div className="title-tag" data-testid="article-title-tag">{currentArticle.title}</div>
               <div data-testid="article-content">
                 {renderContent(currentArticle.content)}
               </div>

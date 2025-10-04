@@ -245,6 +245,14 @@ body {
   padding-bottom: 120px;
 }
 
+/* Small title tag above main heading */
+.title-tag {
+  font-size: 14px;
+  line-height: 20px;
+  color: #1E66F5; /* light brand blue used across site */
+  margin-bottom: 8px;
+}
+
 .article h1 {
   font-family: 'Brockman', 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, sans-serif;
   font-size: 30px;
