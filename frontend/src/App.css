@@ -556,6 +556,9 @@ body {
 }
 
 .toc-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   font-size: 14px;
   line-height: 20px;
   font-weight: 700;
@@ -564,6 +567,7 @@ body {
   letter-spacing: 0;
   margin-bottom: 12px;
 }
+.toc-title-icon { color: #9ca3af; }
 
 .toc-link {
   display: block;
