@@ -138,6 +138,19 @@ const Documentation = () => {
     }
   };
 
+  useEffect(() => {
+    // Load social links
+    const loadLinks = async () => {
+      try {
+        const res = await axios.get(`${API}/social-links`);
+        setSocialLinks(Array.isArray(res.data) ? res.data : []);
+      } catch (e) {
+        setSocialLinks([]);
+      }
+    };
+    loadLinks();
+  }, []);
+
   const fetchArticles = async () => {
     try {
       const response = await axios.get(`${API}/articles`);
