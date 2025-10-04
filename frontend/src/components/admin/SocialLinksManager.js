@@ -1,10 +1,7 @@
 import React, { useEffect, useMemo, useState } from "react";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
-import { DndContext, PointerSensor, closestCenter, useSensor, useSensors } from "@hello-pangea/dnd";
-import { SortableContext, arrayMove, verticalListSortingStrategy } from "@hello-pangea/dnd";
-import { useSortable } from "@hello-pangea/dnd";
-import { CSS } from "@hello-pangea/dnd";
+import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Plus, Trash2 } from "lucide-react";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -40,18 +37,11 @@ function Switch({ checked, onChange }) {
   );
 }
 
-function SortableItem({ id, item, onChange, onDelete }) {
-  const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-  };
-
+function RowCard({ item, onChange, onDelete, dragHandleProps, draggableProps, innerRef }) {
   const [local, setLocal] = useState(item);
-
   useEffect(() => setLocal(item), [item]);
 
-  // Debounced autosave for text fields
+  // Debounced autosave for label/url/icon
   useEffect(() => {
     const handle = setTimeout(() => {
       if (local.label !== item.label || local.url !== item.url || local.icon !== item.icon) {
@@ -62,9 +52,9 @@ function SortableItem({ id, item, onChange, onDelete }) {
   }, [local.label, local.url, local.icon]);
 
   return (
-    <div ref={setNodeRef} style={style} className={`sl-card ${isDragging ? 'dragging' : ''}`}> 
+    <div ref={innerRef} {...draggableProps} className="sl-card">
       <div className="sl-row">
-        <div className="sl-grip" {...attributes} {...listeners} aria-label="Drag to reorder">
+        <div className="sl-grip" {...dragHandleProps} aria-label="Drag to reorder">
           <GripHandle />
         </div>
         <div className="sl-title">
@@ -102,7 +92,6 @@ function SortableItem({ id, item, onChange, onDelete }) {
 const SocialLinksManager = ({ onLogout }) => {
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const sensors = useSensors(useSensor(PointerSensor));
 
   useEffect(() => { load(); }, []);
 
@@ -121,7 +110,7 @@ const SocialLinksManager = ({ onLogout }) => {
   }
 
   async function createNew() {
-    const payload = { label: "New Link", icon: "custom", url: "", order: (items[items.length-1]?.order || 0) + 1 };
+    const payload = { label: "New Link", icon: "custom", url: "", order: (items[items.length-1]?.order || 0) + 1, enabled: true };
     try {
       const res = await axios.post(`${API}/admin/social-links`, payload, authHeader);
       setItems(prev => [...prev, res.data].sort((a,b) => a.order - b.order));
@@ -130,7 +119,7 @@ const SocialLinksManager = ({ onLogout }) => {
 
   async function saveRow(updated) {
     try {
-      const payload = { label: updated.label, icon: updated.icon, url: updated.url, order: updated.order };
+      const payload = { label: updated.label, icon: updated.icon, url: updated.url, order: updated.order, enabled: updated.enabled };
       await axios.put(`${API}/admin/social-links/${updated.id}`, payload, authHeader);
       setItems(prev => prev.map(i => i.id === updated.id ? { ...i, ...updated } : i));
     } catch (e) { console.error('Save failed', e); }
@@ -144,17 +133,19 @@ const SocialLinksManager = ({ onLogout }) => {
     } catch (e) { console.error('Delete failed', e); }
   }
 
-  async function onDragEnd(event) {
-    const { active, over } = event;
-    if (!over || active.id === over.id) return;
-    const oldIndex = items.findIndex(i => i.id === active.id);
-    const newIndex = items.findIndex(i => i.id === over.id);
-    const newOrder = arrayMove(items, oldIndex, newIndex).map((it, idx) => ({ ...it, order: idx + 1 }));
-    setItems(newOrder);
-    // Persist order changes sequentially (best-effort)
-    for (const it of newOrder) {
+  async function onDragEnd(result) {
+    const { source, destination } = result;
+    if (!destination) return;
+    if (source.index === destination.index) return;
+    const newItems = Array.from(items);
+    const [moved] = newItems.splice(source.index, 1);
+    newItems.splice(destination.index, 0, moved);
+    const withOrder = newItems.map((it, idx) => ({ ...it, order: idx + 1 }));
+    setItems(withOrder);
+    for (const it of withOrder) {
       try {
-        await axios.put(`${API}/admin/social-links/${it.id}`, { label: it.label, icon: it.icon, url: it.url, order: it.order }, authHeader);
+        const payload = { label: it.label, icon: it.icon, url: it.url, order: it.order, enabled: it.enabled };
+        await axios.put(`${API}/admin/social-links/${it.id}`, payload, authHeader);
       } catch (e) { console.error('Order save failed for', it.id, e); }
     }
   }
@@ -173,21 +164,29 @@ const SocialLinksManager = ({ onLogout }) => {
         {loading ? (
           <div className="loading"><div className="spinner"/></div>
         ) : (
-          <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={onDragEnd}>
-            <SortableContext items={items.map(i => i.id)} strategy={verticalListSortingStrategy}>
-              <div className="sl-list">
-                {items.map((item) => (
-                  <SortableItem
-                    key={item.id}
-                    id={item.id}
-                    item={item}
-                    onChange={saveRow}
-                    onDelete={onDelete}
-                  />
-                ))}
-              </div>
-            </SortableContext>
-          </DndContext>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Droppable droppableId="social-list">
+              {(provided) => (
+                <div className="sl-list" ref={provided.innerRef} {...provided.droppableProps}>
+                  {items.map((item, idx) => (
+                    <Draggable key={item.id} draggableId={item.id} index={idx}>
+                      {(dragProvided) => (
+                        <RowCard
+                          item={item}
+                          onChange={saveRow}
+                          onDelete={onDelete}
+                          dragHandleProps={dragProvided.dragHandleProps}
+                          draggableProps={dragProvided.draggableProps}
+                          innerRef={dragProvided.innerRef}
+                        />
+                      )}
+                    </Draggable>
+                  ))}
+                  {provided.placeholder}
+                </div>
+              )}
+            </Droppable>
+          </DragDropContext>
         )}
       </div>
     </AdminLayout>
