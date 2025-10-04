@@ -605,6 +605,7 @@ body {
 .toc-link:hover {
   color: #131315; /* darker text on hover */
   background: transparent; /* no grey fill */
+  position: relative; /* ensure ::before attaches */
 }
 
 /* Keep active color on hover */
