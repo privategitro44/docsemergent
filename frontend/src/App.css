@@ -39,6 +39,7 @@ body {
   min-height: 100vh;
   height: auto;
   overflow: visible;
+}
 
 /* Responsive grid */
 @media (max-width: 1024px) {
@@ -305,6 +306,7 @@ body {
   line-height: 20px;
   color: #1E66F5; /* light brand blue used across site */
   margin-bottom: 8px;
+  font-weight: 600;
 }
 
 .article h1 {
