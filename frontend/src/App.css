@@ -39,6 +39,26 @@ body {
   min-height: 100vh;
   height: auto;
   overflow: visible;
+
+/* Responsive grid */
+@media (max-width: 1024px) {
+  .docs-layout { grid-template-columns: 0 1fr 0; }
+  .docs-sidebar { display: none; }
+  .docs-toc { display: none; }
+  .docs-main { padding: 24px 16px; }
+  .docs-content { padding: 0; }
+  .docs-header { padding: 8px 12px; }
+  .docs-header .search-container { max-width: none; }
+}
+
+@media (max-width: 640px) {
+  .docs-header { gap: 8px; }
+  .mobile-left { display: flex; align-items: center; gap: 8px; }
+  .mobile-nav-toggle { display: inline-flex; background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; color: #6b7280; }
+  .header-actions { display: none; }
+  .docs-header .search-input { padding-right: 44px; }
+}
+
 }
 
 /* Header */
