@@ -44,6 +44,7 @@ const ICON_OPTIONS = [
   { value: "github", label: "GitHub" },
   { value: "youtube", label: "YouTube" },
   { value: "discord", label: "Discord" },
+  { value: "instagram", label: "Instagram" },
   { value: "custom", label: "Custom" },
 ];
 
