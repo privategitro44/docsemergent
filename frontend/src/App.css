@@ -61,9 +61,7 @@ body {
 }
 
 
-/* Fix: ensure closing brace was present above */
-
-}
+/* Responsive helpers end */
 
 /* Header */
 .docs-header {
