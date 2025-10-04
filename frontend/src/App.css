@@ -618,15 +618,26 @@ body {
 .toc-link.active::before {
   content: "";
   position: absolute;
-  left: -1px; /* align over UL border */
-  top: 8px; /* aligns with text padding top */
-  bottom: 8px;
+  left: -2px; /* fully cover 2px UL border */
+  top: 0; /* cover full item height */
+  bottom: 0;
   width: 2px;
   background: #1E66F5; /* active blue, same width as grey */
 }
 
 /* Remove top horizontal line */
 .toc-link.active::after { display: none; content: none; }
+
+/* Inactive hover: darker grey left bar overlay and black text handled above */
+.toc-link:not(.active):hover::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: #d1d5db; /* slightly darker grey on hover */
+}
 
 .toc-link:not(.active) { color: #6B7280; }
 
