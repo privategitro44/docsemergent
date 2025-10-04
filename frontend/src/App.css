@@ -124,6 +124,10 @@ body {
   .desktop-only { display: none !important; }
   .mobile-only { display: inline-flex !important; }
 }
+@media (min-width: 1025px) {
+  /* Ensure any mobile icon button never shows on desktop */
+  .icon-button.mobile-only, .supporting-search { display: none !important; }
+}
 
 /* Header icon button */
 .icon-button { background: #f3f4f6; border: 1px solid #e5e7eb; border-radius: 8px; padding: 6px; color: #6b7280; display: inline-flex; align-items: center; justify-content: center; }
