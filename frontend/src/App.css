@@ -876,7 +876,7 @@ body {
 
 /* Replace unicode arrow with chevron svg on hover */
 .result-chevron-svg { opacity: 0; color: #9ca3af; transition: opacity 0.15s ease, transform 0.15s ease, color 0.15s ease; }
-.search-overlay-result:hover .result-chevron-svg { opacity: 1; transform: translateX(2px); color: #1E66F5; }
+.search-overlay-result:hover .result-chevron-svg { opacity: 1; transform: translateX(2px); color: #9ca3af; }
 
 /* Highlight for matched text inside results */
 mark.search-highlight {
