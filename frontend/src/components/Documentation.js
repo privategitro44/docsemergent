@@ -55,6 +55,10 @@ const Documentation = () => {
   const [articles, setArticles] = useState([]);
   const [currentArticle, setCurrentArticle] = useState(null);
   const [scrolled, setScrolled] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [showOverlay, setShowOverlay] = useState(false);
+  const [mobileNavOpen, setMobileNavOpen] = useState(false);
+  const [mobileTocOpen, setMobileTocOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
