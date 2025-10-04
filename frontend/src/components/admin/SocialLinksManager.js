@@ -4,6 +4,12 @@ import AdminLayout from "./AdminLayout";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Plus, Trash2, Pencil, Link as LinkIcon, Youtube, Github, Linkedin, Discord } from "lucide-react";
 
+// Safely render lucide icons; fall back to LinkIcon if missing in installed version
+const SafeIcon = ({ Comp, size = 16 }) => {
+  const C = Comp ? Comp : LinkIcon;
+  return <C size={size} />;
+};
+
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
