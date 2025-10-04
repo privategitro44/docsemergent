@@ -18,8 +18,8 @@ const ICON_OPTIONS = [
 
 function GripHandle() {
   return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden>
-      <path d="M8 6h.01M8 10h.01M8 14h.01M8 18h.01M12 6h.01M12 10h.01M12 14h.01M12 18h.01" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/>
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" aria-hidden>
+      <path d="M7 6h.01M11 6h.01M7 10h.01M11 10h.01M7 14h.01M11 14h.01M7 18h.01M11 18h.01" stroke="#9ca3af" strokeWidth="2" strokeLinecap="round"/>
     </svg>
   );
 }
