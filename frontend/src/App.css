@@ -60,6 +60,9 @@ body {
   .docs-header .search-input { padding-right: 44px; }
 }
 
+
+/* Fix: ensure closing brace was present above */
+
 }
 
 /* Header */
