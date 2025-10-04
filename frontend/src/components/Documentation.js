@@ -416,6 +416,24 @@ const Documentation = () => {
           >
             Try Emergent
           </a>
+      {/* Mobile/Tablet supporting header with breadcrumb and hamburger */}
+      <div className="supporting-header mobile-only">
+        <button className="supporting-hamburger" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}>
+          <Bars3Icon width={20} height={20} />
+        </button>
+        <div className="supporting-breadcrumb">
+          {currentArticle ? (
+            <>
+              <span className="crumb-cat">{(currentArticle.category || '').charAt(0).toUpperCase() + (currentArticle.category || '').slice(1).toLowerCase()}</span>
+              <span className="crumb-sep">›</span>
+              <span className="crumb-title">{currentArticle.title}</span>
+            </>
+          ) : (
+            <span>&nbsp;</span>
+          )}
+        </div>
+      </div>
+
         </div>
       </header>
 
