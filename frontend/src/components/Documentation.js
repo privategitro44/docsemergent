@@ -384,9 +384,14 @@ const Documentation = () => {
     <div className="docs-layout" data-testid="docs-layout">
       {/* Header */}
       <header className="docs-header" data-testid="docs-header">
-        <a href="/" className="logo" data-testid="docs-logo" aria-label="Emergent">
-          <img src={EmergentLogo} alt="Emergent" style={{ height: 24 }} />
-        </a>
+        <div className="mobile-left">
+          <button className="mobile-nav-toggle" aria-label="Open navigation" onClick={() => setMobileNavOpen(true)}>
+            <Bars3Icon width={22} height={22} />
+          </button>
+          <a href="/" className="logo" data-testid="docs-logo" aria-label="Emergent">
+            <img src={EmergentLogo} alt="Emergent" style={{ height: 24 }} />
+          </a>
+        </div>
         
         <div className="search-container">
           <MagnifyingGlassIcon className="search-icon" width={16} height={16} />
