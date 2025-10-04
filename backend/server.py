@@ -30,7 +30,9 @@ uploads_dir.mkdir(exist_ok=True)
 
 # Security
 security = HTTPBearer()
-JWT_SECRET = "emergent-docs-secret-key-2024"
+JWT_SECRET = os.environ.get("JWT_SECRET")
+if not JWT_SECRET:
+    raise RuntimeError("JWT_SECRET environment variable is required")
 ADMIN_USERNAME = "admin"
 ADMIN_PASSWORD_HASH = hashlib.sha256("admin123".encode()).hexdigest()
 
