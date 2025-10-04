@@ -5,6 +5,7 @@ import AdminDashboard from "./AdminDashboard";
 import ArticleManager from "./ArticleManager";
 import NavigationManager from "./NavigationManager";
 import ArticleEditor from "./ArticleEditor";
+import SocialLinksManager from "./SocialLinksManager";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -68,8 +69,7 @@ const AdminPanel = () => {
         <Route path="/articles" element={<ArticleManager onLogout={handleLogout} />} />
         <Route path="/articles/new" element={<ArticleEditor onLogout={handleLogout} />} />
         <Route path="/articles/edit/:id" element={<ArticleEditor onLogout={handleLogout} />} />
-        <Route path="/settings/social" element={<div style={{padding:24}}>Social Links manager (coming soon)</div>} />
-
+        <Route path="/social-links" element={<SocialLinksManager onLogout={handleLogout} />} />
         <Route path="/navigation" element={<NavigationManager onLogout={handleLogout} />} />
         <Route path="*" element={<Navigate to="/admin/dashboard" replace />} />
       </Routes>

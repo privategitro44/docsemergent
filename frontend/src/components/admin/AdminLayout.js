@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "react-router-dom";
-import { Settings, FileText, Navigation, LogOut, Home } from "lucide-react";
+import { Settings, FileText, Navigation, LogOut, Home, Share2 } from "lucide-react";
 
 const AdminLayout = ({ children, onLogout }) => {
   const location = useLocation();
@@ -20,6 +20,11 @@ const AdminLayout = ({ children, onLogout }) => {
       path: "/admin/navigation",
       label: "Navigation",
       icon: <Navigation size={18} />
+    },
+    {
+      path: "/admin/social-links",
+      label: "Social Links",
+      icon: <Share2 size={18} />
     }
   ];
 
