@@ -54,6 +54,17 @@ const Documentation = () => {
   const [navigation, setNavigation] = useState([]);
   const [articles, setArticles] = useState([]);
   const [currentArticle, setCurrentArticle] = useState(null);
+  const [scrolled, setScrolled] = useState(false);
+
+  useEffect(() => {
+    const onScroll = () => {
+      const y = window.scrollY || document.documentElement.scrollTop;
+      setScrolled(y > 4);
+    };
+    window.addEventListener('scroll', onScroll);
+    return () => window.removeEventListener('scroll', onScroll);
+  }, []);
+
   const [loading, setLoading] = useState(true);
   const [showOverlay, setShowOverlay] = useState(false);
   const [mobileNavOpen, setMobileNavOpen] = useState(false);
