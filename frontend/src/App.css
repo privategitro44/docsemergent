@@ -209,6 +209,11 @@ body {
   cursor: default;
 }
 
+.nav-item.category:hover {
+  background: transparent; /* keep clean */
+  color: #131315; /* hover state: darker text */
+}
+
 /* First category should not have top margin */
 .sidebar-section > div:first-child .nav-item.category { margin-top: 0; }
 
