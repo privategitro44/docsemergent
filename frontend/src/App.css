@@ -813,13 +813,14 @@ body {
 }
 
 .search-overlay-results {
-  margin-top: 8px;
+  margin-top: 0; /* remove gap */
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  border-radius: 12px;
+  border-top: none; /* attach to input without a line */
+  border-radius: 0 0 12px 12px; /* rounded bottom corners */
   max-height: 56vh;
   overflow: auto;
-  box-shadow: 0 14px 36px rgba(0,0,0,0.18);
+  box-shadow: 0 14px 36px rgba(0, 0, 0, 0.18);
   transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
