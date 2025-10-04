@@ -23,7 +23,9 @@ import {
   DocumentTextIcon,
   Bars3Icon,
   XMarkIcon,
-  ListBulletIcon
+  ListBulletIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon
 } from "@heroicons/react/24/outline";
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
