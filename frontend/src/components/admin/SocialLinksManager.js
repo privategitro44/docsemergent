@@ -91,7 +91,7 @@ function RowCard({ item, onChange, onDelete, dragHandleProps, draggableProps, in
         <div className="sl-title">
           <div className="sl-title-left">
             <div className={`sl-brand-icon ${local.icon}`} aria-hidden>
-              {local.icon === 'youtube' ? <SafeIcon Comp={Youtube} size={16}/> : local.icon === 'github' ? <SafeIcon Comp={Github} size={16}/> : local.icon === 'linkedin' ? <SafeIcon Comp={Linkedin} size={16}/> : local.icon === 'discord' ? <SafeIcon Comp={Discord} size={16}/> : <LinkIcon size={16}/>}
+              <BrandIcon name={local.icon} />
             </div>
             <input
               className="sl-label-input"
