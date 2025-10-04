@@ -456,6 +456,10 @@ async def startup_event():
     article_count = await db.articles.count_documents({})
     if article_count == 0:
         await create_sample_data()
+    # Ensure default social links exist for visibility in public footer
+    social_count = await db.social_links.count_documents({})
+    if social_count == 0:
+        await create_default_social_links()
     logger.info("Emergent Documentation System started successfully")
 
 @app.on_event("shutdown")
@@ -563,3 +567,15 @@ async def create_sample_data():
     await db.articles.insert_many(sample_articles)
     await db.navigation.insert_many(sample_navigation)
     logger.info("Sample data created successfully")
+
+async def create_default_social_links():
+    """Seed a basic set of social links if none exist so public footer is not empty."""
+    defaults = [
+        {"label": "X", "icon": "x", "url": "https://x.com/emergent", "order": 1},
+        {"label": "LinkedIn", "icon": "linkedin", "url": "https://www.linkedin.com/company/emergent", "order": 2},
+        {"label": "GitHub", "icon": "github", "url": "https://github.com/", "order": 3},
+        {"label": "YouTube", "icon": "youtube", "url": "https://www.youtube.com/", "order": 4},
+        {"label": "Discord", "icon": "discord", "url": "https://discord.com/", "order": 5},
+    ]
+    await db.social_links.insert_many([{**d, "id": str(uuid.uuid4())} for d in defaults])
+    logger.info("Default social links created")

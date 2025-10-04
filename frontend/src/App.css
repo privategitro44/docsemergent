@@ -945,6 +945,9 @@ mark.search-highlight {
 .btn-feedback { padding: 8px 12px; border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; cursor: pointer; font-size: 14px; }
 .btn-feedback:hover { background: #f9fafb; }
 .social-links { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+.social-link { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #e5e7eb; border-radius: 9999px; color: #374151; text-decoration: none; background: #fff; }
+.social-link:hover { background: #f9fafb; color: #111827; }
+.brand-icon { width: 16px; height: 16px; display: block; }
 .prev-next { margin-top: 8px; }
 .pn-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 .pn-item a { display: flex; flex-direction: column; gap: 4px; text-decoration: none; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; }
@@ -1272,7 +1275,7 @@ mark.search-highlight {
   margin-bottom: 32px;
 }
 
-.dashboard-title {
+dashboard-title {
   font-size: 32px;
   font-weight: 700;
   color: #1a1a1a;
@@ -1374,7 +1377,7 @@ mark.search-highlight {
 
 .article-item {
   display: flex;
-  justify-content: space-between;
+  justify-content: space_between;
   align-items: center;
   padding: 16px;
   border: 1px solid #e5e7eb;
@@ -1483,7 +1486,7 @@ mark.search-highlight {
 .btn-cancel:hover { background: #d1d5db; }
 
 .nav-list { display: flex; flex-direction: column; gap: 8px; }
-.nav-item-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; display: flex; justify-content: space-between; align-items: center; transition: all 0.2s; }
+.nav-item-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; display: flex; justify_content: space-between; align-items: center; transition: all 0.2s; }
 .nav-item-card:hover { border-color: #d1d5db; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); }
 .nav-item-info { flex: 1; }
 .nav-item-label { font-size: 15px; font-weight: 600; color: #1a1a1a; margin-bottom: 4px; }
@@ -1499,15 +1502,15 @@ mark.search-highlight {
 .section-label { font-size: 16px; font-weight: 600; color: #1a1a1a; margin-bottom: 16px; display: block; }
 .content-blocks { display: flex; flex-direction: column; gap: 16px; }
 .content-block { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 8px; padding: 16px; }
-.content-block-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.content-block-header { display: flex; justify_content: space-between; align-items: center; margin-bottom: 12px; }
 .block-type-label { font-size: 13px; font-weight: 600; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; }
-.remove-block-btn { padding: 6px; background: none; border: none; color: #ef4444; cursor: pointer; display: flex; align-items: center; justify-content: center; border-radius: 4px; transition: all 0.2s; }
+.remove-block-btn { padding: 6px; background: none; border: none; color: #ef4444; cursor: pointer; display: flex; align-items: center; justify_content: center; border-radius: 4px; transition: all 0.2s; }
 .remove-block-btn:hover { background: #fee2e2; }
 .add-block-buttons { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 12px; }
 .add-block-btn { padding: 8px 16px; background: #ffffff; border: 1px solid #d1d5db; border-radius: 6px; color: #4b5563; font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
 .add-block-btn:hover { background: #f9fafb; border-color: #667eea; color: #667eea; }
 
-.editor-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid #e5e7eb; margin-top: 32px; }
+.editor-footer { display: flex; justify_content: space-between; align-items: center; padding-top: 24px; border-top: 1px solid #e5e7eb; margin-top: 32px; }
 .publish-toggle { display: flex; align-items: center; gap: 12px; }
 .toggle-switch { position: relative; width: 48px; height: 24px; background: #d1d5db; border-radius: 12px; cursor: pointer; transition: all 0.3s; }
 .toggle-switch.active { background: #10b981; }
@@ -1530,7 +1533,7 @@ input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:
 .keyword-remove { cursor: pointer; color: #3b82f6; font-weight: 700; }
 .keyword-remove:hover { color: #1d4ed8; }
 
-.info-banner { display: flex; gap: 12px; padding: 16px 20px; background: #eff6ff; border: 1px solid #bfdbfe; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 24px 48px; align-items: flex-start; }
+.info-banner { display: flex; gap: 12px; padding: 16px 20px; background: #eff6ff; border: 1px solid #bbf7d0; border-left: 4px solid #3b82f6; border-radius: 8px; margin: 24px 48px; align-items: flex-start; }
 .info-banner.success-banner { background: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #10b981; }
 .info-banner.success-banner .info-content { color: #065f46; }
 .info-banner.success-banner .info-content strong { color: #064e3b; }
@@ -1541,7 +1544,7 @@ input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:
 /* Simple HTML editor styles */
 .html-editor { background: #ffffff; border: 1px solid #d1d5db; border-radius: 8px; overflow: hidden; }
 .editor-toolbar { background: #f9fafb; border-bottom: 1px solid #d1d5db; padding: 8px; display: flex; gap: 4px; flex-wrap: wrap; }
-.toolbar-btn { padding: 6px 12px; background: #ffffff; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; color: #4b5563; transition: all 0.2s; display: flex; align-items: center; justify-content: center; min-width: 32px; }
+.toolbar-btn { padding: 6px 12px; background: #ffffff; border: 1px solid #d1d5db; border-radius: 4px; cursor: pointer; font-size: 13px; font-weight: 600; color: #4b5563; transition: all 0.2s; display: flex; align-items: center; justify_content: center; min-width: 32px; }
 .toolbar-btn:hover { background: #f3f4f6; border-color: #9ca3af; color: #1a1a1a; }
 .toolbar-btn:active { background: #e5e7eb; }
 .html-textarea { width: 100%; padding: 16px; font-size: 14px; font-family: 'Monaco', 'Courier New', monospace; border: none; resize: vertical; min-height: 300px; outline: none; line-height: 1.6; }
