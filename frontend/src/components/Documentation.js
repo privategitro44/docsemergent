@@ -430,6 +430,10 @@ const Documentation = () => {
           ) : (
             <span>&nbsp;</span>
           )}
+        <button className="supporting-search mobile-only" aria-label="Open search" onClick={() => setShowOverlay(true)}>
+          <MagnifyingGlassIcon width={18} height={18} />
+        </button>
+
         </div>
       </div>
 
