@@ -987,10 +987,13 @@ mark.search-highlight {
 @media (max-width: 640px) { .integrations.two .integrations-grid, .integrations.three .integrations-grid { grid-template-columns: 1fr; } }
 /* Vertical stack inside card */
 .integration-card { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; border: 1.5px solid #e5e7eb; border-radius: 14px; padding: 20px 24px; text-decoration: none; background: #fff; color: #1a1a1a; transition: border-color .15s ease; }
-/* Adjust padding for 3 columns - slightly tighter */
+/* Preserve bottom border by only changing border-color on hover (not border shorthand) */
 .integrations.three .integration-card { padding: 16px 18px; }
-/* Hover behavior: no shadow, turn border blue */
+/* Hover behavior: no shadow, turn border blue (all sides) while maintaining width */
 .integration-card:hover { box-shadow: none; border-color: #1E66F5; }
+/* Explicitly ensure bottom border is visible even when elements align flush */
+.integration-card { border-bottom-color: #e5e7eb; }
+.integration-card:hover { border-bottom-color: #1E66F5; }
 .integration-icon { width: 24px; height: 24px; color: #6b7280; }
 .integration-icon-wrap { width: 36px; height: 36px; border: 1px solid #e5e7eb; border-radius: 10px; display: inline-flex; align-items: center; justify-content: center; color: #6b7280; background: #fff; }
 .integration-name-row { display: flex; align-items: center; gap: 8px; }
