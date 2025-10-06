@@ -968,9 +968,9 @@ mark.search-highlight {
 .steps > h2 { margin-top: 48px; margin-bottom: 16px; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; }
 .steps-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
 /* Timeline-style vertical divider that starts below the number (not next to content) */
-.step-item { position: relative; display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; }
-/* vertical line anchored under the number; extends into the gap to next step */
-.step-item::before { content: ""; position: absolute; left: 14px; top: 28px; bottom: -16px; width: 1px; background: #e5e7eb; }
+.step-item { --step-num-size: 28px; --step-divider-gap: 8px; position: relative; display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; }
+/* vertical line anchored under the number; 8px gap from the number */
+.step-item::before { content: ""; position: absolute; left: calc(var(--step-num-size) + var(--step-divider-gap)); top: var(--step-num-size); bottom: -16px; width: 1px; background: #e5e7eb; }
 .step-item:last-child::before { display: none; }
 .step-number { width: 28px; height: 28px; border-radius: 9999px; background: #E6F0FF; color: #1E66F5; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
 /* Content no longer needs a left border; spacing handled by gap */
