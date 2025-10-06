@@ -397,7 +397,7 @@ async def submit_feedback(req: FeedbackRequest):
     if req.type not in ("like", "dislike"):
         raise HTTPException(status_code=400, detail="Invalid feedback type")
     inc_field = "likes" if req.type == "like" else "dislikes"
-    result = await db.articles.find_one_and_update({"slug": req.slug}, {"$inc": {inc_field: 1}}, return_document=True)
+    await db.articles.find_one_and_update({"slug": req.slug}, {"$inc": {inc_field: 1}}, return_document=True)
     # If article missing (shouldn't happen), return error
     updated = await db.articles.find_one({"slug": req.slug})
     if not updated:
