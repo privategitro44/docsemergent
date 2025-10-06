@@ -94,6 +94,7 @@ const ArticleContent = ({ content, title, stripDuplicateTopHeading = true, trans
   if (!content) return null;
 
   return <div ref={contentRef} dangerouslySetInnerHTML={{ __html: processedHtml }} />;
+};
 
 // New components for structured blocks: Steps and Integrations
 export const StepsBlock = ({ block }) => {
@@ -164,8 +165,6 @@ export const IntegrationsBlock = ({ block }) => {
       </div>
     </section>
   );
-};
-
 };
 
 export default ArticleContent;
