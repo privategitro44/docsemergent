@@ -75,15 +75,20 @@ const TableOfContents = ({ content }) => {
       const fallbackUpdate = () => {
         try {
           const offset = getTopOffset();
-          let current = firstId || "";
+          let bestId = firstId || "";
+          let bestDist = Number.POSITIVE_INFINITY;
           for (let i = 0; i < headings.length; i++) {
             const h = headings[i];
             const el = document.getElementById(h.id);
             if (!el) continue;
             const top = el.getBoundingClientRect().top - offset;
-            if (top <= 0) current = h.id; else break;
+            const dist = Math.abs(top);
+            if (dist < bestDist) {
+              bestDist = dist;
+              bestId = h.id;
+            }
           }
-          if (current) setActiveHeading(current);
+          if (bestId) setActiveHeading(bestId);
         } catch (e) {
           // non-blocking
         }
