@@ -48,10 +48,8 @@ const TableOfContents = ({ content }) => {
             const text = (item.title || "").trim();
             const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
             if (id) headingList.push({ id, text, level: 2 });
-          } catch (e) {}
-        }
-          } catch (error) {
-            console.error("Error extracting headings:", error);
+          } catch (e) {
+            // ignore
           }
         }
       });
