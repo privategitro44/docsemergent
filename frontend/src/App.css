@@ -969,8 +969,8 @@ mark.search-highlight {
 .steps-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 16px; }
 /* Timeline-style vertical divider that starts below the number (not next to content) */
 .step-item { --step-num-size: 28px; --step-divider-gap: 8px; position: relative; display: flex; gap: 14px; align-items: flex-start; padding: 16px 0; }
-/* vertical line anchored under the number; 8px gap from the number */
-.step-item::before { content: ""; position: absolute; left: calc(var(--step-num-size) + var(--step-divider-gap)); top: var(--step-num-size); bottom: -16px; width: 1px; background: #e5e7eb; }
+/* vertical line centered under the number; 8px gap from the bottom of the number */
+.step-item::before { content: ""; position: absolute; left: calc(var(--step-num-size) / 2); top: calc(var(--step-num-size) + var(--step-divider-gap)); bottom: -16px; width: 1px; background: #e5e7eb; transform: translateX(-0.5px); }
 .step-item:last-child::before { display: none; }
 .step-number { width: 28px; height: 28px; border-radius: 9999px; background: #E6F0FF; color: #1E66F5; display: inline-flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
 /* Content no longer needs a left border; spacing handled by gap */
