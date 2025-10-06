@@ -420,6 +420,8 @@ const ArticleEditor = ({ onLogout }) => {
                     <option value="image">Image</option>
                     <option value="video">Video</option>
                     <option value="embed">Embed/HTML</option>
+                    <option value="steps">Steps</option>
+                    <option value="integrations">Integrations Grid</option>
                   </select>
                   
                   <div className="content-block-actions">
