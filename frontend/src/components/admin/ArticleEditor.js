@@ -621,7 +621,6 @@ const ArticleEditor = ({ onLogout }) => {
                         placeholder="Paste embed code or HTML here..."
                         rows={4}
                       />
-                      
                       <input
                         type="text"
                         value={block.caption || ""}
@@ -629,6 +628,9 @@ const ArticleEditor = ({ onLogout }) => {
                         className="form-input"
                         placeholder="Caption (optional)"
                       />
+                    </div>
+                  )}
+
                   {block.type === "steps" && (
                     <div className="steps-editor">
                       <div className="form-group">
@@ -804,10 +806,7 @@ const ArticleEditor = ({ onLogout }) => {
                       </div>
                     </div>
                   )}
-
-                    </div>
-                  )}
-                </div>
+                </div
               </div>
             ))}
             
