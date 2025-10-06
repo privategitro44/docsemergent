@@ -5,76 +5,128 @@ const TableOfContents = ({ content }) => {
   const [headings, setHeadings] = useState([]);
   const [activeHeading, setActiveHeading] = useState("");
 
+  // Compute dynamic top offset accounting for sticky headers
+  const getTopOffset = () => {
+    try {
+      const root = document.documentElement;
+      const styles = getComputedStyle(root);
+      const header = parseInt((styles.getPropertyValue('--header-height') || '').replace('px','').trim(), 10) || 64;
+      const support = window.innerWidth <= 1024
+        ? parseInt((styles.getPropertyValue('--support-height') || '').replace('px','').trim(), 10) || 0
+        : 0;
+      // Add a small breathing room so the heading title isn't hidden under the header
+      return header + support + 8;
+    } catch (e) {
+      return 72; // sensible fallback
+    }
+  };
+
   useEffect(() => {
-    // Extract headings from content
+    // Extract headings from content (H2 only per spec)
     const extractHeadings = () => {
       const headingList = [];
-      
+
       content.forEach((item) => {
         if (item.type === "text") {
-          // Parse HTML content to extract headings
           try {
             const tempDiv = document.createElement("div");
             tempDiv.innerHTML = item.content;
-            
-            const headingElements = tempDiv.querySelectorAll("h1, h2, h3, h4, h5, h6");
+
+            const headingElements = tempDiv.querySelectorAll("h2");
             headingElements.forEach((heading) => {
-              const level = parseInt(heading.tagName.charAt(1));
-              const text = heading.textContent;
-              const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
-              
-              headingList.push({
-                id,
-                text,
-                level
-              });
+              const level = 2;
+              const text = heading.textContent || "";
+              const id = text.toLowerCase().trim().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+              if (!id) return;
+              headingList.push({ id, text, level });
             });
           } catch (error) {
             console.error("Error extracting headings:", error);
           }
         }
       });
-      
+
       setHeadings(headingList);
     };
 
     if (content && content.length > 0) {
       extractHeadings();
+    } else {
+      setHeadings([]);
     }
   }, [content]);
 
   useEffect(() => {
     if (headings.length === 0) return;
     try {
-      // If the first heading is in view on load, mark it active immediately
+      // Default to first heading as active on load
       const firstId = headings[0]?.id;
       if (firstId && document.getElementById(firstId)) {
         setActiveHeading(firstId);
       }
 
+      const topOffset = getTopOffset();
       const observerOptions = {
-        rootMargin: "-20% 0% -70% 0%",
-        threshold: [0, 0.25, 0.5, 1.0]
+        root: null,
+        rootMargin: `-${topOffset}px 0px -80% 0px`,
+        threshold: [0, 0.01, 0.25, 0.5]
       };
 
-      let lastActive = firstId || "";
+      const fallbackUpdate = () => {
+        try {
+          const offset = getTopOffset();
+          let current = firstId || "";
+          for (let i = 0; i < headings.length; i++) {
+            const h = headings[i];
+            const el = document.getElementById(h.id);
+            if (!el) continue;
+            const top = el.getBoundingClientRect().top - offset;
+            if (top <= 0) current = h.id; else break;
+          }
+          if (current) setActiveHeading(current);
+        } catch (e) {
+          // non-blocking
+        }
+      };
+
       const observer = new IntersectionObserver((entries) => {
-        // Sort entries by boundingClientRect.top to pick the one closest to top
+        // Consider intersecting headings and choose the closest to top
         const visible = entries
           .filter((e) => e.isIntersecting)
-          .sort((a, b) => Math.abs(a.boundingClientRect.top) - Math.abs(b.boundingClientRect.top));
+          .sort((a, b) => (a.boundingClientRect.top - b.boundingClientRect.top));
+
         if (visible.length > 0) {
-          lastActive = visible[0].target.id;
-          setActiveHeading(lastActive);
+          const id = visible[0].target.id;
+          if (id) setActiveHeading(id);
+        } else {
+          // When no heading is intersecting (e.g., between sections), use fallback
+          fallbackUpdate();
         }
       }, observerOptions);
 
+      // Observe all h2 elements by id in the actual DOM
       headings.forEach((heading) => {
         const el = document.getElementById(heading.id);
         if (el) observer.observe(el);
       });
 
-      return () => observer.disconnect();
+      // As a safety net, update on scroll for cases where IO doesn't fire
+      const onScroll = () => {
+        // Throttle via rAF
+        if (typeof window === 'undefined') return;
+        if (onScroll._ticking) return;
+        onScroll._ticking = true;
+        requestAnimationFrame(() => {
+          onScroll._ticking = false;
+          fallbackUpdate();
+        });
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+
+      return () => {
+        observer.disconnect();
+        window.removeEventListener('scroll', onScroll);
+      };
     } catch (error) {
       console.error("Error setting up IntersectionObserver:", error);
     }
@@ -84,7 +136,7 @@ const TableOfContents = ({ content }) => {
     try {
       const element = document.getElementById(headingId);
       if (element) {
-        const yOffset = -72; // account for sticky header height with some spacing
+        const yOffset = -getTopOffset();
         const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
         window.scrollTo({ top: y, behavior: "smooth" });
       }
