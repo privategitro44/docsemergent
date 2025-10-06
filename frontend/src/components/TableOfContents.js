@@ -43,6 +43,16 @@ const TableOfContents = ({ content }) => {
           } catch (error) {
             console.error("Error extracting headings:", error);
           }
+        } else if (item.type === "steps" || item.type === "integrations") {
+          try {
+            const text = (item.title || "").trim();
+            const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
+            if (id) headingList.push({ id, text, level: 2 });
+          } catch (e) {}
+        }
+          } catch (error) {
+            console.error("Error extracting headings:", error);
+          }
         }
       });
 
