@@ -732,6 +732,18 @@ const ArticleEditor = ({ onLogout }) => {
                           className="form-input"
                           placeholder="e.g., Verified Integrations"
                         />
+                      <div className="form-group">
+                        <label className="form-label">Columns</label>
+                        <select
+                          value={Number(block.columns) === 3 ? 3 : 2}
+                          onChange={(e)=> handleContentChange(index, 'columns', parseInt(e.target.value))}
+                          className="form-input"
+                        >
+                          <option value={2}>2 per row</option>
+                          <option value={3}>3 per row</option>
+                        </select>
+                      </div>
+
                       </div>
                       <div className="form-group">
                         <label className="form-label">Description (optional)</label>
