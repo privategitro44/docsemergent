@@ -303,24 +303,13 @@ const Documentation = () => {
           case "steps":
             return (
               <div key={index}>
-                {/* Steps block rendered with semantic list */}
-                {(() => {
-                  try {
-                    const { StepsBlock } = require('./ArticleContent');
-                    return <StepsBlock block={item} />;
-                  } catch (e) { return null; }
-                })()}
+                <StepsBlock block={item} />
               </div>
             );
           case "integrations":
             return (
               <div key={index}>
-                {(() => {
-                  try {
-                    const { IntegrationsBlock } = require('./ArticleContent');
-                    return <IntegrationsBlock block={item} />;
-                  } catch (e) { return null; }
-                })()}
+                <IntegrationsBlock block={item} />
               </div>
             );
           default:
