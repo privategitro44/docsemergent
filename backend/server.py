@@ -55,10 +55,17 @@ class Token(BaseModel):
     token_type: str = "bearer"
 
 class ArticleContent(BaseModel):
-    type: str  # 'text', 'image', 'video', 'embed'
-    content: str
+    type: str  # 'text', 'image', 'video', 'embed', 'steps', 'integrations'
+    # For legacy types (text/image/video/embed)
+    content: Optional[str] = None
     alt: Optional[str] = None
     caption: Optional[str] = None
+    # For steps block
+    title: Optional[str] = None
+    description: Optional[str] = None
+    steps: Optional[List[Dict[str, Any]]] = None  # [{ title, description, bullets: [str], media?: {...} }]
+    # For integrations block
+    items: Optional[List[Dict[str, Any]]] = None  # [{ name, summary, url, icon, verified }]
 
 class Article(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
