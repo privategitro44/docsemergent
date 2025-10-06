@@ -977,7 +977,7 @@ mark.search-highlight {
 .step-bullets li { color: #4b5563; font-size: 14px; margin-bottom: 4px; }
 
 /* Integrations grid styles */
-.integrations { margin: 40px 0; }
+.integrations { margin: 40px 0; border-bottom: 1px solid #e5e7eb; padding-bottom: 12px; }
 .integrations > h2 { margin-bottom: 8px; font-size: 24px; line-height: 32px; font-weight: 600; letter-spacing: -0.02em; }
 .integrations-desc { color: #6b7280; margin-bottom: 16px; font-size: 14px; }
 /* default 2 columns, override via class for 3 */
