@@ -300,6 +300,29 @@ const Documentation = () => {
                 )}
               </div>
             );
+          case "steps":
+            return (
+              <div key={index}>
+                {/* Steps block rendered with semantic list */}
+                {(() => {
+                  try {
+                    const { StepsBlock } = require('./ArticleContent');
+                    return <StepsBlock block={item} />;
+                  } catch (e) { return null; }
+                })()}
+              </div>
+            );
+          case "integrations":
+            return (
+              <div key={index}>
+                {(() => {
+                  try {
+                    const { IntegrationsBlock } = require('./ArticleContent');
+                    return <IntegrationsBlock block={item} />;
+                  } catch (e) { return null; }
+                })()}
+              </div>
+            );
           default:
             console.warn('Unknown content type:', item.type);
             return null;
