@@ -806,7 +806,7 @@ const ArticleEditor = ({ onLogout }) => {
                       </div>
                     </div>
                   )}
-                </div
+                </div>
               </div>
             ))}
             
