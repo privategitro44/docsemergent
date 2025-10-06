@@ -127,6 +127,7 @@ export const IntegrationsBlock = ({ block }) => {
   const items = Array.isArray(block?.items) ? block.items : [];
   if (items.length === 0) return null;
   const id = (block.title || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
+  const cols = Number(block?.columns) === 3 ? 3 : 2; // default 2
 
   const Icon = ({ name }) => {
     const n = String(name || '').toLowerCase();
@@ -144,7 +145,7 @@ export const IntegrationsBlock = ({ block }) => {
   };
 
   return (
-    <section className="integrations" id={id || undefined}>
+    <section className={`integrations ${cols === 3 ? 'three' : 'two'}`} id={id || undefined}>
       {block.title && <h2>{block.title}</h2>}
       {block.description && <p className="integrations-desc">{block.description}</p>}
       <div className="integrations-grid">
@@ -156,7 +157,6 @@ export const IntegrationsBlock = ({ block }) => {
             <div className="integration-content">
               <div className="integration-name-row">
                 <div className="integration-name">{it.name}</div>
-                {it.verified !== false && <span className="integration-verified">Verified</span>}
               </div>
               <div className="integration-summary">{it.summary}</div>
             </div>
