@@ -408,7 +408,7 @@ async def submit_feedback(req: FeedbackRequest):
 @api_router.get("/social-links", response_model=List[SocialLink])
 async def list_social_links():
     links = await db.social_links.find({"enabled": {"$ne": False}}).sort("order", 1).to_list(100)
-    return [SocialLink(**l) for l in links]
+    return [SocialLink(**link) for link in links]
 
 @api_router.get("/admin/social-links", response_model=List[SocialLink])
 async def admin_list_social_links(current_admin: str = Depends(get_current_admin)):
