@@ -629,6 +629,182 @@ const ArticleEditor = ({ onLogout }) => {
                         className="form-input"
                         placeholder="Caption (optional)"
                       />
+                  {block.type === "steps" && (
+                    <div className="steps-editor">
+                      <div className="form-group">
+                        <label className="form-label">Section Title (H2)</label>
+                        <input
+                          type="text"
+                          value={block.title || ''}
+                          onChange={(e) => handleContentChange(index, 'title', e.target.value)}
+                          className="form-input"
+                          placeholder="e.g., How to enable Visual Edits"
+                        />
+                      </div>
+
+                      <div className="form-group">
+                        <label className="form-label">Steps</label>
+                        <div className="steps-list-editor">
+                          {Array.isArray(block.steps) && block.steps.length > 0 ? block.steps.map((s, i) => (
+                            <div key={i} className="step-edit-card">
+                              <div className="form-row">
+                                <input
+                                  type="text"
+                                  value={s.title || ''}
+                                  onChange={(e) => {
+                                    const steps = [...(block.steps || [])];
+                                    steps[i] = { ...steps[i], title: e.target.value };
+                                    handleContentChange(index, 'steps', steps);
+                                  }}
+                                  className="form-input"
+                                  placeholder={`Step ${i+1} title`}
+                                />
+                              </div>
+                              <div className="form-row">
+                                <textarea
+                                  value={s.description || ''}
+                                  onChange={(e) => {
+                                    const steps = [...(block.steps || [])];
+                                    steps[i] = { ...steps[i], description: e.target.value };
+                                    handleContentChange(index, 'steps', steps);
+                                  }}
+                                  className="form-textarea"
+                                  placeholder="Short description"
+                                  rows={2}
+                                />
+                              </div>
+                              <div className="form-row">
+                                <textarea
+                                  value={(s.bullets || []).join('\n')}
+                                  onChange={(e) => {
+                                    const steps = [...(block.steps || [])];
+                                    steps[i] = { ...steps[i], bullets: e.target.value.split('\n').map(t => t.trim()).filter(Boolean) };
+                                    handleContentChange(index, 'steps', steps);
+                                  }}
+                                  className="form-textarea"
+                                  placeholder="Bullets (one per line)"
+                                  rows={3}
+                                />
+                              </div>
+                              <div className="content-block-actions">
+                                {i > 0 && (
+                                  <button onClick={() => {
+                                    const steps = [...(block.steps || [])];
+                                    [steps[i-1], steps[i]] = [steps[i], steps[i-1]];
+                                    handleContentChange(index, 'steps', steps);
+                                  }} className="action-btn" title="Move Up">↑</button>
+                                )}
+                                {i < (block.steps?.length || 0) - 1 && (
+                                  <button onClick={() => {
+                                    const steps = [...(block.steps || [])];
+                                    [steps[i+1], steps[i]] = [steps[i], steps[i+1]];
+                                    handleContentChange(index, 'steps', steps);
+                                  }} className="action-btn" title="Move Down">↓</button>
+                                )}
+                                <button onClick={() => {
+                                  const steps = (block.steps || []).filter((_, j) => j !== i);
+                                  handleContentChange(index, 'steps', steps);
+                                }} className="action-btn delete" title="Remove Step">✕</button>
+                              </div>
+                            </div>
+                          )) : <div className="field-help"><small>No steps yet. Add one below.</small></div>}
+                          <button onClick={() => {
+                            const steps = [...(block.steps || [])];
+                            if (steps.length >= 10) return alert('Max 10 steps allowed');
+                            steps.push({ title: '', description: '', bullets: [] });
+                            handleContentChange(index, 'steps', steps);
+                          }} className="add-content-btn">+ Add Step</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
+                  {block.type === "integrations" && (
+                    <div className="integrations-editor">
+                      <div className="form-group">
+                        <label className="form-label">Section Title (H2)</label>
+                        <input
+                          type="text"
+                          value={block.title || ''}
+                          onChange={(e) => handleContentChange(index, 'title', e.target.value)}
+                          className="form-input"
+                          placeholder="e.g., Verified Integrations"
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Description (optional)</label>
+                        <textarea
+                          value={block.description || ''}
+                          onChange={(e) => handleContentChange(index, 'description', e.target.value)}
+                          className="form-textarea"
+                          placeholder="Short blurb under the title"
+                          rows={2}
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Integrations</label>
+                        <div className="integrations-list-editor">
+                          {Array.isArray(block.items) && block.items.length > 0 ? block.items.map((it, i) => (
+                            <div key={i} className="integration-edit-card">
+                              <div className="form-row">
+                                <input type="text" className="form-input" placeholder="Name" value={it.name || ''} onChange={(e)=>{
+                                  const items = [...(block.items || [])];
+                                  items[i] = { ...items[i], name: e.target.value };
+                                  handleContentChange(index, 'items', items);
+                                }} />
+                                <select className="form-input" value={it.icon || ''} onChange={(e)=>{
+                                  const items = [...(block.items || [])];
+                                  items[i] = { ...items[i], icon: e.target.value };
+                                  handleContentChange(index, 'items', items);
+                                }}>
+                                  <option value="">Choose icon</option>
+                                  <option value="stripe">Stripe</option>
+                                  <option value="openai">OpenAI</option>
+                                  <option value="anthropic">Anthropic</option>
+                                  <option value="resend">Resend</option>
+                                  <option value="clerk">Clerk</option>
+                                  <option value="three">Three.js</option>
+                                  <option value="d3">D3.js</option>
+                                  <option value="highcharts">Highcharts</option>
+                                  <option value="p5">p5.js</option>
+                                </select>
+                              </div>
+                              <div className="form-row">
+                                <input type="text" className="form-input" placeholder="Summary" value={it.summary || ''} onChange={(e)=>{
+                                  const items = [...(block.items || [])];
+                                  items[i] = { ...items[i], summary: e.target.value };
+                                  handleContentChange(index, 'items', items);
+                                }} />
+                              </div>
+                              <div className="form-row">
+                                <input type="url" className="form-input" placeholder="https://..." value={it.url || ''} onChange={(e)=>{
+                                  const items = [...(block.items || [])];
+                                  items[i] = { ...items[i], url: e.target.value };
+                                  handleContentChange(index, 'items', items);
+                                }} />
+                              </div>
+                              <div className="content-block-actions">
+                                {i > 0 && (
+                                  <button onClick={() => { const items = [...(block.items || [])]; [items[i-1], items[i]] = [items[i], items[i-1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Up">↑</button>
+                                )}
+                                {i < (block.items?.length || 0) - 1 && (
+                                  <button onClick={() => { const items = [...(block.items || [])]; [items[i+1], items[i]] = [items[i], items[i+1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Down">↓</button>
+                                )}
+                                <button onClick={() => { const items = (block.items || []).filter((_, j) => j !== i); handleContentChange(index, 'items', items); }} className="action-btn delete" title="Remove">✕</button>
+                              </div>
+                            </div>
+                          )) : <div className="field-help"><small>No integrations yet. Add one below.</small></div>}
+                          <button onClick={() => {
+                            const items = [...(block.items || [])];
+                            if (items.length >= 12) return alert('Max 12 integrations allowed');
+                            items.push({ name: '', summary: '', url: '', icon: '', verified: true });
+                            handleContentChange(index, 'items', items);
+                          }} className="add-content-btn">+ Add Integration</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                     </div>
                   )}
                 </div>
