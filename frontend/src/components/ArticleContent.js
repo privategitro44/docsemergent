@@ -225,7 +225,4 @@ export const ArticleLinksBlock = ({ block, onNavigate }) => {
   );
 };
 
-  );
-};
-
 export default ArticleContent;
