@@ -442,6 +442,29 @@ async def delete_social_link(link_id: str, current_admin: str = Depends(get_curr
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc)}
 
+# Custom route for serving uploaded files with proper MIME types
+@app.get("/uploads/{filename}")
+async def serve_upload(filename: str):
+    file_path = uploads_dir / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Determine MIME type based on file extension
+    import mimetypes
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    if mime_type is None:
+        mime_type = "application/octet-stream"
+    
+    return FileResponse(
+        path=file_path,
+        media_type=mime_type,
+        headers={
+            "Access-Control-Allow-Origin": "*",
+            "Access-Control-Allow-Methods": "GET",
+            "Cache-Control": "public, max-age=31536000"
+        }
+    )
+
 # Include router
 app.include_router(api_router)
 
