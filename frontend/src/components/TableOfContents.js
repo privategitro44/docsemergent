@@ -43,7 +43,7 @@ const TableOfContents = ({ content }) => {
           } catch (error) {
             console.error("Error extracting headings:", error);
           }
-        } else if (item.type === "steps" || item.type === "integrations") {
+        } else if (item.type === "steps" || item.type === "integrations" || item.type === "article-links") {
           try {
             const text = (item.title || "").trim();
             const id = text.toLowerCase().replace(/\s+/g, "-").replace(/[^\w-]/g, "");
