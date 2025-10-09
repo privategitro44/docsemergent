@@ -1198,6 +1198,21 @@ mark.search-highlight {
 }
 
 .btn-full {
+
+/* Docs table styles */
+.table-responsive { width: 100%; overflow-x: auto; }
+.doc-table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid #e5e7eb; border-radius: 10px; overflow: hidden; }
+.doc-table thead th { background: #f8fafc; color: #0f172a; font-weight: 600; text-align: left; padding: 10px 12px; border-bottom: 1px solid #e5e7eb; white-space: nowrap; }
+.doc-table tbody td { padding: 10px 12px; border-bottom: 1px solid #f1f5f9; vertical-align: top; }
+.doc-table tbody tr:last-child td { border-bottom: 0; }
+.doc-table tbody tr:nth-child(odd) td { background: #ffffff; }
+.doc-table tbody tr:nth-child(even) td { background: #f9fafb; }
+.doc-table th + th, .doc-table td + td { border-left: 1px solid #f1f5f9; }
+
+@media (max-width: 640px) {
+  .doc-table thead th, .doc-table tbody td { padding: 8px 10px; }
+}
+
   width: 100%;
 }
 
