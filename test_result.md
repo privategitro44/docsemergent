@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Smoke test Admin Social Links manager UI after latest fixes (no functionality changes). Steps: 1) Go to /admin/login 2) Enter username=admin, password=admin123 3) Click Login 4) Navigate to Social Links in left nav 5) Ensure the page renders without errors and shows the header and Add Link button 6) If items exist, ensure each row shows: drag handle (dots), brand icon badge, label input, icon select, toggle, URL input, delete button, and the small meta row with '0 clicks'. 7) Do not change data, just verify rendering. 8) Return any console errors if present."
+user_problem_statement: "Fix the UL and OL tags rendering issue. Currently only indentation shows, actual bullets and numbers do not show. The CSS global reset was removing default list styles, so explicit list-style-type properties needed to be added to .article ul (disc) and .article ol (decimal) in App.css."
 
 frontend:
   - task: "Admin Social Links Manager UI Rendering"
