@@ -127,7 +127,7 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Admin Social Links Manager UI Rendering"
+    - "UL and OL List Rendering Fix"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
