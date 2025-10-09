@@ -349,17 +349,16 @@ body {
 .docs-content {
   flex: 1;
   max-width: 800px;
-  padding: 0 40px;
+  margin: 0 auto;
+  padding: 0;
 }
 @media (max-width: 640px) {
-  .docs-content { padding: 0 16px; }
+  .docs-content { padding: 0; }
 }
 
 /* Article Styles */
 .article {
   padding-bottom: 120px;
-  max-width: 800px;
-  margin: 0 auto;
 }
 
 /* Small title tag above main heading */
