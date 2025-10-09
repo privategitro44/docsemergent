@@ -206,7 +206,7 @@ export const ArticleLinksBlock = ({ block, onNavigate }) => {
             <a key={i} className="article-link-card" href={href} target={isExternal ? "_blank" : undefined} rel={isExternal ? "noopener noreferrer" : undefined} onClick={(e)=>handleClick(e, it)}>
               <div className="al-icon-wrap">
                 {it.iconUrl ? (
-                  <img src={it.iconUrl} alt="" className="al-icon-img" />
+                  <img src={it.iconUrl.startsWith('/') ? `${BACKEND_URL}${it.iconUrl}` : it.iconUrl} alt="" className="al-icon-img" />
                 ) : (
                   <BuiltinIcon name={it.icon} />
                 )}
