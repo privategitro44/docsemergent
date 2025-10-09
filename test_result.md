@@ -143,6 +143,21 @@ frontend:
         - working: true
           agent: "main"
           comment: "Updated footer to use actual SVG icon files from assets/social icons folder (Discord, X, LinkedIn, Instagram). Replaced inline SVGs with imported React components. Added hover effects and proper styling. Icons now display consistently in gray (#6b7280) with darker hover state (#374151)."
+  
+  - task: "Content Section Centering Fix"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported content section shifted to the left and not centered."
+        - working: true
+          agent: "main"
+          comment: "Fixed content centering by updating .docs-content CSS: added 'margin: 0 auto' and removed padding, set max-width to 800px. Content now perfectly centered with equal left/right margins (216px each). Verified with measurements."
 
 metadata:
   created_by: "testing_agent"
