@@ -133,5 +133,5 @@ test_plan:
   test_priority: "high_first"
 
 agent_communication:
-    - agent: "testing"
-      message: "Completed smoke test of Admin Social Links manager UI. Found and fixed critical JavaScript error (SafeIcon not defined) that was preventing page rendering. After fix, all smoke test requirements passed successfully. Page now renders correctly with all required UI elements visible. No console errors detected. Ready for main agent to summarize and finish."
+    - agent: "main"
+      message: "Fixed UL/OL list rendering issue by adding explicit list-style-type CSS properties. The global CSS reset (* { margin: 0; padding: 0; }) was removing default list styles. Added .article ul { list-style-type: disc; } and .article ol { list-style-type: decimal; } to App.css. Verified fix with screenshots - bullets and numbers now display correctly."
