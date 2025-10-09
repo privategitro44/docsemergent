@@ -312,6 +312,12 @@ const Documentation = () => {
                 <IntegrationsBlock block={item} />
               </div>
             );
+          case "article-links":
+            return (
+              <div key={index}>
+                <ArticleLinksBlock block={item} onNavigate={(slug)=>navigate(`/article/${slug}`)} />
+              </div>
+            );
           default:
             console.warn('Unknown content type:', item.type);
             return null;
