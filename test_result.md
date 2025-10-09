@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "Fix the UL and OL tags rendering issue. Currently only indentation shows, actual bullets and numbers do not show. The CSS global reset was removing default list styles, so explicit list-style-type properties needed to be added to .article ul (disc) and .article ol (decimal) in App.css."
+user_problem_statement: "1) Fix the UL and OL tags rendering issue - bullets and numbers not showing. 2) Verify image and video rendering. 3) Update footer social icons to use actual SVG files from assets/social icons folder (Discord, X, LinkedIn, Instagram)."
 
 frontend:
   - task: "UL and OL List Rendering Fix"
