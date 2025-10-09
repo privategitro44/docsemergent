@@ -119,6 +119,30 @@ frontend:
         - working: true
           agent: "main"
           comment: "Fixed by adding explicit list-style-type properties in App.css: .article ul { list-style-type: disc; } and .article ol { list-style-type: decimal; }. Verified with screenshots showing bullets for UL and numbers for OL rendering correctly."
+  
+  - task: "Image and Video Rendering Verification"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/Documentation.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Verified that images (both external URLs and uploaded) and YouTube embedded videos render correctly. Tested with Unsplash image and YouTube video - both displaying properly with captions."
+  
+  - task: "Footer Social Icons Update"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/Documentation.js, /app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+        - working: true
+          agent: "main"
+          comment: "Updated footer to use actual SVG icon files from assets/social icons folder (Discord, X, LinkedIn, Instagram). Replaced inline SVGs with imported React components. Added hover effects and proper styling. Icons now display consistently in gray (#6b7280) with darker hover state (#374151)."
 
 metadata:
   created_by: "testing_agent"
