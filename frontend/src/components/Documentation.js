@@ -611,14 +611,14 @@ const Documentation = () => {
                   ];
                   return fixedLinks.map((l) => (
                     <a key={l.id} href={l.url} target="_blank" rel="noopener noreferrer" aria-label={l.label} title={l.label} className="social-link">
-                      {l.icon === 'x' ? (
-                        <svg className="brand-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.146 2H21l-6.5 7.43L22.5 22H15l-4.74-6.2L4.5 22H2.5l7-7.99L2 2h7l4.3 5.64L18.146 2Zm-2.29 18h2.01L8.24 4h-2L15.856 20Z"/></svg>
+                      {l.icon === 'discord' ? (
+                        <DiscordIcon className="brand-icon" aria-hidden="true" />
+                      ) : l.icon === 'x' ? (
+                        <XIcon className="brand-icon" aria-hidden="true" />
                       ) : l.icon === 'linkedin' ? (
-                        <svg className="brand-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M4.98 3.5C4.98 4.88 3.86 6 2.5 6S0 4.88 0 3.5 1.12 1 2.5 1s2.48 1.12 2.48 2.5zM0 8h5v16H0V8zm7.5 0h4.8v2.2h.07c.67-1.26 2.3-2.6 4.73-2.6 5.06 0 6 3.33 6 7.66V24h-5v-7.05c0-1.68-.03-3.84-2.34-3.84-2.34 0-2.7 1.83-2.7 3.72V24h-5V8z"/></svg>
+                        <LinkedInIcon className="brand-icon" aria-hidden="true" />
                       ) : l.icon === 'instagram' ? (
-                        <svg className="brand-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 2h10a5 5 0 0 1 5 5v10a5 5 0 0 1-5 5H7a5 5 0 0 1-5-5V7a5 5 0 0 1 5-5Zm0 2a3 3 0 0 0-3 3v10a3 3 0 0 0 3 3h10a3 3 0 0 0 3-3V7a3 3 0 0 0-3-3H7Zm5 3.5a5.5 5.5 0 1 1 0 11 5.5 5.5 0 0 1 0-11Zm0 2a3.5 3.5 0 1 0 0 7 3.5 3.5 0 0 0 0-7Zm5.75-.75a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5Z"/></svg>
-                      ) : l.icon === 'discord' ? (
-                        <svg className="brand-icon" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M20.32 4.37A19.74 19.74 0 0 0 15.86 3l-.22.45c1.34.32 2.57.82 3.7 1.47-1.56-.72-3.28-1.24-5.07-1.5a18.7 18.7 0 0 0-4.54 0C7.93 3.67 6.2 4.2 4.65 4.92 5.78 4.27 7 3.77 8.34 3.45L8.12 3a19.74 19.74 0 0 0-4.46 1.37C1.4 7.07.5 10.02.5 13.05c0 0 2.03 3.5 7.39 3.68-.9.62-1.86 1.45-1.86 1.45 1.6.12 3.16-.5 4.27-1.25.34.03.68.04 1.02.04s.68-.01 1.02-.04c1.11.75 2.67 1.37 4.27 1.25 0 0-.98-.85-1.87-1.47 5.37-.18 7.39-3.68 7.39-3.68 0-3.03-.9-5.98-2.8-8.68ZM9.25 12.9c-.8 0-1.45-.74-1.45-1.64s.65-1.64 1.45-1.64 1.45.74 1.45 1.64-.65 1.64-1.45 1.64Zm5.5 0c-.8 0-1.45-.74-1.45-1.64s.65-1.64 1.45-1.64 1.45.74 1.45 1.64-.65 1.64-1.45 1.64Z"/></svg>
+                        <InstagramIcon className="brand-icon" aria-hidden="true" />
                       ) : (
                         <span className="social-label">{l.label}</span>
                       )}
