@@ -733,6 +733,7 @@ const ArticleEditor = ({ onLogout }) => {
                           className="form-input"
                           placeholder="e.g., Verified Integrations"
                         />
+                      </div>
                       <div className="form-group">
                         <label className="form-label">Columns</label>
                         <select
@@ -743,8 +744,6 @@ const ArticleEditor = ({ onLogout }) => {
                           <option value={2}>2 per row</option>
                           <option value={3}>3 per row</option>
                         </select>
-                      </div>
-
                       </div>
                       <div className="form-group">
                         <label className="form-label">Description (optional)</label>
@@ -802,6 +801,21 @@ const ArticleEditor = ({ onLogout }) => {
                                 {i > 0 && (
                                   <button onClick={() => { const items = [...(block.items || [])]; [items[i-1], items[i]] = [items[i], items[i-1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Up">↑</button>
                                 )}
+                                {i < (block.items?.length || 0) - 1 && (
+                                  <button onClick={() => { const items = [...(block.items || [])]; [items[i+1], items[i]] = [items[i], items[i+1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Down">↓</button>
+                                )}
+                                <button onClick={() => { const items = (block.items || []).filter((_, j) => j !== i); handleContentChange(index, 'items', items); }} className="action-btn delete" title="Remove">✕</button>
+                              </div>
+                            </div>
+                          )) : <div className="field-help"><small>No integrations yet. Add one below.</small></div>}
+                          <button onClick={() => {
+                            const items = [...(block.items || [])];
+                            if (items.length >= 12) return alert('Max 12 integrations allowed');
+                            items.push({ name: '', summary: '', url: '', icon: '', verified: true });
+                            handleContentChange(index, 'items', items);
+                          }} className="add-content-btn">+ Add Integration</button>
+                        </div>
+                      </div>
                     </div>
                   )}
 
@@ -884,24 +898,6 @@ const ArticleEditor = ({ onLogout }) => {
                             </div>
                           )) : <div className="field-help"><small>No links yet. Add one below.</small></div>}
                           <button className="add-content-btn" onClick={()=>{ const items=[...(block.items||[])]; items.push({ slug:'', url:'', title:'', description:'', icon:'document', iconUrl:'' }); handleContentChange(index,'items',items); }}>+ Add Link</button>
-                        </div>
-                      </div>
-                    </div>
-                  )}
-
-                                {i < (block.items?.length || 0) - 1 && (
-                                  <button onClick={() => { const items = [...(block.items || [])]; [items[i+1], items[i]] = [items[i], items[i+1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Down">↓</button>
-                                )}
-                                <button onClick={() => { const items = (block.items || []).filter((_, j) => j !== i); handleContentChange(index, 'items', items); }} className="action-btn delete" title="Remove">✕</button>
-                              </div>
-                            </div>
-                          )) : <div className="field-help"><small>No integrations yet. Add one below.</small></div>}
-                          <button onClick={() => {
-                            const items = [...(block.items || [])];
-                            if (items.length >= 12) return alert('Max 12 integrations allowed');
-                            items.push({ name: '', summary: '', url: '', icon: '', verified: true });
-                            handleContentChange(index, 'items', items);
-                          }} className="add-content-btn">+ Add Integration</button>
                         </div>
                       </div>
                     </div>
