@@ -33,8 +33,8 @@ security = HTTPBearer()
 JWT_SECRET = os.environ.get("JWT_SECRET")
 if not JWT_SECRET:
     raise RuntimeError("JWT_SECRET environment variable is required")
-ADMIN_USERNAME = "rohit@emergent.sh"
-ADMIN_PASSWORD_HASH = "8a9b88cd8eb57717de3709ae722b0a21be50256e18e8fc12810d9b5c479bfcd6"
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "rohit@emergent.sh")
+ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", "8a9b88cd8eb57717de3709ae722b0a21be50256e18e8fc12810d9b5c479bfcd6")
 
 # Create the main app
 app = FastAPI(title="Emergent Documentation System")
