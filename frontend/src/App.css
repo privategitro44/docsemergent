@@ -414,6 +414,14 @@ body {
   padding-left: 28px;
 }
 
+.article ul {
+  list-style-type: disc;
+}
+
+.article ol {
+  list-style-type: decimal;
+}
+
 .article li {
   font-size: 16px;
   line-height: 1.7;
