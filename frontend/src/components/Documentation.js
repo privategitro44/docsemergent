@@ -3,7 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import SearchOverlay from "./SearchOverlay";
 import TableOfContents from "./TableOfContents";
-import ArticleContent, { StepsBlock, IntegrationsBlock } from "./ArticleContent";
+import ArticleContent, { StepsBlock, IntegrationsBlock, ArticleLinksBlock } from "./ArticleContent";
 import EmergentLogo from "../assets/Emergent logo.png";
 
 // Heroicons (outline) for UI + sidebar items
