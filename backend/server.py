@@ -452,7 +452,7 @@ async def delete_social_link(link_id: str, current_admin: str = Depends(get_curr
 async def health_check():
     return {"status": "healthy", "timestamp": datetime.now(timezone.utc)}
 
-# Custom route for serving uploaded files with proper MIME types
+# Custom route for serving uploaded files with proper MIME types and CORS
 @app.get("/uploads/{filename}")
 async def serve_upload(filename: str):
     file_path = uploads_dir / filename
@@ -471,6 +471,7 @@ async def serve_upload(filename: str):
         headers={
             "Access-Control-Allow-Origin": "*",
             "Access-Control-Allow-Methods": "GET",
+            "Cross-Origin-Resource-Policy": "cross-origin",
             "Cache-Control": "public, max-age=31536000"
         }
     )
