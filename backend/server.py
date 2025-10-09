@@ -40,8 +40,8 @@ ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", "8a9b88cd8eb57717de3
 # Create the main app
 app = FastAPI(title="Emergent Documentation System")
 
-# Static files for uploads
-app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
+# Static files for uploads - handled by custom route below for proper CORS/MIME types
+# app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # Create API router
 api_router = APIRouter(prefix="/api")
