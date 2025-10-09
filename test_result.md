@@ -169,6 +169,7 @@ test_plan:
     - "UL and OL List Rendering Fix"
     - "Image and Video Rendering Verification"
     - "Footer Social Icons Update"
+    - "Content Section Centering Fix"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
