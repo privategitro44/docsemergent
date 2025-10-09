@@ -105,20 +105,20 @@
 user_problem_statement: "Fix the UL and OL tags rendering issue. Currently only indentation shows, actual bullets and numbers do not show. The CSS global reset was removing default list styles, so explicit list-style-type properties needed to be added to .article ul (disc) and .article ol (decimal) in App.css."
 
 frontend:
-  - task: "Admin Social Links Manager UI Rendering"
+  - task: "UL and OL List Rendering Fix"
     implemented: true
     working: true
-    file: "/app/frontend/src/components/admin/SocialLinksManager.js"
+    file: "/app/frontend/src/App.css"
     stuck_count: 0
     priority: "high"
     needs_retesting: false
     status_history:
         - working: false
-          agent: "testing"
-          comment: "Initial test failed - JavaScript error 'SafeIcon is not defined' preventing page from rendering. Found undefined SafeIcon component on line 94 referencing non-existent components."
+          agent: "user"
+          comment: "User reported that UL and OL tags only show indentation but no bullets or numbers. This was due to global CSS reset removing default list styles."
         - working: true
-          agent: "testing"
-          comment: "Fixed JavaScript error by replacing SafeIcon usage with existing BrandIcon component. Smoke test now passes: ✅ Login successful ✅ Navigation to Social Links successful ✅ Page renders without errors ✅ Header 'Social Links' and subtitle visible ✅ Add Link button visible ✅ 5 social link items found ✅ All required UI elements present: drag handles, brand icons, label inputs, icon selects, URL inputs, delete buttons, meta rows with '0 clicks' ✅ No console errors detected. Minor: Toggle switch visibility issue noted but doesn't affect core functionality."
+          agent: "main"
+          comment: "Fixed by adding explicit list-style-type properties in App.css: .article ul { list-style-type: disc; } and .article ol { list-style-type: decimal; }. Verified with screenshots showing bullets for UL and numbers for OL rendering correctly."
 
 metadata:
   created_by: "testing_agent"
