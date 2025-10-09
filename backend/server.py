@@ -462,15 +462,10 @@ logger = logging.getLogger(__name__)
 
 @app.on_event("startup")
 async def startup_event():
-    # Skip seeding if articles exist. If you want a clean slate, set CLEAR_ARTICLES=true in env.
-    if os.environ.get('CLEAR_ARTICLES', '').lower() in ('1','true','yes'):
-        await db.articles.delete_many({})
-        await db.navigation.delete_many({})
-        logger.info("Cleared all articles and navigation as per CLEAR_ARTICLES env")
-    else:
-        article_count = await db.articles.count_documents({})
-        if article_count == 0:
-            await create_sample_data()
+    # Seed sample articles only if none exist (no bulk-delete logic here)
+    article_count = await db.articles.count_documents({})
+    if article_count == 0:
+        await create_sample_data()
     # Ensure default social links exist for visibility in public footer
     social_count = await db.social_links.count_documents({})
     if social_count == 0:
