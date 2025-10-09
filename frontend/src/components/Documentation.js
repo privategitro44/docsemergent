@@ -5,6 +5,10 @@ import SearchOverlay from "./SearchOverlay";
 import TableOfContents from "./TableOfContents";
 import ArticleContent, { StepsBlock, IntegrationsBlock, ArticleLinksBlock } from "./ArticleContent";
 import EmergentLogo from "../assets/Emergent logo.png";
+import { ReactComponent as DiscordIcon } from "../assets/social icons/discord.svg";
+import { ReactComponent as XIcon } from "../assets/social icons/X.svg";
+import { ReactComponent as LinkedInIcon } from "../assets/social icons/Linkedin.svg";
+import { ReactComponent as InstagramIcon } from "../assets/social icons/Instagram.svg";
 
 // Heroicons (outline) for UI + sidebar items
 import {
