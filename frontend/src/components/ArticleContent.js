@@ -164,6 +164,8 @@ export const IntegrationsBlock = ({ block }) => {
         ))}
       </div>
     </section>
+  );
+};
 
 export const ArticleLinksBlock = ({ block, onNavigate }) => {
   const items = Array.isArray(block?.items) ? block.items : [];
