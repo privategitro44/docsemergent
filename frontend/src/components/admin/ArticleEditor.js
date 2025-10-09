@@ -801,6 +801,93 @@ const ArticleEditor = ({ onLogout }) => {
                                 {i > 0 && (
                                   <button onClick={() => { const items = [...(block.items || [])]; [items[i-1], items[i]] = [items[i], items[i-1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Up">↑</button>
                                 )}
+                    </div>
+                  )}
+
+                  {block.type === "article-links" && (
+                    <div className="article-links-editor">
+                      <div className="form-group">
+                        <label className="form-label">Section Title (H2)</label>
+                        <input type="text" className="form-input" value={block.title || ''} onChange={(e)=>handleContentChange(index,'title',e.target.value)} placeholder="Related articles" />
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Columns</label>
+                        <select className="form-input" value={Number(block.columns)===2?2:3} onChange={(e)=>handleContentChange(index,'columns',parseInt(e.target.value))}>
+                          <option value={3}>3 per row</option>
+                          <option value={2}>2 per row</option>
+                        </select>
+                      </div>
+                      <div className="form-group">
+                        <label className="form-label">Links</label>
+                        <div className="al-list-editor">
+                          {Array.isArray(block.items) && block.items.length>0 ? block.items.map((it,i)=> (
+                            <div key={i} className="al-edit-card">
+                              <div className="form-row">
+                                <select className="form-input" value={it.slug || ''} onChange={(e)=>{
+                                  const items=[...(block.items||[])];
+                                  items[i] = { ...items[i], slug: e.target.value, url: '' };
+                                  handleContentChange(index,'items',items);
+                                }}>
+                                  <option value="">Select internal article…</option>
+                                  {(Array.isArray(article?.allArticles) ? article.allArticles : []).map(a=> (
+                                    <option key={a.slug} value={a.slug}>{a.title}</option>
+                                  ))}
+                                </select>
+                                <input type="url" className="form-input" placeholder="or external URL https://..." value={it.url || ''} onChange={(e)=>{
+                                  const items=[...(block.items||[])];
+                                  items[i] = { ...items[i], url: e.target.value, slug: '' };
+                                  handleContentChange(index,'items',items);
+                                }} />
+                              </div>
+                              <div className="form-row">
+                                <input type="text" className="form-input" placeholder="Display title (leave blank to use article title)" value={it.title || ''} onChange={(e)=>{ const items=[...(block.items||[])]; items[i] = { ...items[i], title: e.target.value }; handleContentChange(index,'items',items); }} />
+                              </div>
+                              <div className="form-row">
+                                <textarea className="form-textarea" placeholder="Short description" rows={2} value={it.description || ''} onChange={(e)=>{ const items=[...(block.items||[])]; items[i] = { ...items[i], description: e.target.value }; handleContentChange(index,'items',items); }} />
+                              </div>
+                              <div className="form-row">
+                                <select className="form-input" value={it.icon || ''} onChange={(e)=>{ const items=[...(block.items||[])]; items[i] = { ...items[i], icon: e.target.value, iconUrl: '' }; handleContentChange(index,'items',items); }}>
+                                  <option value="">Choose built-in icon</option>
+                                  <option value="document">Document</option>
+                                  <option value="link">Link</option>
+                                  <option value="book">Book</option>
+                                  <option value="lightbulb">Lightbulb</option>
+                                  <option value="play">Play</option>
+                                  <option value="code">Code</option>
+                                  <option value="shield">Shield</option>
+                                  <option value="cog">Cog</option>
+                                  <option value="bolt">Bolt</option>
+                                </select>
+                                <label className="upload-btn">
+                                  Upload Icon
+                                  <input type="file" accept="image/*" className="hidden" onChange={async (e)=>{
+                                    const file = e.target.files && e.target.files[0];
+                                    if (!file) return;
+                                    try {
+                                      const token = localStorage.getItem('adminToken');
+                                      const formData = new FormData();
+                                      formData.append('file', file);
+                                      const resp = await axios.post(`${API}/admin/upload`, formData, { headers: { Authorization: `Bearer ${token}`,'Content-Type':'multipart/form-data' } });
+                                      const items=[...(block.items||[])];
+                                      items[i] = { ...items[i], iconUrl: resp.data.url, icon: '' };
+                                      handleContentChange(index,'items',items);
+                                    } catch(err) { alert('Upload failed'); }
+                                  }} />
+                                </label>
+                              </div>
+                              <div className="content-block-actions">
+                                {i>0 && <button className="action-btn" onClick={()=>{ const items=[...(block.items||[])]; [items[i-1],items[i]]=[items[i],items[i-1]]; handleContentChange(index,'items',items); }}>↑</button>}
+                                {i < (block.items?.length||0)-1 && <button className="action-btn" onClick={()=>{ const items=[...(block.items||[])]; [items[i+1],items[i]]=[items[i],items[i+1]]; handleContentChange(index,'items',items); }}>↓</button>}
+                                <button className="action-btn delete" onClick={()=>{ const items=(block.items||[]).filter((_,j)=>j!==i); handleContentChange(index,'items',items); }}>✕</button>
+                              </div>
+                            </div>
+                          )) : <div className="field-help"><small>No links yet. Add one below.</small></div>}
+                          <button className="add-content-btn" onClick={()=>{ const items=[...(block.items||[])]; items.push({ slug:'', url:'', title:'', description:'', icon:'document', iconUrl:'' }); handleContentChange(index,'items',items); }}>+ Add Link</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+
                                 {i < (block.items?.length || 0) - 1 && (
                                   <button onClick={() => { const items = [...(block.items || [])]; [items[i+1], items[i]] = [items[i], items[i+1]]; handleContentChange(index, 'items', items); }} className="action-btn" title="Move Down">↓</button>
                                 )}
