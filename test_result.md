@@ -152,6 +152,8 @@ metadata:
 test_plan:
   current_focus:
     - "UL and OL List Rendering Fix"
+    - "Image and Video Rendering Verification"
+    - "Footer Social Icons Update"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
