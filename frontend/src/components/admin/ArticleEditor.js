@@ -214,6 +214,31 @@ const ArticleEditor = ({ onLogout }) => {
       newText = `${before}<a href="url">${selectedText || 'Link text'}</a>${after}`;
     } else if (tag === 'code') {
       newText = `${before}<code>${selectedText || 'code'}</code>${after}`;
+    } else if (tag === 'table') {
+      const tableTpl = `<div class="table-responsive">
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Header 1</th>
+        <th>Header 2</th>
+        <th>Header 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cell 1</td>
+        <td>Cell 2</td>
+        <td>Cell 3</td>
+      </tr>
+      <tr>
+        <td>Cell 4</td>
+        <td>Cell 5</td>
+        <td>Cell 6</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`;
+      newText = `${before}${tableTpl}${after}`;
     } else {
       newText = `${before}<${tag}>${selectedText}</${tag}>${after}`;
     }
