@@ -565,6 +565,14 @@ const ArticleEditor = ({ onLogout }) => {
                         >
                           &lt;/&gt;
                         </button>
+                        <button
+                          type="button"
+                          onClick={() => insertFormatting(index, 'table')}
+                          className="toolbar-btn"
+                          title="Insert table"
+                        >
+                          Table
+                        </button>
                       </div>
                       <textarea
                         id={`content-${index}`}
