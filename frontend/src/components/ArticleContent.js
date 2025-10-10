@@ -167,12 +167,13 @@ export const IntegrationsBlock = ({ block }) => {
   );
 };
 
+import { BACKEND_URL } from '../config';
+
 export const ArticleLinksBlock = ({ block, onNavigate }) => {
   const items = Array.isArray(block?.items) ? block.items : [];
   if (items.length === 0) return null;
   const id = (block.title || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
   const cols = Number(block?.columns) === 2 ? 2 : 3; // default 3
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const BuiltinIcon = ({ name }) => {
     const n = String(name || '').toLowerCase();
