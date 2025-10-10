@@ -102,7 +102,7 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1) Fix the UL and OL tags rendering issue - bullets and numbers not showing. 2) Verify image and video rendering. 3) Update footer social icons to use actual SVG files from assets/social icons folder (Discord, X, LinkedIn, Instagram). 4) Fix content centering. 5) Test and fix image upload functionality."
+user_problem_statement: "1) Fix the UL and OL tags rendering issue - bullets and numbers not showing. 2) Verify image and video rendering. 3) Update footer social icons to use actual SVG files from assets/social icons folder (Discord, X, LinkedIn, Instagram). 4) Fix content centering. 5) Test and fix image upload functionality. 6) Fix hardcoding issues for environment portability. 7) Format tables properly with good styling and text wrapping."
 
 frontend:
   - task: "UL and OL List Rendering Fix"
