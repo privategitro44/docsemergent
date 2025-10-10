@@ -43,6 +43,14 @@ app = FastAPI(title="Emergent Documentation System")
 # Mount static files BEFORE CORS middleware to avoid content-type override
 app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
+# Middleware to add Cross-Origin-Resource-Policy header for uploads
+@app.middleware("http")
+async def add_corp_header(request, call_next):
+    response = await call_next(request)
+    if request.url.path.startswith("/uploads/"):
+        response.headers["Cross-Origin-Resource-Policy"] = "cross-origin"
+    return response
+
 # CORS - must be added early for all routes including custom ones
 app.add_middleware(
     CORSMiddleware,
