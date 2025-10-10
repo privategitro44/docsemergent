@@ -158,6 +158,24 @@ frontend:
         - working: true
           agent: "main"
           comment: "Fixed content centering by updating .docs-content CSS: added 'margin: 0 auto' and removed padding, set max-width to 800px. Content now perfectly centered with equal left/right margins (216px each). Verified with measurements."
+  
+  - task: "Image Upload Functionality Fix"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+        - working: false
+          agent: "user"
+          comment: "User reported uploaded images showing broken icon (question mark) instead of actual image."
+        - working: false
+          agent: "main"
+          comment: "Initial diagnosis: Kubernetes ingress changing Content-Type from image/jpeg to text/html, causing ORB (Opaque Response Blocking) error in browser."
+        - working: true
+          agent: "main"
+          comment: "Fixed by serving uploaded files through API route (/api/uploads/{filename}) instead of direct /uploads/ path. This bypasses the ingress Content-Type override issue. Upload endpoint now returns /api/uploads/ URLs. Verified: images display correctly with naturalWidth 987x1039px."
 
 metadata:
   created_by: "testing_agent"
