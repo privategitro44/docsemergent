@@ -40,6 +40,9 @@ ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", "8a9b88cd8eb57717de3
 # Create the main app
 app = FastAPI(title="Emergent Documentation System")
 
+# Mount static files BEFORE CORS middleware to avoid content-type override
+app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
+
 # CORS - must be added early for all routes including custom ones
 app.add_middleware(
     CORSMiddleware,
@@ -49,9 +52,6 @@ app.add_middleware(
     allow_headers=["*"],
     expose_headers=["*"]
 )
-
-# Static files for uploads - handled by custom route below for proper CORS/MIME types
-# app.mount("/uploads", StaticFiles(directory=str(uploads_dir)), name="uploads")
 
 # Create API router
 api_router = APIRouter(prefix="/api")
