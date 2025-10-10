@@ -360,8 +360,37 @@ async def upload_media(file: UploadFile = File(...), current_admin: str = Depend
     async with aiofiles.open(file_path, 'wb') as buffer:
         content = await file.read()
         await buffer.write(content)
-    file_url = f"/uploads/{unique_filename}"
+    # Return API route URL instead of direct /uploads/ path
+    file_url = f"/api/uploads/{unique_filename}"
     return {"url": file_url, "filename": unique_filename}
+
+# Route to serve uploaded files through API with correct MIME types
+@api_router.get("/uploads/{filename}")
+async def get_uploaded_file(filename: str):
+    import mimetypes
+    
+    file_path = uploads_dir / filename
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail="File not found")
+    
+    # Read file content
+    async with aiofiles.open(file_path, 'rb') as f:
+        content = await f.read()
+    
+    # Determine MIME type based on file extension
+    mime_type, _ = mimetypes.guess_type(str(file_path))
+    if mime_type is None:
+        mime_type = "application/octet-stream"
+    
+    # Return with proper MIME type and CORS headers
+    return Response(
+        content=content,
+        media_type=mime_type,
+        headers={
+            "Cross-Origin-Resource-Policy": "cross-origin",
+            "Cache-Control": "public, max-age=31536000"
+        }
+    )
 
 # Search Routes
 @api_router.get("/search", response_model=List[SearchResult])
