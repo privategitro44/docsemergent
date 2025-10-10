@@ -455,18 +455,24 @@ async def health_check():
 # Custom route for serving uploaded files with proper MIME types and CORS
 @app.get("/uploads/{filename}")
 async def serve_upload(filename: str):
+    import mimetypes
+    
     file_path = uploads_dir / filename
     if not file_path.exists():
         raise HTTPException(status_code=404, detail="File not found")
     
+    # Read file content
+    async with aiofiles.open(file_path, 'rb') as f:
+        content = await f.read()
+    
     # Determine MIME type based on file extension
-    import mimetypes
     mime_type, _ = mimetypes.guess_type(str(file_path))
     if mime_type is None:
         mime_type = "application/octet-stream"
     
-    return FileResponse(
-        path=file_path,
+    # Return Response with explicit headers
+    return Response(
+        content=content,
         media_type=mime_type,
         headers={
             "Access-Control-Allow-Origin": "*",
