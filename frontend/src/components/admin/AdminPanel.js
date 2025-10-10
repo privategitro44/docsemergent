@@ -1,14 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { API } from "../../config";
 import AdminDashboard from "./AdminDashboard";
 import ArticleManager from "./ArticleManager";
 import NavigationManager from "./NavigationManager";
 import ArticleEditor from "./ArticleEditor";
 import SocialLinksManager from "./SocialLinksManager";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
 
 const AdminPanel = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
