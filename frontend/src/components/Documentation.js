@@ -9,6 +9,7 @@ import { ReactComponent as DiscordIcon } from "../assets/social icons/discord.sv
 import { ReactComponent as XIcon } from "../assets/social icons/X.svg";
 import { ReactComponent as LinkedInIcon } from "../assets/social icons/Linkedin.svg";
 import { ReactComponent as InstagramIcon } from "../assets/social icons/Instagram.svg";
+import { BACKEND_URL, API } from "../config";
 
 // Heroicons (outline) for UI + sidebar items
 import {
