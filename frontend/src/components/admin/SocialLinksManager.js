@@ -3,6 +3,7 @@ import axios from "axios";
 import AdminLayout from "./AdminLayout";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { Plus, Trash2, Pencil, Link as LinkIcon } from "lucide-react";
+import { API } from "../../config";
 
 // Inline brand icons to avoid version issues with 3rd-party icon sets
 const BrandIcon = ({ name }) => {
