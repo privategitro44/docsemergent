@@ -3,9 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
 import { Save, ArrowLeft, Upload, Link as LinkIcon, Eye, EyeOff, X, ArrowUp, ArrowDown } from "lucide-react";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL, API } from "../../config";
 
 const ArticleEditor = ({ onLogout }) => {
   const { id } = useParams();
