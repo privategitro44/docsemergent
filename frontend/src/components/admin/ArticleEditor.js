@@ -1,9 +1,64 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
-import { Save, ArrowLeft, Upload, Link as LinkIcon, Eye, EyeOff, X, ArrowUp, ArrowDown } from "lucide-react";
+import { Save, ArrowLeft, Upload, Link as LinkIcon, Eye, EyeOff } from "lucide-react";
 import { BACKEND_URL, API } from "../../config";
+import { EditorContent, useEditor } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+
+const TipTapToolbar = ({ editor }) => {
+  if (!editor) return null;
+  const btn = (label, onClick, isActive=false) => (
+    <button type="button" className={`toolbar-btn${isActive ? ' active' : ''}`} onClick={onClick}>{label}</button>
+  );
+  return (
+    <div className="editor-toolbar">
+      {btn('B', () => editor.chain().focus().toggleBold().run(), editor.isActive('bold'))}
+      {btn('I', () => editor.chain().focus().toggleItalic().run(), editor.isActive('italic'))}
+      {btn('H2', () => editor.chain().focus().toggleHeading({ level: 2 }).run(), editor.isActive('heading', { level: 2 }))}
+      {btn('H3', () => editor.chain().focus().toggleHeading({ level: 3 }).run(), editor.isActive('heading', { level: 3 }))}
+      {btn('UL', () => editor.chain().focus().toggleBulletList().run(), editor.isActive('bulletList'))}
+      {btn('OL', () => editor.chain().focus().toggleOrderedList().run(), editor.isActive('orderedList'))}
+      {btn('</>', () => editor.chain().focus().toggleCodeBlock().run(), editor.isActive('codeBlock'))}
+    </div>
+  );
+};
+
+const StepRichEditor = ({ value, onChange, placeholder }) => {
+  const editor = useEditor({
+    extensions: [StarterKit],
+    content: value || '',
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      if (html !== value) onChange(html);
+    },
+  }, [value]);
+
+  // Update editor when value prop changes externally
+  useEffect(() => {
+    if (editor && value !== editor.getHTML()) {
+      editor.commands.setContent(value || '', false);
+    }
+  }, [value, editor]);
+
+  return (
+    <div className="html-editor">
+      <TipTapToolbar editor={editor} />
+      <div className="tiptap-wrap">
+        <EditorContent editor={editor} />
+      </div>
+      {placeholder ? (
+        <div className="editor-help"><small>{placeholder}</small></div>
+      ) : null}
+    </div>
+  );
+};
 
 const ArticleEditor = ({ onLogout }) => {
   const { id } = useParams();
@@ -32,14 +87,41 @@ const ArticleEditor = ({ onLogout }) => {
     }
   }, [id]);
 
+  const migrateStepsBlock = (block) => {
+    if (!block || block.type !== 'steps') return block;
+    const steps = Array.isArray(block.steps) ? block.steps : [];
+    // If already new format (has html fields), return as-is
+    const isNew = steps.some(s => typeof s?.html === 'string');
+    if (isNew) return block;
+    const migrated = steps.map((s) => {
+      const parts = [];
+      if (s?.title) parts.push(`<div class="step-title">${s.title}</div>`);
+      if (s?.description) parts.push(`<p>${s.description}</p>`);
+      if (Array.isArray(s?.bullets) && s.bullets.length) {
+        parts.push(`<ul>${s.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`);
+      }
+      return { html: parts.join('') };
+    });
+    return { ...block, steps: migrated };
+  };
+
+  const migrateArticle = (a) => {
+    try {
+      if (!a || !Array.isArray(a.content)) return a;
+      const newContent = a.content.map((b) => migrateStepsBlock(b));
+      return { ...a, content: newContent };
+    } catch (e) { return a; }
+  };
+
   const fetchArticle = async () => {
     try {
       const token = localStorage.getItem("adminToken");
       const response = await axios.get(`${API}/admin/articles/${id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setArticle(response.data);
-      setKeywordInput(response.data.keywords.join(", "));
+      const data = migrateArticle(response.data);
+      setArticle(data);
+      setKeywordInput((data.keywords || []).join(", "));
     } catch (error) {
       console.error("Error fetching article:", error);
       alert("Failed to load article. Please try again.");
@@ -72,6 +154,15 @@ const ArticleEditor = ({ onLogout }) => {
     }
   };
 
+  const updateBlock = (index, updater) => {
+    setArticle(prev => {
+      const content = [...prev.content];
+      const old = content[index] || {};
+      content[index] = updater(old);
+      return { ...prev, content };
+    });
+  };
+
   const handleContentChange = (index, field, value) => {
     const newContent = [...article.content];
     newContent[index] = { ...newContent[index], [field]: value };
@@ -85,6 +176,11 @@ const ArticleEditor = ({ onLogout }) => {
       alt: "",
       caption: ""
     };
+    // If creating Steps, initialize with one empty step
+    if (type === 'steps') {
+      newBlock.title = '';
+      newBlock.steps = [{ html: '' }];
+    }
     setArticle(prev => ({
       ...prev,
       content: [...prev.content, newBlock]
@@ -92,20 +188,20 @@ const ArticleEditor = ({ onLogout }) => {
   };
 
   const removeContentBlock = (index) => {
-    if (article.content.length <= 1) return;
+    if (article.content.length &lt;= 1) return;
     
-    const newContent = article.content.filter((_, i) => i !== index);
-    setArticle(prev => ({ ...prev, content: newContent }));
+    const newContent = article.content.filter((_, i) =&gt; i !== index);
+    setArticle(prev =&gt; ({ ...prev, content: newContent }));
   };
 
   const moveContentBlock = (index, direction) => {
     const newContent = [...article.content];
     const newIndex = direction === "up" ? index - 1 : index + 1;
     
-    if (newIndex < 0 || newIndex >= newContent.length) return;
+    if (newIndex &lt; 0 || newIndex &gt;= newContent.length) return;
     
     [newContent[index], newContent[newIndex]] = [newContent[newIndex], newContent[index]];
-    setArticle(prev => ({ ...prev, content: newContent }));
+    setArticle(prev =&gt; ({ ...prev, content: newContent }));
   };
 
   const uploadMedia = async (file, contentIndex) => {
@@ -134,9 +230,9 @@ const ArticleEditor = ({ onLogout }) => {
     setKeywordInput(value);
     const keywords = value
       .split(",")
-      .map(k => k.trim())
-      .filter(k => k.length > 0);
-    setArticle(prev => ({ ...prev, keywords }));
+      .map(k =&gt; k.trim())
+      .filter(k =&gt; k.length &gt; 0);
+    setArticle(prev =&gt; ({ ...prev, keywords }));
   };
 
   const validateForm = () => {
@@ -154,7 +250,7 @@ const ArticleEditor = ({ onLogout }) => {
       newErrors.category = "Category is required";
     }
     
-    if (!article.content.some(block => block.content.trim())) {
+    if (!article.content.some(block =&gt; (block.type === 'text' &amp;&amp; (block.content || '').trim()) || (block.type !== 'text'))) {
       newErrors.content = "Article must have some content";
     }
     
@@ -170,19 +266,20 @@ const ArticleEditor = ({ onLogout }) => {
     try {
       const token = localStorage.getItem("adminToken");
       const headers = { Authorization: `Bearer ${token}` };
+      const payload = migrateArticle(article); // ensure any lingering legacy steps are migrated
       
       if (isEditing) {
-        await axios.put(`${API}/admin/articles/${id}`, article, { headers });
+        await axios.put(`${API}/admin/articles/${id}`, payload, { headers });
         alert("Article updated successfully!");
       } else {
-        await axios.post(`${API}/admin/articles`, article, { headers });
+        await axios.post(`${API}/admin/articles`, payload, { headers });
         alert("Article created successfully!");
       }
       
       navigate("/admin/articles");
     } catch (error) {
       console.error("Error saving article:", error);
-      if (error.response?.status === 400 && error.response?.data?.detail?.includes("slug")) {
+      if (error.response?.status === 400 &amp;&amp; error.response?.data?.detail?.includes("slug")) {
         setErrors({ slug: "This slug is already in use. Please choose a different one." });
       } else {
         alert("Failed to save article. Please try again.");
@@ -192,7 +289,7 @@ const ArticleEditor = ({ onLogout }) => {
     }
   };
 
-  // Simple HTML formatting helper
+  // Simple HTML formatting helper (legacy Text block)
   const insertFormatting = (index, tag) => {
     const textarea = document.getElementById(`content-${index}`);
     if (!textarea) return;
@@ -205,40 +302,40 @@ const ArticleEditor = ({ onLogout }) => {
     
     let newText;
     if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') {
-      newText = `${before}<${tag}>${selectedText || 'Your text here'}</${tag}>${after}`;
+      newText = `${before}&lt;${tag}&gt;${selectedText || 'Your text here'}&lt;/${tag}&gt;${after}`;
     } else if (tag === 'ul' || tag === 'ol') {
-      newText = `${before}<${tag}>\n  <li>${selectedText || 'List item'}</li>\n</${tag}>${after}`;
+      newText = `${before}&lt;${tag}&gt;\n  &lt;li&gt;${selectedText || 'List item'}&lt;/li&gt;\n&lt;/${tag}&gt;${after}`;
     } else if (tag === 'a') {
-      newText = `${before}<a href="url">${selectedText || 'Link text'}</a>${after}`;
+      newText = `${before}&lt;a href="url"&gt;${selectedText || 'Link text'}&lt;/a&gt;${after}`;
     } else if (tag === 'code') {
-      newText = `${before}<code>${selectedText || 'code'}</code>${after}`;
+      newText = `${before}&lt;code&gt;${selectedText || 'code'}&lt;/code&gt;${after}`;
     } else if (tag === 'table') {
-      const tableTpl = `<div class="table-responsive">
-  <table class="doc-table">
-    <thead>
-      <tr>
-        <th>Header 1</th>
-        <th>Header 2</th>
-        <th>Header 3</th>
-      </tr>
-    </thead>
-    <tbody>
-      <tr>
-        <td>Cell 1</td>
-        <td>Cell 2</td>
-        <td>Cell 3</td>
-      </tr>
-      <tr>
-        <td>Cell 4</td>
-        <td>Cell 5</td>
-        <td>Cell 6</td>
-      </tr>
-    </tbody>
-  </table>
-</div>`;
+      const tableTpl = `&lt;div class="table-responsive"&gt;
+  &lt;table class="doc-table"&gt;
+    &lt;thead&gt;
+      &lt;tr&gt;
+        &lt;th&gt;Header 1&lt;/th&gt;
+        &lt;th&gt;Header 2&lt;/th&gt;
+        &lt;th&gt;Header 3&lt;/th&gt;
+      &lt;/tr&gt;
+    &lt;/thead&gt;
+    &lt;tbody&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Cell 1&lt;/td&gt;
+        &lt;td&gt;Cell 2&lt;/td&gt;
+        &lt;td&gt;Cell 3&lt;/td&gt;
+      &lt;/tr&gt;
+      &lt;tr&gt;
+        &lt;td&gt;Cell 4&lt;/td&gt;
+        &lt;td&gt;Cell 5&lt;/td&gt;
+        &lt;td&gt;Cell 6&lt;/td&gt;
+      &lt;/tr&gt;
+    &lt;/tbody&gt;
+  &lt;/table&gt;
+&lt;/div&gt;`;
       newText = `${before}${tableTpl}${after}`;
     } else {
-      newText = `${before}<${tag}>${selectedText}</${tag}>${after}`;
+      newText = `${before}&lt;${tag}&gt;${selectedText}&lt;/${tag}&gt;${after}`;
     }
     
     handleContentChange(index, 'content', newText);
@@ -391,7 +488,7 @@ const ArticleEditor = ({ onLogout }) => {
 
           {/* SEO Information */}
           <div className="editor-section">
-            <h2 className="section-title">SEO & Metadata</h2>
+            <h2 className="section-title">SEO &amp; Metadata</h2>
             
             <div className="form-group">
               <label className="form-label">Meta Description</label>
@@ -435,7 +532,17 @@ const ArticleEditor = ({ onLogout }) => {
                 <div className="content-block-header">
                   <select
                     value={block.type}
-                    onChange={(e) => handleContentChange(index, "type", e.target.value)}
+                    onChange={(e) => {
+                      const val = e.target.value;
+                      updateBlock(index, (old) => {
+                        const next = { ...old, type: val };
+                        if (val === 'steps' &amp;&amp; !Array.isArray(next.steps)) {
+                          next.title = next.title || '';
+                          next.steps = [{ html: '' }];
+                        }
+                        return next;
+                      });
+                    }}
                     className="content-type-select"
                     data-testid={`content-type-${index}`}
                   >
@@ -449,7 +556,7 @@ const ArticleEditor = ({ onLogout }) => {
                   </select>
                   
                   <div className="content-block-actions">
-                    {index > 0 && (
+                    {index &gt; 0 && (
                       <button
                         onClick={() => moveContentBlock(index, "up")}
                         className="action-btn"
@@ -458,7 +565,7 @@ const ArticleEditor = ({ onLogout }) => {
                         ↑
                       </button>
                     )}
-                    {index < article.content.length - 1 && (
+                    {index &lt; article.content.length - 1 && (
                       <button
                         onClick={() => moveContentBlock(index, "down")}
                         className="action-btn"
@@ -467,7 +574,7 @@ const ArticleEditor = ({ onLogout }) => {
                         ↓
                       </button>
                     )}
-                    {article.content.length > 1 && (
+                    {article.content.length &gt; 1 && (
                       <button
                         onClick={() => removeContentBlock(index)}
                         className="action-btn delete"
@@ -679,56 +786,26 @@ const ArticleEditor = ({ onLogout }) => {
                       <div className="form-group">
                         <label className="form-label">Steps</label>
                         <div className="steps-list-editor">
-                          {Array.isArray(block.steps) && block.steps.length > 0 ? block.steps.map((s, i) => (
+                          {Array.isArray(block.steps) && block.steps.length &gt; 0 ? block.steps.map((s, i) => (
                             <div key={i} className="step-edit-card">
-                              <div className="form-row">
-                                <input
-                                  type="text"
-                                  value={s.title || ''}
-                                  onChange={(e) => {
-                                    const steps = [...(block.steps || [])];
-                                    steps[i] = { ...steps[i], title: e.target.value };
-                                    handleContentChange(index, 'steps', steps);
-                                  }}
-                                  className="form-input"
-                                  placeholder={`Step ${i+1} title`}
-                                />
-                              </div>
-                              <div className="form-row">
-                                <textarea
-                                  value={s.description || ''}
-                                  onChange={(e) => {
-                                    const steps = [...(block.steps || [])];
-                                    steps[i] = { ...steps[i], description: e.target.value };
-                                    handleContentChange(index, 'steps', steps);
-                                  }}
-                                  className="form-textarea"
-                                  placeholder="Short description"
-                                  rows={2}
-                                />
-                              </div>
-                              <div className="form-row">
-                                <textarea
-                                  value={(s.bullets || []).join('\n')}
-                                  onChange={(e) => {
-                                    const steps = [...(block.steps || [])];
-                                    steps[i] = { ...steps[i], bullets: e.target.value.split('\n').map(t => t.trim()).filter(Boolean) };
-                                    handleContentChange(index, 'steps', steps);
-                                  }}
-                                  className="form-textarea"
-                                  placeholder="Bullets (one per line)"
-                                  rows={3}
-                                />
-                              </div>
+                              <StepRichEditor
+                                value={typeof s?.html === 'string' ? s.html : ''}
+                                onChange={(html) => {
+                                  const steps = [...(block.steps || [])];
+                                  steps[i] = { html };
+                                  handleContentChange(index, 'steps', steps);
+                                }}
+                                placeholder="Write rich content for this step. Use H3 for subheadings if needed."
+                              />
                               <div className="content-block-actions">
-                                {i > 0 && (
+                                {i &gt; 0 && (
                                   <button onClick={() => {
                                     const steps = [...(block.steps || [])];
                                     [steps[i-1], steps[i]] = [steps[i], steps[i-1]];
                                     handleContentChange(index, 'steps', steps);
                                   }} className="action-btn" title="Move Up">↑</button>
                                 )}
-                                {i < (block.steps?.length || 0) - 1 && (
+                                {i &lt; (block.steps?.length || 0) - 1 && (
                                   <button onClick={() => {
                                     const steps = [...(block.steps || [])];
                                     [steps[i+1], steps[i]] = [steps[i], steps[i+1]];
@@ -744,8 +821,8 @@ const ArticleEditor = ({ onLogout }) => {
                           )) : <div className="field-help"><small>No steps yet. Add one below.</small></div>}
                           <button onClick={() => {
                             const steps = [...(block.steps || [])];
-                            if (steps.length >= 10) return alert('Max 10 steps allowed');
-                            steps.push({ title: '', description: '', bullets: [] });
+                            if (steps.length &gt;= 10) return alert('Max 10 steps allowed');
+                            steps.push({ html: '' });
                             handleContentChange(index, 'steps', steps);
                           }} className="add-content-btn">+ Add Step</button>
                         </div>
@@ -965,6 +1042,12 @@ const ArticleEditor = ({ onLogout }) => {
                 data-testid="add-embed-block"
               >
                 + Add Embed
+              </button>
+              <button
+                onClick={() => addContentBlock("steps")}
+                className="add-content-btn"
+              >
+                + Add Steps
               </button>
             </div>
           </div>
