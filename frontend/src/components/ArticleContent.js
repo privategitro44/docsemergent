@@ -15,7 +15,6 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
     const container = document.createElement('div');
     container.innerHTML = html;
 
-    // Remove any H1 that exactly matches the page title
     if (stripDuplicateTopHeading && title) {
       const titleNorm = normalizeText(title);
       container.querySelectorAll('h1').forEach((h1) => {
@@ -25,7 +24,6 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
       });
     }
 
-    // Optionally transform remaining H1s to H2s for consistency
     if (transformH1ToH2) {
       const remaining = Array.from(container.querySelectorAll('h1'));
       remaining.forEach((h1) => {
@@ -38,7 +36,6 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
       });
     }
 
-    // Remove immediate duplicate headings (same level and same text) in document order
     const all = Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6'));
     let prev = null;
     all.forEach((h) => {
@@ -49,7 +46,6 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
       }
     });
 
-    // Ensure stable, unique IDs for all headings before HTML is injected
     const idCounts = new Map();
     Array.from(container.querySelectorAll('h1, h2, h3, h4, h5, h6')).forEach((h) => {
       const base = slugify(h.textContent || '');
@@ -62,7 +58,6 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
 
     return container.innerHTML;
   } catch (e) {
-    // If anything fails, return original html
     return html;
   }
 };
@@ -70,7 +65,6 @@ const preprocessHtml = (html, { title, stripDuplicateTopHeading, transformH1ToH2
 const ArticleContent = ({ content, title, stripDuplicateTopHeading = true, transformH1ToH2 = true }) => {
   const contentRef = useRef(null);
 
-  // Preprocess before initial paint to avoid flicker/duplicates
   const processedHtml = useMemo(
     () => preprocessHtml(content, { title, stripDuplicateTopHeading, transformH1ToH2 }),
     [content, title, stripDuplicateTopHeading, transformH1ToH2]
@@ -97,18 +91,15 @@ const ArticleContent = ({ content, title, stripDuplicateTopHeading = true, trans
   return <div ref={contentRef} dangerouslySetInnerHTML={{ __html: processedHtml }} />;
 };
 
-// New components for structured blocks: Steps and Integrations
+// Steps (public)
 export const StepsBlock = ({ block }) => {
   const steps = Array.isArray(block?.steps) ? block.steps : [];
   if (!block || steps.length === 0) return null;
   const id = (block.title || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
 
   const toHtml = (s) => {
-    // If already in new format
     if (s && typeof s.html === 'string' && s.html.trim().length > 0) return s.html;
-    // Migrate legacy fields (title, description, bullets)
     const parts = [];
-    if (s?.title) parts.push(`<div class="step-title">${s.title}</div>`);
     if (s?.description) parts.push(`<p>${s.description}</p>`);
     if (Array.isArray(s?.bullets) && s.bullets.length > 0) {
       parts.push(`<ul>${s.bullets.map((b) => `<li>${b}</li>`).join('')}</ul>`);
@@ -121,13 +112,13 @@ export const StepsBlock = ({ block }) => {
       {block.title && <h2>{block.title}</h2>}
       <ol className="steps-list">
         {steps.map((s, idx) => {
-          const raw = toHtml(s);
-          const sanitized = DOMPurify.sanitize(raw, { USE_PROFILES: { html: true } });
+          const safeHtml = DOMPurify.sanitize(toHtml(s), { USE_PROFILES: { html: true } });
           return (
             <li key={idx} className="step-item">
               <div className="step-number" aria-hidden="true">{idx + 1}</div>
               <div className="step-content">
-                <div dangerouslySetInnerHTML={{ __html: sanitized }} />
+                {s?.title ? <div className="step-title">{s.title}</div> : null}
+                {safeHtml ? <div dangerouslySetInnerHTML={{ __html: safeHtml }} /> : null}
               </div>
             </li>
           );
@@ -141,7 +132,7 @@ export const IntegrationsBlock = ({ block }) => {
   const items = Array.isArray(block?.items) ? block.items : [];
   if (items.length === 0) return null;
   const id = (block.title || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-  const cols = Number(block?.columns) === 3 ? 3 : 2; // default 2
+  const cols = Number(block?.columns) === 3 ? 3 : 2;
 
   const Icon = ({ name }) => {
     const n = String(name || '').toLowerCase();
@@ -187,7 +178,7 @@ export const ArticleLinksBlock = ({ block, onNavigate }) => {
   const items = Array.isArray(block?.items) ? block.items : [];
   if (items.length === 0) return null;
   const id = (block.title || '').trim().toLowerCase().replace(/\s+/g, '-').replace(/[^\w-]/g, '');
-  const cols = Number(block?.columns) === 2 ? 2 : 3; // default 3
+  const cols = Number(block?.columns) === 2 ? 2 : 3;
 
   const BuiltinIcon = ({ name }) => {
     const n = String(name || '').toLowerCase();

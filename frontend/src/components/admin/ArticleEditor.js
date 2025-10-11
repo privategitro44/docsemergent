@@ -89,16 +89,17 @@ const ArticleEditor = ({ onLogout }) => {
   const migrateStepsBlock = (block) => {
     if (!block || block.type !== 'steps') return block;
     const steps = Array.isArray(block.steps) ? block.steps : [];
-    const isNew = steps.some(s => typeof s?.html === 'string');
+    // If already new format (has html or title fields), return as-is
+    const isNew = steps.some(s => typeof s?.html === 'string' || typeof s?.title === 'string');
     if (isNew) return block;
+    // Legacy: title, description, bullets
     const migrated = steps.map((s) => {
       const parts = [];
-      if (s?.title) parts.push(`<div class="step-title">${s.title}</div>`);
       if (s?.description) parts.push(`<p>${s.description}</p>`);
       if (Array.isArray(s?.bullets) && s.bullets.length) {
         parts.push(`<ul>${s.bullets.map(b => `<li>${b}</li>`).join('')}</ul>`);
       }
-      return { html: parts.join('') };
+      return { title: s?.title || '', html: parts.join('') };
     });
     return { ...block, steps: migrated };
   };
@@ -172,7 +173,7 @@ const ArticleEditor = ({ onLogout }) => {
     };
     if (type === 'steps') {
       newBlock.title = '';
-      newBlock.steps = [{ html: '' }];
+      newBlock.steps = [{ title: '', html: '' }];
     }
     setArticle(prev => ({
       ...prev,
@@ -514,7 +515,7 @@ const ArticleEditor = ({ onLogout }) => {
                         const next = { ...old, type: val };
                         if (val === 'steps' && !Array.isArray(next.steps)) {
                           next.title = next.title || '';
-                          next.steps = [{ html: '' }];
+                          next.steps = [{ title: '', html: '' }];
                         }
                         return next;
                       });
@@ -566,94 +567,17 @@ const ArticleEditor = ({ onLogout }) => {
                   {block.type === "text" && (
                     <div className="html-editor">
                       <div className="editor-toolbar">
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'h1')}
-                          className="toolbar-btn"
-                          title="Heading 1"
-                        >
-                          H1
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'h2')}
-                          className="toolbar-btn"
-                          title="Heading 2"
-                        >
-                          H2
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'h3')}
-                          className="toolbar-btn"
-                          title="Heading 3"
-                        >
-                          H3
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'p')}
-                          className="toolbar-btn"
-                          title="Paragraph"
-                        >
-                          P
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'strong')}
-                          className="toolbar-btn"
-                          title="Bold"
-                        >
-                          <strong>B</strong>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'em')}
-                          className="toolbar-btn"
-                          title="Italic"
-                        >
-                          <em>I</em>
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'ul')}
-                          className="toolbar-btn"
-                          title="Bullet List"
-                        >
-                          UL
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'ol')}
-                          className="toolbar-btn"
-                          title="Numbered List"
-                        >
-                          OL
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'a')}
-                          className="toolbar-btn"
-                          title="Link"
-                        >
-                          <LinkIcon size={14} />
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'code')}
-                          className="toolbar-btn"
-                          title="Code"
-                        >
-                          {'</>'}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => insertFormatting(index, 'table')}
-                          className="toolbar-btn"
-                          title="Insert table"
-                        >
-                          Table
-                        </button>
+                        <button type="button" onClick={() => insertFormatting(index, 'h1')} className="toolbar-btn" title="Heading 1">H1</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'h2')} className="toolbar-btn" title="Heading 2">H2</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'h3')} className="toolbar-btn" title="Heading 3">H3</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'p')} className="toolbar-btn" title="Paragraph">P</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'strong')} className="toolbar-btn" title="Bold"><strong>B</strong></button>
+                        <button type="button" onClick={() => insertFormatting(index, 'em')} className="toolbar-btn" title="Italic"><em>I</em></button>
+                        <button type="button" onClick={() => insertFormatting(index, 'ul')} className="toolbar-btn" title="Bullet List">UL</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'ol')} className="toolbar-btn" title="Numbered List">OL</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'a')} className="toolbar-btn" title="Link"><LinkIcon size={14} /></button>
+                        <button type="button" onClick={() => insertFormatting(index, 'code')} className="toolbar-btn" title="Code">{'</>'}</button>
+                        <button type="button" onClick={() => insertFormatting(index, 'table')} className="toolbar-btn" title="Insert table">Table</button>
                       </div>
                       <textarea
                         id={`content-${index}`}
@@ -755,7 +679,7 @@ const ArticleEditor = ({ onLogout }) => {
                           value={block.title || ''}
                           onChange={(e) => handleContentChange(index, 'title', e.target.value)}
                           className="form-input"
-                          placeholder="e.g., How to enable Visual Edits"
+                          placeholder="e.g., Getting set up"
                         />
                       </div>
 
@@ -764,11 +688,24 @@ const ArticleEditor = ({ onLogout }) => {
                         <div className="steps-list-editor">
                           {Array.isArray(block.steps) && block.steps.length > 0 ? block.steps.map((s, i) => (
                             <div key={i} className="step-edit-card">
+                              <div className="form-row">
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  placeholder={`Step ${i+1} name`}
+                                  value={s.title || ''}
+                                  onChange={(e) => {
+                                    const steps = [...(block.steps || [])];
+                                    steps[i] = { ...(steps[i] || {}), title: e.target.value };
+                                    handleContentChange(index, 'steps', steps);
+                                  }}
+                                />
+                              </div>
                               <StepRichEditor
                                 value={typeof s?.html === 'string' ? s.html : ''}
                                 onChange={(html) => {
                                   const steps = [...(block.steps || [])];
-                                  steps[i] = { html };
+                                  steps[i] = { ...(steps[i] || {}), html };
                                   handleContentChange(index, 'steps', steps);
                                 }}
                                 placeholder="Write rich content for this step. Use H3 for subheadings if needed."
@@ -798,7 +735,7 @@ const ArticleEditor = ({ onLogout }) => {
                           <button onClick={() => {
                             const steps = [...(block.steps || [])];
                             if (steps.length >= 10) return alert('Max 10 steps allowed');
-                            steps.push({ html: '' });
+                            steps.push({ title: '', html: '' });
                             handleContentChange(index, 'steps', steps);
                           }} className="add-content-btn">+ Add Step</button>
                         </div>
@@ -991,40 +928,11 @@ const ArticleEditor = ({ onLogout }) => {
             ))}
             
             <div className="add-content-buttons">
-              <button
-                onClick={() => addContentBlock("text")}
-                className="add-content-btn"
-                data-testid="add-text-block"
-              >
-                + Add Text
-              </button>
-              <button
-                onClick={() => addContentBlock("image")}
-                className="add-content-btn"
-                data-testid="add-image-block"
-              >
-                + Add Image
-              </button>
-              <button
-                onClick={() => addContentBlock("video")}
-                className="add-content-btn"
-                data-testid="add-video-block"
-              >
-                + Add Video
-              </button>
-              <button
-                onClick={() => addContentBlock("embed")}
-                className="add-content-btn"
-                data-testid="add-embed-block"
-              >
-                + Add Embed
-              </button>
-              <button
-                onClick={() => addContentBlock("steps")}
-                className="add-content-btn"
-              >
-                + Add Steps
-              </button>
+              <button onClick={() => addContentBlock("text")} className="add-content-btn" data-testid="add-text-block">+ Add Text</button>
+              <button onClick={() => addContentBlock("image")} className="add-content-btn" data-testid="add-image-block">+ Add Image</button>
+              <button onClick={() => addContentBlock("video")} className="add-content-btn" data-testid="add-video-block">+ Add Video</button>
+              <button onClick={() => addContentBlock("embed")} className="add-content-btn" data-testid="add-embed-block">+ Add Embed</button>
+              <button onClick={() => addContentBlock("steps")} className="add-content-btn">+ Add Steps</button>
             </div>
           </div>
         </div>
