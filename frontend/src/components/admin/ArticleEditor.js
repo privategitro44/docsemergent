@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
@@ -40,7 +40,6 @@ const StepRichEditor = ({ value, onChange, placeholder }) => {
     },
   }, [value]);
 
-  // Update editor when value prop changes externally
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
       editor.commands.setContent(value || '', false);
@@ -90,7 +89,6 @@ const ArticleEditor = ({ onLogout }) => {
   const migrateStepsBlock = (block) => {
     if (!block || block.type !== 'steps') return block;
     const steps = Array.isArray(block.steps) ? block.steps : [];
-    // If already new format (has html fields), return as-is
     const isNew = steps.some(s => typeof s?.html === 'string');
     if (isNew) return block;
     const migrated = steps.map((s) => {
@@ -142,13 +140,9 @@ const ArticleEditor = ({ onLogout }) => {
 
   const handleInputChange = (field, value) => {
     setArticle(prev => ({ ...prev, [field]: value }));
-    
-    // Auto-generate slug from title
     if (field === "title" && !isEditing) {
       setArticle(prev => ({ ...prev, slug: generateSlug(value) }));
     }
-    
-    // Clear errors
     if (errors[field]) {
       setErrors(prev => ({ ...prev, [field]: null }));
     }
@@ -176,7 +170,6 @@ const ArticleEditor = ({ onLogout }) => {
       alt: "",
       caption: ""
     };
-    // If creating Steps, initialize with one empty step
     if (type === 'steps') {
       newBlock.title = '';
       newBlock.steps = [{ html: '' }];
@@ -188,20 +181,17 @@ const ArticleEditor = ({ onLogout }) => {
   };
 
   const removeContentBlock = (index) => {
-    if (article.content.length &lt;= 1) return;
-    
-    const newContent = article.content.filter((_, i) =&gt; i !== index);
-    setArticle(prev =&gt; ({ ...prev, content: newContent }));
+    if (article.content.length <= 1) return;
+    const newContent = article.content.filter((_, i) => i !== index);
+    setArticle(prev => ({ ...prev, content: newContent }));
   };
 
   const moveContentBlock = (index, direction) => {
     const newContent = [...article.content];
     const newIndex = direction === "up" ? index - 1 : index + 1;
-    
-    if (newIndex &lt; 0 || newIndex &gt;= newContent.length) return;
-    
+    if (newIndex < 0 || newIndex >= newContent.length) return;
     [newContent[index], newContent[newIndex]] = [newContent[newIndex], newContent[index]];
-    setArticle(prev =&gt; ({ ...prev, content: newContent }));
+    setArticle(prev => ({ ...prev, content: newContent }));
   };
 
   const uploadMedia = async (file, contentIndex) => {
@@ -209,15 +199,12 @@ const ArticleEditor = ({ onLogout }) => {
       const token = localStorage.getItem("adminToken");
       const formData = new FormData();
       formData.append("file", file);
-      
       const response = await axios.post(`${API}/admin/upload`, formData, {
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "multipart/form-data"
         }
       });
-      
-      // Update content with uploaded file URL
       handleContentChange(contentIndex, "content", response.data.url);
       alert("File uploaded successfully!");
     } catch (error) {
@@ -230,44 +217,36 @@ const ArticleEditor = ({ onLogout }) => {
     setKeywordInput(value);
     const keywords = value
       .split(",")
-      .map(k =&gt; k.trim())
-      .filter(k =&gt; k.length &gt; 0);
-    setArticle(prev =&gt; ({ ...prev, keywords }));
+      .map(k => k.trim())
+      .filter(k => k.length > 0);
+    setArticle(prev => ({ ...prev, keywords }));
   };
 
   const validateForm = () => {
     const newErrors = {};
-    
     if (!article.title.trim()) {
       newErrors.title = "Title is required";
     }
-    
     if (!article.slug.trim()) {
       newErrors.slug = "Slug is required";
     }
-    
     if (!article.category.trim()) {
       newErrors.category = "Category is required";
     }
-    
-    if (!article.content.some(block =&gt; (block.type === 'text' &amp;&amp; (block.content || '').trim()) || (block.type !== 'text'))) {
+    if (!article.content.some(block => (block.type === 'text' && (block.content || '').trim()) || (block.type !== 'text'))) {
       newErrors.content = "Article must have some content";
     }
-    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
 
   const handleSave = async () => {
     if (!validateForm()) return;
-    
     setSaving(true);
-    
     try {
       const token = localStorage.getItem("adminToken");
       const headers = { Authorization: `Bearer ${token}` };
-      const payload = migrateArticle(article); // ensure any lingering legacy steps are migrated
-      
+      const payload = migrateArticle(article);
       if (isEditing) {
         await axios.put(`${API}/admin/articles/${id}`, payload, { headers });
         alert("Article updated successfully!");
@@ -275,11 +254,10 @@ const ArticleEditor = ({ onLogout }) => {
         await axios.post(`${API}/admin/articles`, payload, { headers });
         alert("Article created successfully!");
       }
-      
       navigate("/admin/articles");
     } catch (error) {
       console.error("Error saving article:", error);
-      if (error.response?.status === 400 &amp;&amp; error.response?.data?.detail?.includes("slug")) {
+      if (error.response?.status === 400 && error.response?.data?.detail?.includes("slug")) {
         setErrors({ slug: "This slug is already in use. Please choose a different one." });
       } else {
         alert("Failed to save article. Please try again.");
@@ -289,55 +267,53 @@ const ArticleEditor = ({ onLogout }) => {
     }
   };
 
-  // Simple HTML formatting helper (legacy Text block)
   const insertFormatting = (index, tag) => {
     const textarea = document.getElementById(`content-${index}`);
     if (!textarea) return;
-    
     const start = textarea.selectionStart;
     const end = textarea.selectionEnd;
     const selectedText = textarea.value.substring(start, end);
     const before = textarea.value.substring(0, start);
     const after = textarea.value.substring(end);
-    
     let newText;
     if (tag === 'h1' || tag === 'h2' || tag === 'h3' || tag === 'p') {
-      newText = `${before}&lt;${tag}&gt;${selectedText || 'Your text here'}&lt;/${tag}&gt;${after}`;
+      newText = `${before}<${tag}>${selectedText || 'Your text here'}</${tag}>${after}`;
     } else if (tag === 'ul' || tag === 'ol') {
-      newText = `${before}&lt;${tag}&gt;\n  &lt;li&gt;${selectedText || 'List item'}&lt;/li&gt;\n&lt;/${tag}&gt;${after}`;
+      newText = `${before}<${tag}>
+  <li>${selectedText || 'List item'}</li>
+</${tag}>${after}`;
     } else if (tag === 'a') {
-      newText = `${before}&lt;a href="url"&gt;${selectedText || 'Link text'}&lt;/a&gt;${after}`;
+      newText = `${before}<a href="url">${selectedText || 'Link text'}</a>${after}`;
     } else if (tag === 'code') {
-      newText = `${before}&lt;code&gt;${selectedText || 'code'}&lt;/code&gt;${after}`;
+      newText = `${before}<code>${selectedText || 'code'}</code>${after}`;
     } else if (tag === 'table') {
-      const tableTpl = `&lt;div class="table-responsive"&gt;
-  &lt;table class="doc-table"&gt;
-    &lt;thead&gt;
-      &lt;tr&gt;
-        &lt;th&gt;Header 1&lt;/th&gt;
-        &lt;th&gt;Header 2&lt;/th&gt;
-        &lt;th&gt;Header 3&lt;/th&gt;
-      &lt;/tr&gt;
-    &lt;/thead&gt;
-    &lt;tbody&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Cell 1&lt;/td&gt;
-        &lt;td&gt;Cell 2&lt;/td&gt;
-        &lt;td&gt;Cell 3&lt;/td&gt;
-      &lt;/tr&gt;
-      &lt;tr&gt;
-        &lt;td&gt;Cell 4&lt;/td&gt;
-        &lt;td&gt;Cell 5&lt;/td&gt;
-        &lt;td&gt;Cell 6&lt;/td&gt;
-      &lt;/tr&gt;
-    &lt;/tbody&gt;
-  &lt;/table&gt;
-&lt;/div&gt;`;
+      const tableTpl = `<div class="table-responsive">
+  <table class="doc-table">
+    <thead>
+      <tr>
+        <th>Header 1</th>
+        <th>Header 2</th>
+        <th>Header 3</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Cell 1</td>
+        <td>Cell 2</td>
+        <td>Cell 3</td>
+      </tr>
+      <tr>
+        <td>Cell 4</td>
+        <td>Cell 5</td>
+        <td>Cell 6</td>
+      </tr>
+    </tbody>
+  </table>
+</div>`;
       newText = `${before}${tableTpl}${after}`;
     } else {
-      newText = `${before}&lt;${tag}&gt;${selectedText}&lt;/${tag}&gt;${after}`;
+      newText = `${before}<${tag}>${selectedText}</${tag}>${after}`;
     }
-    
     handleContentChange(index, 'content', newText);
   };
 
@@ -536,7 +512,7 @@ const ArticleEditor = ({ onLogout }) => {
                       const val = e.target.value;
                       updateBlock(index, (old) => {
                         const next = { ...old, type: val };
-                        if (val === 'steps' &amp;&amp; !Array.isArray(next.steps)) {
+                        if (val === 'steps' && !Array.isArray(next.steps)) {
                           next.title = next.title || '';
                           next.steps = [{ html: '' }];
                         }
@@ -556,7 +532,7 @@ const ArticleEditor = ({ onLogout }) => {
                   </select>
                   
                   <div className="content-block-actions">
-                    {index &gt; 0 && (
+                    {index > 0 && (
                       <button
                         onClick={() => moveContentBlock(index, "up")}
                         className="action-btn"
@@ -565,7 +541,7 @@ const ArticleEditor = ({ onLogout }) => {
                         ↑
                       </button>
                     )}
-                    {index &lt; article.content.length - 1 && (
+                    {index < article.content.length - 1 && (
                       <button
                         onClick={() => moveContentBlock(index, "down")}
                         className="action-btn"
@@ -574,7 +550,7 @@ const ArticleEditor = ({ onLogout }) => {
                         ↓
                       </button>
                     )}
-                    {article.content.length &gt; 1 && (
+                    {article.content.length > 1 && (
                       <button
                         onClick={() => removeContentBlock(index)}
                         className="action-btn delete"
@@ -668,7 +644,7 @@ const ArticleEditor = ({ onLogout }) => {
                           className="toolbar-btn"
                           title="Code"
                         >
-                          &lt;/&gt;
+                          {'</>'}
                         </button>
                         <button
                           type="button"
@@ -688,7 +664,7 @@ const ArticleEditor = ({ onLogout }) => {
                         rows={15}
                       />
                       <div className="editor-help">
-                        <small>You can write HTML directly or use the buttons above to insert tags. Example: &lt;p&gt;Your text&lt;/p&gt;</small>
+                        <small>You can write HTML directly or use the buttons above to insert tags. Example: {'<p>'}Your text{'</p>'}</small>
                       </div>
                     </div>
                   )}
@@ -786,7 +762,7 @@ const ArticleEditor = ({ onLogout }) => {
                       <div className="form-group">
                         <label className="form-label">Steps</label>
                         <div className="steps-list-editor">
-                          {Array.isArray(block.steps) && block.steps.length &gt; 0 ? block.steps.map((s, i) => (
+                          {Array.isArray(block.steps) && block.steps.length > 0 ? block.steps.map((s, i) => (
                             <div key={i} className="step-edit-card">
                               <StepRichEditor
                                 value={typeof s?.html === 'string' ? s.html : ''}
@@ -798,14 +774,14 @@ const ArticleEditor = ({ onLogout }) => {
                                 placeholder="Write rich content for this step. Use H3 for subheadings if needed."
                               />
                               <div className="content-block-actions">
-                                {i &gt; 0 && (
+                                {i > 0 && (
                                   <button onClick={() => {
                                     const steps = [...(block.steps || [])];
                                     [steps[i-1], steps[i]] = [steps[i], steps[i-1]];
                                     handleContentChange(index, 'steps', steps);
                                   }} className="action-btn" title="Move Up">↑</button>
                                 )}
-                                {i &lt; (block.steps?.length || 0) - 1 && (
+                                {i < (block.steps?.length || 0) - 1 && (
                                   <button onClick={() => {
                                     const steps = [...(block.steps || [])];
                                     [steps[i+1], steps[i]] = [steps[i], steps[i+1]];
@@ -821,7 +797,7 @@ const ArticleEditor = ({ onLogout }) => {
                           )) : <div className="field-help"><small>No steps yet. Add one below.</small></div>}
                           <button onClick={() => {
                             const steps = [...(block.steps || [])];
-                            if (steps.length &gt;= 10) return alert('Max 10 steps allowed');
+                            if (steps.length >= 10) return alert('Max 10 steps allowed');
                             steps.push({ html: '' });
                             handleContentChange(index, 'steps', steps);
                           }} className="add-content-btn">+ Add Step</button>
