@@ -141,7 +141,6 @@ frontend:
           agent: "main"
           comment: "Added comprehensive CSS styling for accordion blocks including border, rounded corners, hover effects, expand/collapse animation, icon rotation, and content styling (16px font size, 28px line height). Also added styles for admin editor accordion cards."
 
-frontend:
   - task: "UL and OL List Rendering Fix"
     implemented: true
     working: true
