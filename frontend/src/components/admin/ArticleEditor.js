@@ -26,6 +26,8 @@ const TipTapToolbar = ({ editor }) => {
 };
 
 const StepRichEditor = ({ value, onChange, placeholder }) => {
+  const isInternalUpdateRef = React.useRef(false);
+
   const editor = useEditor({
     extensions: [StarterKit],
     content: value || '',
@@ -36,12 +38,25 @@ const StepRichEditor = ({ value, onChange, placeholder }) => {
     },
     onUpdate: ({ editor }) => {
       const html = editor.getHTML();
-      if (html !== value) onChange(html);
+      // Mark updates originating from the editor to avoid resetting content/focus
+      isInternalUpdateRef.current = true;
+      // Slightly debounce to batch keystrokes and reduce parent re-renders
+      if (StepRichEditor._raf) cancelAnimationFrame(StepRichEditor._raf);
+      StepRichEditor._raf = requestAnimationFrame(() => {
+        onChange(html);
+        // allow effect to know this was internal
+        setTimeout(() => { isInternalUpdateRef.current = false; }, 0);
+      });
     },
   });
 
+  // Reflect external value changes without breaking caret/focus
   useEffect(() => {
-    if (editor && value !== editor.getHTML()) {
+    if (!editor) return;
+    if (isInternalUpdateRef.current) return;
+    const current = editor.getHTML();
+    // Only set when truly different to avoid resetting selection
+    if ((value || '') !== current) {
       editor.commands.setContent(value || '', false);
     }
   }, [value, editor]);
