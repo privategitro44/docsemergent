@@ -100,6 +100,61 @@ const StepRichEditor = ({ value, onChange, placeholder }) => {
   );
 };
 
+const AccordionRichEditor = ({ value, onChange, placeholder }) => {
+  const isInternalUpdateRef = React.useRef(false);
+
+  const editor = useEditor({
+    extensions: [
+      StarterKit,
+      TiptapLink.configure({
+        openOnClick: false,
+        HTMLAttributes: {
+          target: '_blank',
+          rel: 'noopener noreferrer',
+        },
+      }),
+    ],
+    content: value || '',
+    editorProps: {
+      attributes: {
+        class: 'tiptap-editor',
+        style: 'font-size: 16px; line-height: 28px;',
+      },
+    },
+    onUpdate: ({ editor }) => {
+      const html = editor.getHTML();
+      isInternalUpdateRef.current = true;
+      if (AccordionRichEditor._raf) cancelAnimationFrame(AccordionRichEditor._raf);
+      AccordionRichEditor._raf = requestAnimationFrame(() => {
+        onChange(html);
+        setTimeout(() => { isInternalUpdateRef.current = false; }, 0);
+      });
+    },
+  });
+
+  // Reflect external value changes without breaking caret/focus
+  useEffect(() => {
+    if (!editor) return;
+    if (isInternalUpdateRef.current) return;
+    const current = editor.getHTML();
+    if ((value || '') !== current) {
+      editor.commands.setContent(value || '', false);
+    }
+  }, [value, editor]);
+
+  return (
+    <div className="html-editor">
+      <AccordionToolbar editor={editor} />
+      <div className="tiptap-wrap">
+        <EditorContent editor={editor} />
+      </div>
+      {placeholder ? (
+        <div className="editor-help"><small>{placeholder}</small></div>
+      ) : null}
+    </div>
+  );
+};
+
 const ArticleEditor = ({ onLogout }) => {
   const { id } = useParams();
   const navigate = useNavigate();
