@@ -7,6 +7,7 @@ import { BACKEND_URL, API } from "../../config";
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import TiptapLink from '@tiptap/extension-link';
+import Underline from '@tiptap/extension-underline';
 
 const TipTapToolbar = ({ editor }) => {
   if (!editor) return null;
