@@ -6,6 +6,7 @@ import { Save, ArrowLeft, Upload, Link as LinkIcon, Eye, EyeOff } from "lucide-r
 import { BACKEND_URL, API } from "../../config";
 import { EditorContent, useEditor } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import TiptapLink from '@tiptap/extension-link';
 
 const TipTapToolbar = ({ editor }) => {
   if (!editor) return null;
