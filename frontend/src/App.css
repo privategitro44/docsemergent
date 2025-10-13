@@ -1106,7 +1106,7 @@ mark.search-highlight {
 .integration-summary { color: #6b7280; font-size: 14px; }
 
 /* Admin editors (light styles to fit current admin theme) */
-.steps-editor .step-edit-card, .integrations-editor .integration-edit-card, .article-links-editor .al-edit-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
+.steps-editor .step-edit-card, .integrations-editor .integration-edit-card, .article-links-editor .al-edit-card, .accordion-editor .accordion-edit-card { background: #ffffff; border: 1px solid #e5e7eb; border-radius: 10px; padding: 12px; margin-bottom: 10px; }
 
 /* Article links block (public) */
 .article-links { margin: 32px 0; }
