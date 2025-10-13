@@ -271,6 +271,9 @@ const ArticleEditor = ({ onLogout }) => {
       newBlock.title = '';
       newBlock.steps = [{ title: '', html: '' }];
     }
+    if (type === 'accordion') {
+      newBlock.items = [{ title: '', content: '' }];
+    }
     setArticle(prev => ({
       ...prev,
       content: [...prev.content, newBlock]
