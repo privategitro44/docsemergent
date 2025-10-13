@@ -1023,6 +1023,68 @@ const ArticleEditor = ({ onLogout }) => {
                       </div>
                     </div>
                   )}
+
+                  {block.type === "accordion" && (
+                    <div className="accordion-editor">
+                      <div className="form-group">
+                        <label className="form-label">Accordion Items</label>
+                        <div className="accordion-list-editor">
+                          {Array.isArray(block.items) && block.items.length > 0 ? block.items.map((item, i) => (
+                            <div key={i} className="accordion-edit-card">
+                              <div className="form-row">
+                                <input
+                                  type="text"
+                                  className="form-input"
+                                  placeholder={`Item ${i+1} title`}
+                                  value={item.title || ''}
+                                  onChange={(e) => {
+                                    const items = [...(block.items || [])];
+                                    items[i] = { ...(items[i] || {}), title: e.target.value };
+                                    handleContentChange(index, 'items', items);
+                                  }}
+                                />
+                              </div>
+                              <AccordionRichEditor
+                                value={typeof item?.content === 'string' ? item.content : ''}
+                                onChange={(content) => {
+                                  const items = [...(block.items || [])];
+                                  items[i] = { ...(items[i] || {}), content };
+                                  handleContentChange(index, 'items', items);
+                                }}
+                                placeholder="Enter content for this accordion item. Use formatting buttons above."
+                              />
+                              <div className="content-block-actions">
+                                {i > 0 && (
+                                  <button onClick={() => {
+                                    const items = [...(block.items || [])];
+                                    [items[i-1], items[i]] = [items[i], items[i-1]];
+                                    handleContentChange(index, 'items', items);
+                                  }} className="action-btn" title="Move Up">↑</button>
+                                )}
+                                {i < (block.items?.length || 0) - 1 && (
+                                  <button onClick={() => {
+                                    const items = [...(block.items || [])];
+                                    [items[i+1], items[i]] = [items[i], items[i+1]];
+                                    handleContentChange(index, 'items', items);
+                                  }} className="action-btn" title="Move Down">↓</button>
+                                )}
+                                <button onClick={() => {
+                                  const items = (block.items || []).filter((_, j) => j !== i);
+                                  handleContentChange(index, 'items', items);
+                                }} className="action-btn delete" title="Remove Item">✕</button>
+                              </div>
+                            </div>
+                          )) : <div className="field-help"><small>No accordion items yet. Add one below.</small></div>}
+                          <button onClick={() => {
+                            const items = [...(block.items || [])];
+                            if (items.length >= 10) return alert('Max 10 accordion items allowed');
+                            items.push({ title: '', content: '' });
+                            handleContentChange(index, 'items', items);
+                          }} className="add-content-btn">+ Add Accordion Item</button>
+                        </div>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             ))}
