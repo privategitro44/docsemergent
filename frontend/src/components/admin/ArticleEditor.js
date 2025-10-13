@@ -107,6 +107,7 @@ const AccordionRichEditor = ({ value, onChange, placeholder }) => {
   const editor = useEditor({
     extensions: [
       StarterKit,
+      Underline,
       TiptapLink.configure({
         openOnClick: false,
         HTMLAttributes: {
