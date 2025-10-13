@@ -1095,6 +1095,7 @@ const ArticleEditor = ({ onLogout }) => {
               <button onClick={() => addContentBlock("video")} className="add-content-btn" data-testid="add-video-block">+ Add Video</button>
               <button onClick={() => addContentBlock("embed")} className="add-content-btn" data-testid="add-embed-block">+ Add Embed</button>
               <button onClick={() => addContentBlock("steps")} className="add-content-btn">+ Add Steps</button>
+              <button onClick={() => addContentBlock("accordion")} className="add-content-btn">+ Add Accordion</button>
             </div>
           </div>
         </div>
