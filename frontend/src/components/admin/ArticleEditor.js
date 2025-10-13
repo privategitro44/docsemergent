@@ -613,6 +613,9 @@ const ArticleEditor = ({ onLogout }) => {
                           next.title = next.title || '';
                           next.steps = [{ title: '', html: '' }];
                         }
+                        if (val === 'accordion' && !Array.isArray(next.items)) {
+                          next.items = [{ title: '', content: '' }];
+                        }
                         return next;
                       });
                     }}
@@ -624,6 +627,7 @@ const ArticleEditor = ({ onLogout }) => {
                     <option value="video">Video</option>
                     <option value="embed">Embed/HTML</option>
                     <option value="steps">Steps</option>
+                    <option value="accordion">Accordion</option>
                     <option value="integrations">Integrations Grid</option>
                     <option value="article-links">Article Links</option>
                   </select>
