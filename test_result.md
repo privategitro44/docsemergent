@@ -214,20 +214,19 @@ frontend:
           comment: "Fixed by serving uploaded files through API route (/api/uploads/{filename}) instead of direct /uploads/ path. This bypasses the ingress Content-Type override issue. Upload endpoint now returns /api/uploads/ URLs. Verified: images display correctly with naturalWidth 987x1039px."
 
 metadata:
-  created_by: "testing_agent"
-  version: "1.0"
-  test_sequence: 1
+  created_by: "main_agent"
+  version: "1.1"
+  test_sequence: 2
 
 test_plan:
   current_focus:
-    - "UL and OL List Rendering Fix"
-    - "Image and Video Rendering Verification"
-    - "Footer Social Icons Update"
-    - "Content Section Centering Fix"
+    - "Accordion Content Block - Admin Editor"
+    - "Accordion Content Block - Public Rendering"
+    - "Accordion Styling"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
 
 agent_communication:
     - agent: "main"
-      message: "Completed four tasks: 1) Fixed UL/OL list rendering by adding explicit list-style-type CSS properties. 2) Verified image and video rendering working correctly - tested with external images and YouTube embeds. 3) Updated footer social icons to use actual SVG files from assets folder (Discord, X, LinkedIn, Instagram). 4) Fixed content section centering - content now perfectly centered with equal 216px margins on left and right. All features tested and verified working."
+      message: "Implemented accordion/dropdown functionality as requested. Added new 'Accordion' content block type in Article Editor with TipTap rich text editor supporting bold, italic, underline, bullet lists, numbered lists, and links. Created AccordionBlock component for public rendering with expand/collapse functionality. Added comprehensive CSS styling matching the reference image design. Content is styled with 16px font size and 28px line height as specified. Ready for frontend testing."
