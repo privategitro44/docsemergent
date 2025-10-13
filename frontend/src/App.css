@@ -1040,6 +1040,11 @@ mark.search-highlight {
 .btn-feedback { padding: 8px 12px; border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; cursor: pointer; font-size: 14px; }
 .btn-feedback:hover { background: #f9fafb; }
 .social-links { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
+/* Normalize all footer social icons behavior via the link, even if SVG lacks class */
+.social-link svg { width: 16px; height: 16px; display: block; color: inherit; }
+.social-link svg path, .social-link svg g { fill: currentColor !important; transition: fill 0.2s ease, color 0.2s ease; }
+.social-link:hover svg { color: #374151; }
+
 .social-link { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border: 1px solid #e5e7eb; border-radius: 9999px; color: #6b7280; text-decoration: none; background: #fff; transition: all 0.2s ease; }
 .social-link:hover { background: #f9fafb; border-color: #d1d5db; color: #374151; }
 .brand-icon { width: 16px; height: 16px; display: block; }
