@@ -38,7 +38,7 @@ const StepRichEditor = ({ value, onChange, placeholder }) => {
       const html = editor.getHTML();
       if (html !== value) onChange(html);
     },
-  }, [value]);
+  });
 
   useEffect(() => {
     if (editor && value !== editor.getHTML()) {
