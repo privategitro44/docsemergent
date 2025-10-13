@@ -1126,6 +1126,123 @@ mark.search-highlight {
 .al-title { font-size: 15px; font-weight: 700; color: #1a1a1a; }
 .al-desc { color: #6b7280; font-size: 13px; }
 
+/* Accordion block (public) */
+.accordion-block {
+  margin: 24px 0;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.accordion-item {
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.accordion-item:last-child {
+  border-bottom: none;
+}
+
+.accordion-header {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  text-align: left;
+  transition: background-color 0.2s ease;
+  font-family: inherit;
+}
+
+.accordion-header:hover {
+  background-color: #f9fafb;
+}
+
+.accordion-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 20px;
+  height: 20px;
+  font-size: 12px;
+  color: #6b7280;
+  transition: transform 0.2s ease;
+  flex-shrink: 0;
+}
+
+.accordion-item.open .accordion-icon {
+  transform: rotate(0deg);
+}
+
+.accordion-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1a1a1a;
+  line-height: 1.5;
+}
+
+.accordion-content {
+  padding: 0 20px 20px 52px;
+  font-size: 16px;
+  line-height: 28px;
+  color: #374151;
+  animation: accordion-slide-down 0.2s ease-out;
+}
+
+@keyframes accordion-slide-down {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Accordion content formatting */
+.accordion-content p {
+  margin-bottom: 12px;
+}
+
+.accordion-content p:last-child {
+  margin-bottom: 0;
+}
+
+.accordion-content ul,
+.accordion-content ol {
+  margin: 12px 0;
+  padding-left: 24px;
+}
+
+.accordion-content li {
+  margin-bottom: 8px;
+}
+
+.accordion-content a {
+  color: #1E66F5;
+  text-decoration: underline;
+}
+
+.accordion-content a:hover {
+  color: #0047cc;
+}
+
+.accordion-content strong {
+  font-weight: 600;
+}
+
+.accordion-content em {
+  font-style: italic;
+}
+
+.accordion-content u {
+  text-decoration: underline;
+}
+
 /* Divider above social links */
 .footer-divider { height: 1px; background: #e5e7eb; margin: 20px 0; }
 
