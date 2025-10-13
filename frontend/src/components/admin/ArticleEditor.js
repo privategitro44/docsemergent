@@ -44,7 +44,7 @@ const AccordionToolbar = ({ editor }) => {
     <div className="editor-toolbar">
       {btn('B', () => editor.chain().focus().toggleBold().run(), editor.isActive('bold'))}
       {btn('I', () => editor.chain().focus().toggleItalic().run(), editor.isActive('italic'))}
-      {btn('U', () => editor.chain().focus().toggleUnderline?.().run(), false)}
+      {btn('U', () => editor.chain().focus().toggleUnderline().run(), editor.isActive('underline'))}
       {btn('UL', () => editor.chain().focus().toggleBulletList().run(), editor.isActive('bulletList'))}
       {btn('OL', () => editor.chain().focus().toggleOrderedList().run(), editor.isActive('orderedList'))}
       {btn('Link', addLink, editor.isActive('link'))}
