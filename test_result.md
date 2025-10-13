@@ -102,7 +102,44 @@
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
 
-user_problem_statement: "1) Fix the UL and OL tags rendering issue - bullets and numbers not showing. 2) Verify image and video rendering. 3) Update footer social icons to use actual SVG files from assets/social icons folder (Discord, X, LinkedIn, Instagram). 4) Fix content centering. 5) Test and fix image upload functionality. 6) Fix hardcoding issues for environment portability. 7) Format tables properly with good styling and text wrapping."
+user_problem_statement: "Add a new accordion/dropdown functionality as a content block type in the Article Editor. The accordion should allow multiple collapsible items, each with a title and rich text content (supporting bold, italic, underline, bullet lists, numbered lists, and links). Content should be styled with 16px font size and 28px line height. The accordion should work similarly to the reference image provided."
+
+frontend:
+  - task: "Accordion Content Block - Admin Editor"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/admin/ArticleEditor.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added new 'Accordion' block type to ArticleEditor with TipTap rich text editor for each accordion item. Includes toolbar with Bold, Italic, Underline, Bullet List, Numbered List, and Link buttons. Each accordion item has a title input and rich text content editor. Installed @tiptap/extension-link and @tiptap/extension-underline packages."
+  
+  - task: "Accordion Content Block - Public Rendering"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/components/ArticleContent.js, /app/frontend/src/components/Documentation.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Created AccordionBlock component in ArticleContent.js with expand/collapse functionality. Added rendering case in Documentation.js. Accordion items show only title when collapsed, and expand to show rich text content when clicked."
+  
+  - task: "Accordion Styling"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/App.css"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+        - working: "NA"
+          agent: "main"
+          comment: "Added comprehensive CSS styling for accordion blocks including border, rounded corners, hover effects, expand/collapse animation, icon rotation, and content styling (16px font size, 28px line height). Also added styles for admin editor accordion cards."
 
 frontend:
   - task: "UL and OL List Rendering Fix"
