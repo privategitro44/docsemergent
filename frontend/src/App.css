@@ -1036,6 +1036,7 @@ mark.search-highlight {
 .article-footer { margin-top: 48px; padding-top: 24px; border-top: 1px solid #e5e7eb; }
 .feedback-block { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
 .feedback-title { font-weight: 600; color: #111827; }
+.feedback-actions { display: inline-flex; align-items: center; gap: 12px; }
 .btn-feedback { padding: 8px 12px; border: 1px solid #e5e7eb; background: #fff; border-radius: 8px; cursor: pointer; font-size: 14px; }
 .btn-feedback:hover { background: #f9fafb; }
 .social-links { display: flex; gap: 10px; align-items: center; margin-bottom: 16px; }
