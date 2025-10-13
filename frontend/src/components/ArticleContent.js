@@ -231,4 +231,43 @@ export const ArticleLinksBlock = ({ block, onNavigate }) => {
   );
 };
 
+export const AccordionBlock = ({ block }) => {
+  const [openIndex, setOpenIndex] = React.useState(null);
+  const items = Array.isArray(block?.items) ? block.items : [];
+  if (items.length === 0) return null;
+
+  const toggleItem = (index) => {
+    setOpenIndex(openIndex === index ? null : index);
+  };
+
+  return (
+    <div className="accordion-block">
+      {items.map((item, index) => {
+        const isOpen = openIndex === index;
+        const safeContent = DOMPurify.sanitize(item.content || '', { USE_PROFILES: { html: true } });
+        
+        return (
+          <div key={index} className={`accordion-item ${isOpen ? 'open' : ''}`}>
+            <button
+              className="accordion-header"
+              onClick={() => toggleItem(index)}
+              aria-expanded={isOpen}
+            >
+              <span className="accordion-icon" aria-hidden="true">
+                {isOpen ? '▼' : '▶'}
+              </span>
+              <span className="accordion-title">{item.title || `Item ${index + 1}`}</span>
+            </button>
+            {isOpen && (
+              <div className="accordion-content">
+                <div dangerouslySetInnerHTML={{ __html: safeContent }} />
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
 export default ArticleContent;
