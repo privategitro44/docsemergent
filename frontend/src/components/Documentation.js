@@ -322,6 +322,12 @@ const Documentation = () => {
                 <ArticleLinksBlock block={item} onNavigate={(slug)=>navigate(`/article/${slug}`)} />
               </div>
             );
+          case "accordion":
+            return (
+              <div key={index}>
+                <AccordionBlock block={item} />
+              </div>
+            );
           default:
             console.warn('Unknown content type:', item.type);
             return null;
