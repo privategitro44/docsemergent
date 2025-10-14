@@ -546,6 +546,11 @@ const Documentation = () => {
         <div className="docs-content" data-testid="docs-content">
           {currentArticle ? (
             <article className="article" data-testid="current-article">
+              {currentArticle.category && (
+                <div className="article-category-label" data-testid="article-category-label">
+                  {currentArticle.category}
+                </div>
+              )}
               <div className="title-tag" data-testid="article-title-tag">{currentArticle.title}</div>
               <div data-testid="article-content">
                 {renderContent(currentArticle.content)}
