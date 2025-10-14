@@ -350,6 +350,17 @@ async def update_navigation_item(nav_id: str, nav_update: NavigationCreate, curr
     updated_nav = await db.navigation.find_one({"id": nav_id})
     return NavigationItem(**updated_nav)
 
+@api_router.put("/admin/navigation/reorder")
+async def reorder_navigation(items_data: Dict[str, Any], current_admin: str = Depends(get_current_admin)):
+    """Bulk update navigation items order"""
+    items = items_data.get("items", [])
+    for item in items:
+        await db.navigation.update_one(
+            {"id": item["id"]},
+            {"$set": {"order": item["order"]}}
+        )
+    return {"message": "Navigation reordered successfully"}
+
 @api_router.delete("/admin/navigation/{nav_id}")
 async def delete_navigation_item(nav_id: str, current_admin: str = Depends(get_current_admin)):
     result = await db.navigation.delete_one({"id": nav_id})
