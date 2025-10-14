@@ -417,8 +417,59 @@ const NavigationManager = ({ onLogout }) => {
         {categories.length === 0 && (
           <div className="nav-empty-state">
             <p>No categories yet. Articles will automatically create categories when published.</p>
+            <p className="nav-help-text">Or click the button below to add a category manually.</p>
           </div>
         )}
+
+        {/* Add Category Section */}
+        <div className="add-category-section">
+          {showAddCategory ? (
+            <div className="add-category-form">
+              <input
+                type="text"
+                value={newCategoryName}
+                onChange={(e) => setNewCategoryName(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter') handleAddCategory();
+                  if (e.key === 'Escape') {
+                    setShowAddCategory(false);
+                    setNewCategoryName("");
+                  }
+                }}
+                placeholder="Enter category name"
+                className="category-name-input"
+                autoFocus
+              />
+              <button
+                onClick={handleAddCategory}
+                className="btn btn-primary"
+              >
+                <Check size={16} />
+                Add
+              </button>
+              <button
+                onClick={() => {
+                  setShowAddCategory(false);
+                  setNewCategoryName("");
+                }}
+                className="btn btn-secondary"
+              >
+                Cancel
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => setShowAddCategory(true)}
+              className="btn-add-category"
+            >
+              <Plus size={18} />
+              Add New Category
+            </button>
+          )}
+          <p className="add-category-hint">
+            💡 Tip: Categories are also created automatically when you publish an article with a new category name.
+          </p>
+        </div>
       </div>
     </div>
   );
