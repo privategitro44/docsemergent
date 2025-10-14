@@ -12,6 +12,8 @@ const NavigationManager = ({ onLogout }) => {
   const [expandedCategories, setExpandedCategories] = useState({});
   const [editingCategory, setEditingCategory] = useState(null);
   const [editCategoryName, setEditCategoryName] = useState("");
+  const [showAddCategory, setShowAddCategory] = useState(false);
+  const [newCategoryName, setNewCategoryName] = useState("");
 
   useEffect(() => {
     fetchNavigation();
