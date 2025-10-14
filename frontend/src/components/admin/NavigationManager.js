@@ -252,8 +252,49 @@ const NavigationManager = ({ onLogout }) => {
                                 {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
                               </button>
                               <div className="nav-category-info">
-                                <span className="nav-category-label">{category.label}</span>
-                                <span className="nav-item-count">{articlesInCategory.length} articles</span>
+                                {editingCategory === category.id ? (
+                                  <div className="category-edit-form">
+                                    <input
+                                      type="text"
+                                      value={editCategoryName}
+                                      onChange={(e) => setEditCategoryName(e.target.value)}
+                                      onKeyDown={(e) => {
+                                        if (e.key === 'Enter') saveEditCategory(category.id);
+                                        if (e.key === 'Escape') cancelEditCategory();
+                                      }}
+                                      className="category-name-input"
+                                      autoFocus
+                                    />
+                                    <button
+                                      onClick={() => saveEditCategory(category.id)}
+                                      className="btn-icon btn-success"
+                                      title="Save"
+                                    >
+                                      <Check size={14} />
+                                    </button>
+                                    <button
+                                      onClick={cancelEditCategory}
+                                      className="btn-icon"
+                                      title="Cancel"
+                                    >
+                                      <X size={14} />
+                                    </button>
+                                  </div>
+                                ) : (
+                                  <>
+                                    <div className="category-label-row">
+                                      <span className="nav-category-label">{category.label}</span>
+                                      <button
+                                        onClick={() => startEditCategory(category)}
+                                        className="btn-icon-inline"
+                                        title="Edit category name"
+                                      >
+                                        <Edit2 size={14} />
+                                      </button>
+                                    </div>
+                                    <span className="nav-item-count">{articlesInCategory.length} articles</span>
+                                  </>
+                                )}
                               </div>
                             </div>
                             <button
