@@ -362,6 +362,20 @@ body {
 }
 
 /* Small title tag above main heading */
+.article-category-label {
+  display: inline-block;
+  font-size: 13px;
+  line-height: 20px;
+  color: #6b7280;
+  background: #f3f4f6;
+  padding: 4px 12px;
+  border-radius: 6px;
+  margin-bottom: 12px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
 .title-tag {
   font-size: 14px;
   line-height: 20px;
