@@ -94,6 +94,38 @@ const NavigationManager = ({ onLogout }) => {
     }
   };
 
+  const handleAddCategory = async () => {
+    if (!newCategoryName.trim()) {
+      alert("Please enter a category name");
+      return;
+    }
+
+    try {
+      const maxOrder = navigation
+        .filter(item => item.type === 'category')
+        .reduce((max, item) => Math.max(max, item.order || 0), 0);
+
+      const newCategory = {
+        label: newCategoryName.trim(),
+        type: "category",
+        parent_id: null,
+        order: maxOrder + 1,
+        target: null,
+        icon: null
+      };
+
+      await axios.post(`${API}/admin/navigation`, newCategory, authHeader());
+      
+      setNewCategoryName("");
+      setShowAddCategory(false);
+      await fetchNavigation();
+    } catch (error) {
+      console.error("Error adding category:", error);
+      alert("Failed to add category");
+      if (error.response?.status === 401) onLogout();
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
