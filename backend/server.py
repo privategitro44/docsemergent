@@ -259,14 +259,21 @@ async def create_article(article: ArticleCreate, current_admin: str = Depends(ge
     article_dict = prepare_for_mongo(article_obj.dict())
     await db.articles.insert_one(article_dict)
 
-    # Auto create nav item under category
+    # Auto create nav item under category (case-insensitive matching)
     try:
-        category_label = article.category.upper()
-        category_nav = await db.navigation.find_one({"type": "category", "label": category_label})
+        # Find existing category with case-insensitive search
+        category_nav = await db.navigation.find_one({
+            "type": "category", 
+            "label": {"$regex": f"^{re.escape(article.category)}$", "$options": "i"}
+        })
         parent_id = None
         if category_nav:
             parent_id = category_nav["id"]
+            # Use the existing category's label (preserve its case)
+            category_label = category_nav["label"]
         else:
+            # Create new category with the case provided by user
+            category_label = article.category
             new_category = {
                 "id": str(uuid.uuid4()),
                 "label": category_label,
