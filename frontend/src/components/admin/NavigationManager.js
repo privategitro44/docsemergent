@@ -1,13 +1,17 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Plus, Trash2, GripVertical, ChevronDown, ChevronRight } from "lucide-react";
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronRight, Edit2, Check, X, ArrowLeft } from "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
+import { useNavigate } from "react-router-dom";
 import { API } from "../../config";
 
 const NavigationManager = ({ onLogout }) => {
+  const navigate = useNavigate();
   const [navigation, setNavigation] = useState([]);
   const [articles, setArticles] = useState([]);
   const [expandedCategories, setExpandedCategories] = useState({});
+  const [editingCategory, setEditingCategory] = useState(null);
+  const [editCategoryName, setEditCategoryName] = useState("");
 
   useEffect(() => {
     fetchNavigation();
