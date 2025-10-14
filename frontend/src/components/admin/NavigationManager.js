@@ -58,6 +58,40 @@ const NavigationManager = ({ onLogout }) => {
     }));
   };
 
+  const startEditCategory = (category) => {
+    setEditingCategory(category.id);
+    setEditCategoryName(category.label);
+  };
+
+  const cancelEditCategory = () => {
+    setEditingCategory(null);
+    setEditCategoryName("");
+  };
+
+  const saveEditCategory = async (categoryId) => {
+    if (!editCategoryName.trim()) {
+      alert("Category name cannot be empty");
+      return;
+    }
+
+    try {
+      await axios.put(`${API}/admin/navigation/${categoryId}`, {
+        label: editCategoryName.trim()
+      }, authHeader());
+      
+      // Update local state
+      setNavigation(prev => prev.map(item => 
+        item.id === categoryId ? { ...item, label: editCategoryName.trim() } : item
+      ));
+      
+      setEditingCategory(null);
+      setEditCategoryName("");
+    } catch (error) {
+      console.error("Error updating category name:", error);
+      alert("Failed to update category name");
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
