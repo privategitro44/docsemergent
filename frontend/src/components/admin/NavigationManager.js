@@ -197,8 +197,20 @@ const NavigationManager = ({ onLogout }) => {
   return (
     <div className="admin-container">
       <div className="admin-header">
-        <h1>Navigation Management</h1>
-        <p className="admin-subtitle">Organize categories and articles in the sidebar</p>
+        <div className="admin-header-content">
+          <button 
+            onClick={() => navigate('/admin')} 
+            className="back-btn"
+            title="Back to Dashboard"
+          >
+            <ArrowLeft size={18} />
+            <span>Back</span>
+          </button>
+          <div>
+            <h1>Navigation Management</h1>
+            <p className="admin-subtitle">Organize categories and articles in the sidebar</p>
+          </div>
+        </div>
       </div>
 
       <div className="admin-content">
