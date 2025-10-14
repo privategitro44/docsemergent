@@ -1,20 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Plus, Trash2, GripVertical, ExternalLink, FileText } from "lucide-react";
+import { Plus, Trash2, GripVertical, ChevronDown, ChevronRight } from "lucide-react";
 import { DragDropContext, Droppable, Draggable } from "@hello-pangea/dnd";
 import { API } from "../../config";
 
 const NavigationManager = ({ onLogout }) => {
   const [navigation, setNavigation] = useState([]);
   const [articles, setArticles] = useState([]);
-  const [newItem, setNewItem] = useState({
-    label: "",
-    type: "category",
-    url: "",
-    articleId: "",
-    order: 0,
-    parent: null,
-  });
+  const [expandedCategories, setExpandedCategories] = useState({});
 
   useEffect(() => {
     fetchNavigation();
@@ -25,6 +18,12 @@ const NavigationManager = ({ onLogout }) => {
     try {
       const response = await axios.get(`${API}/navigation`);
       setNavigation(response.data);
+      // Auto-expand all categories
+      const expanded = {};
+      response.data.filter(item => item.type === 'category').forEach(cat => {
+        expanded[cat.id] = true;
+      });
+      setExpandedCategories(expanded);
     } catch (error) {
       console.error("Error fetching navigation:", error);
     }
@@ -32,175 +31,269 @@ const NavigationManager = ({ onLogout }) => {
 
   const fetchArticles = async () => {
     try {
-      const response = await axios.get(`${API}/articles`);
+      const token = localStorage.getItem("adminToken");
+      const response = await axios.get(`${API}/admin/articles`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
       setArticles(response.data);
     } catch (error) {
       console.error("Error fetching articles:", error);
     }
   };
 
-  const authHeader = {
+  const authHeader = () => ({
     headers: {
       Authorization: `Bearer ${localStorage.getItem("adminToken")}`,
     },
-  };
+  });
 
-  const handleAdd = async () => {
-    try {
-      const response = await axios.post(`${API}/admin/navigation`, newItem, authHeader);
-      setNavigation([...navigation, response.data]);
-      setNewItem({
-        label: "",
-        type: "category",
-        url: "",
-        articleId: "",
-        order: navigation.length,
-        parent: null,
-      });
-    } catch (error) {
-      console.error("Error adding navigation item:", error);
-      if (error.response?.status === 401) {
-        onLogout();
-      }
-    }
+  const toggleCategory = (categoryId) => {
+    setExpandedCategories(prev => ({
+      ...prev,
+      [categoryId]: !prev[categoryId]
+    }));
   };
 
   const handleDelete = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
-      await axios.delete(`${API}/admin/navigation/${id}`, authHeader);
-      setNavigation(navigation.filter((item) => item.id !== id));
+      await axios.delete(`${API}/admin/navigation/${id}`, authHeader());
+      await fetchNavigation();
     } catch (error) {
       console.error("Error deleting navigation item:", error);
-      if (error.response?.status === 401) {
-        onLogout();
+      if (error.response?.status === 401) onLogout();
+    }
+  };
+
+  const handleChangeCategory = async (articleId, newCategoryId) => {
+    try {
+      // Update the article's parent_id
+      await axios.put(`${API}/admin/navigation/${articleId}`, {
+        parent_id: newCategoryId
+      }, authHeader());
+      await fetchNavigation();
+    } catch (error) {
+      console.error("Error changing category:", error);
+      alert("Failed to change category");
+    }
+  };
+
+  const onDragEnd = async (result) => {
+    const { source, destination, type } = result;
+    
+    if (!destination) return;
+    if (source.droppableId === destination.droppableId && source.index === destination.index) return;
+
+    if (type === 'category') {
+      // Reorder categories
+      const categories = navigation.filter(item => item.type === 'category');
+      const [moved] = categories.splice(source.index, 1);
+      categories.splice(destination.index, 0, moved);
+      
+      const updatedCategories = categories.map((cat, index) => ({
+        ...cat,
+        order: index
+      }));
+
+      // Update all navigation with new category orders
+      const updatedNav = navigation.map(item => {
+        const updated = updatedCategories.find(c => c.id === item.id);
+        return updated || item;
+      });
+      
+      setNavigation(updatedNav);
+
+      try {
+        await axios.put(`${API}/admin/navigation/reorder`, {
+          items: updatedCategories
+        }, authHeader());
+      } catch (error) {
+        console.error("Error reordering categories:", error);
+        await fetchNavigation();
+      }
+    } else if (type === 'article') {
+      // Reorder articles within a category
+      const categoryId = source.droppableId;
+      const articlesInCategory = navigation.filter(
+        item => item.type === 'article' && item.parent_id === categoryId
+      );
+      
+      const [moved] = articlesInCategory.splice(source.index, 1);
+      articlesInCategory.splice(destination.index, 0, moved);
+      
+      const updatedArticles = articlesInCategory.map((art, index) => ({
+        ...art,
+        order: index
+      }));
+
+      // Update navigation
+      const updatedNav = navigation.map(item => {
+        const updated = updatedArticles.find(a => a.id === item.id);
+        return updated || item;
+      });
+      
+      setNavigation(updatedNav);
+
+      try {
+        await axios.put(`${API}/admin/navigation/reorder`, {
+          items: updatedArticles
+        }, authHeader());
+      } catch (error) {
+        console.error("Error reordering articles:", error);
+        await fetchNavigation();
       }
     }
   };
 
-  const handleReorder = async (result) => {
-    if (!result.destination) return;
+  // Organize navigation into categories
+  const categories = navigation
+    .filter(item => item.type === 'category')
+    .sort((a, b) => a.order - b.order);
 
-    const items = Array.from(navigation);
-    const [reorderedItem] = items.splice(result.source.index, 1);
-    items.splice(result.destination.index, 0, reorderedItem);
-
-    const updatedItems = items.map((item, index) => ({
-      ...item,
-      order: index,
-    }));
-
-    setNavigation(updatedItems);
-
-    try {
-      await axios.put(`${API}/admin/navigation/reorder`, { items: updatedItems }, authHeader);
-    } catch (error) {
-      console.error("Error reordering navigation:", error);
-      if (error.response?.status === 401) {
-        onLogout();
-      }
-    }
+  const getArticlesForCategory = (categoryId) => {
+    return navigation
+      .filter(item => item.type === 'article' && item.parent_id === categoryId)
+      .sort((a, b) => a.order - b.order);
   };
 
   return (
     <div className="admin-container">
       <div className="admin-header">
         <h1>Navigation Management</h1>
+        <p className="admin-subtitle">Organize categories and articles in the sidebar</p>
       </div>
 
       <div className="admin-content">
-        <div className="form-group">
-          <h3>Add New Navigation Item</h3>
-          <div className="form-row">
-            <input
-              type="text"
-              placeholder="Label"
-              value={newItem.label}
-              onChange={(e) => setNewItem({ ...newItem, label: e.target.value })}
-              className="form-input"
-            />
-            <select
-              value={newItem.type}
-              onChange={(e) => setNewItem({ ...newItem, type: e.target.value })}
-              className="form-input"
-            >
-              <option value="category">Category</option>
-              <option value="link">Link</option>
-              <option value="article">Article</option>
-            </select>
-          </div>
+        <DragDropContext onDragEnd={onDragEnd}>
+          {/* Categories List */}
+          <Droppable droppableId="categories" type="category">
+            {(provided) => (
+              <div
+                {...provided.droppableProps}
+                ref={provided.innerRef}
+                className="nav-hierarchy"
+              >
+                {categories.map((category, catIndex) => {
+                  const articlesInCategory = getArticlesForCategory(category.id);
+                  const isExpanded = expandedCategories[category.id];
 
-          {newItem.type === "link" && (
-            <input
-              type="text"
-              placeholder="https://..."
-              value={newItem.url}
-              onChange={(e) => setNewItem({ ...newItem, url: e.target.value })}
-              className="form-input"
-            />
-          )}
-
-          {newItem.type === "article" && (
-            <select
-              value={newItem.articleId}
-              onChange={(e) => setNewItem({ ...newItem, articleId: e.target.value })}
-              className="form-input"
-            >
-              <option value="">Select Article</option>
-              {articles.map((article) => (
-                <option key={article.id} value={article.id}>
-                  {article.title}
-                </option>
-              ))}
-            </select>
-          )}
-
-          <button onClick={handleAdd} className="btn btn-primary">
-            <Plus size={16} />
-            Add Item
-          </button>
-        </div>
-
-        <div className="navigation-list">
-          <h3>Current Navigation</h3>
-          <DragDropContext onDragEnd={handleReorder}>
-            <Droppable droppableId="navigation">
-              {(provided) => (
-                <div {...provided.droppableProps} ref={provided.innerRef}>
-                  {navigation.map((item, index) => (
-                    <Draggable key={item.id} draggableId={item.id} index={index}>
-                      {(provided) => (
+                  return (
+                    <Draggable
+                      key={category.id}
+                      draggableId={category.id}
+                      index={catIndex}
+                    >
+                      {(provided, snapshot) => (
                         <div
                           ref={provided.innerRef}
                           {...provided.draggableProps}
-                          className="navigation-item"
+                          className={`nav-category-block ${snapshot.isDragging ? 'dragging' : ''}`}
                         >
-                          <div {...provided.dragHandleProps} className="drag-handle">
-                            <GripVertical size={20} />
-                          </div>
-                          <div className="item-content">
-                            <div className="item-label">
-                              {item.type === "link" && <ExternalLink size={16} />}
-                              {item.type === "article" && <FileText size={16} />}
-                              <span>{item.label}</span>
+                          {/* Category Header */}
+                          <div className="nav-category-header">
+                            <div className="nav-category-left">
+                              <div {...provided.dragHandleProps} className="drag-handle">
+                                <GripVertical size={18} />
+                              </div>
+                              <button
+                                className="expand-btn"
+                                onClick={() => toggleCategory(category.id)}
+                              >
+                                {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                              </button>
+                              <div className="nav-category-info">
+                                <span className="nav-category-label">{category.label}</span>
+                                <span className="nav-item-count">{articlesInCategory.length} articles</span>
+                              </div>
                             </div>
-                            <span className="item-type">{item.type}</span>
+                            <button
+                              onClick={() => handleDelete(category.id)}
+                              className="btn-icon btn-danger"
+                              title="Delete category"
+                            >
+                              <Trash2 size={16} />
+                            </button>
                           </div>
-                          <button
-                            onClick={() => handleDelete(item.id)}
-                            className="btn-icon btn-danger"
-                          >
-                            <Trash2 size={16} />
-                          </button>
+
+                          {/* Articles in Category */}
+                          {isExpanded && (
+                            <Droppable droppableId={category.id} type="article">
+                              {(provided) => (
+                                <div
+                                  {...provided.droppableProps}
+                                  ref={provided.innerRef}
+                                  className="nav-articles-list"
+                                >
+                                  {articlesInCategory.length === 0 ? (
+                                    <div className="nav-empty-category">
+                                      No articles in this category
+                                    </div>
+                                  ) : (
+                                    articlesInCategory.map((article, artIndex) => (
+                                      <Draggable
+                                        key={article.id}
+                                        draggableId={article.id}
+                                        index={artIndex}
+                                      >
+                                        {(provided, snapshot) => (
+                                          <div
+                                            ref={provided.innerRef}
+                                            {...provided.draggableProps}
+                                            className={`nav-article-item ${snapshot.isDragging ? 'dragging' : ''}`}
+                                          >
+                                            <div className="nav-article-left">
+                                              <div {...provided.dragHandleProps} className="drag-handle-small">
+                                                <GripVertical size={16} />
+                                              </div>
+                                              <span className="nav-article-label">{article.label}</span>
+                                            </div>
+                                            <div className="nav-article-actions">
+                                              <select
+                                                className="category-select"
+                                                value={article.parent_id || ''}
+                                                onChange={(e) => handleChangeCategory(article.id, e.target.value)}
+                                                onClick={(e) => e.stopPropagation()}
+                                              >
+                                                {categories.map(cat => (
+                                                  <option key={cat.id} value={cat.id}>
+                                                    {cat.label}
+                                                  </option>
+                                                ))}
+                                              </select>
+                                              <button
+                                                onClick={() => handleDelete(article.id)}
+                                                className="btn-icon btn-danger"
+                                                title="Delete article"
+                                              >
+                                                <Trash2 size={14} />
+                                              </button>
+                                            </div>
+                                          </div>
+                                        )}
+                                      </Draggable>
+                                    ))
+                                  )}
+                                  {provided.placeholder}
+                                </div>
+                              )}
+                            </Droppable>
+                          )}
                         </div>
                       )}
                     </Draggable>
-                  ))}
-                  {provided.placeholder}
-                </div>
-              )}
-            </Droppable>
-          </DragDropContext>
-        </div>
+                  );
+                })}
+                {provided.placeholder}
+              </div>
+            )}
+          </Droppable>
+        </DragDropContext>
+
+        {categories.length === 0 && (
+          <div className="nav-empty-state">
+            <p>No categories yet. Articles will automatically create categories when published.</p>
+          </div>
+        )}
       </div>
     </div>
   );
