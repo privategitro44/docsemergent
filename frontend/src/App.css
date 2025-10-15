@@ -2075,10 +2075,18 @@ input[type="number"].form-input::-webkit-inner-spin-button { -webkit-appearance:
   border-color: #9ca3af;
 }
 
+.admin-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 32px;
+}
+
 .admin-header-content {
   display: flex;
   flex-direction: column;
   gap: 12px;
+  flex: 1;
 }
 
 .category-label-row {
