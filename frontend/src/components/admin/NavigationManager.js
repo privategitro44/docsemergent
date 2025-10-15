@@ -289,13 +289,22 @@ const NavigationManager = ({ onLogout }) => {
             <p className="admin-subtitle">Organize categories and articles in the sidebar</p>
           </div>
         </div>
-        <button 
-          onClick={handleSyncNavigation}
-          className="btn btn-secondary"
-          title="Sync navigation with articles"
-        >
-          Sync Navigation
-        </button>
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button 
+            onClick={handleDiagnostics}
+            className="btn btn-secondary"
+            title="Check navigation status"
+          >
+            Check Status
+          </button>
+          <button 
+            onClick={handleSyncNavigation}
+            className="btn btn-primary"
+            title="Sync navigation with articles"
+          >
+            Sync Navigation
+          </button>
+        </div>
       </div>
 
       <div className="admin-content">
