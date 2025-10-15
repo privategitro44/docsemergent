@@ -126,6 +126,19 @@ const NavigationManager = ({ onLogout }) => {
     }
   };
 
+  const handleSyncNavigation = async () => {
+    if (!window.confirm('This will create navigation items for any articles that are missing them. Continue?')) return;
+    
+    try {
+      const response = await axios.post(`${API}/admin/navigation/sync`, {}, authHeader());
+      alert(response.data.message);
+      await fetchNavigation();
+    } catch (error) {
+      console.error("Error syncing navigation:", error);
+      alert("Failed to sync navigation: " + (error.response?.data?.detail || error.message));
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
