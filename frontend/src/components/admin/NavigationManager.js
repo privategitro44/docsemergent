@@ -158,19 +158,19 @@ const NavigationManager = ({ onLogout }) => {
 
     if (type === 'category') {
       // Reorder categories
-      const categories = navigation.filter(item => item.type === 'category');
+      const categories = navigation.filter(item => item.type === 'category').sort((a, b) => a.order - b.order);
       const [moved] = categories.splice(source.index, 1);
       categories.splice(destination.index, 0, moved);
       
       const updatedCategories = categories.map((cat, index) => ({
-        ...cat,
+        id: cat.id,
         order: index
       }));
 
-      // Update all navigation with new category orders
+      // Optimistically update UI
       const updatedNav = navigation.map(item => {
         const updated = updatedCategories.find(c => c.id === item.id);
-        return updated || item;
+        return updated ? { ...item, order: updated.order } : item;
       });
       
       setNavigation(updatedNav);
@@ -181,33 +181,43 @@ const NavigationManager = ({ onLogout }) => {
         }, authHeader());
       } catch (error) {
         console.error("Error reordering categories:", error);
-        await fetchNavigation();
+        alert("Failed to reorder categories");
+        await fetchNavigation(); // Revert on error
       }
     } else if (type === 'article') {
       // Reorder articles within a category
       const categoryId = source.droppableId;
-      const articlesInCategory = navigation.filter(
-        item => item.type === 'article' && item.parent_id === categoryId
-      );
+      const articlesInCategory = navigation
+        .filter(item => item.type === 'article' && item.parent_id === categoryId)
+        .sort((a, b) => a.order - b.order);
       
       const [moved] = articlesInCategory.splice(source.index, 1);
       articlesInCategory.splice(destination.index, 0, moved);
       
       const updatedArticles = articlesInCategory.map((art, index) => ({
-        ...art,
+        id: art.id,
         order: index
       }));
 
-      // Update navigation
+      // Optimistically update UI
       const updatedNav = navigation.map(item => {
         const updated = updatedArticles.find(a => a.id === item.id);
-        return updated || item;
+        return updated ? { ...item, order: updated.order } : item;
       });
       
       setNavigation(updatedNav);
 
       try {
         await axios.put(`${API}/admin/navigation/reorder`, {
+          items: updatedArticles
+        }, authHeader());
+      } catch (error) {
+        console.error("Error reordering articles:", error);
+        alert("Failed to reorder articles");
+        await fetchNavigation(); // Revert on error
+      }
+    }
+  };
           items: updatedArticles
         }, authHeader());
       } catch (error) {
