@@ -139,6 +139,34 @@ const NavigationManager = ({ onLogout }) => {
     }
   };
 
+  const handleDiagnostics = async () => {
+    try {
+      const response = await axios.get(`${API}/admin/navigation/diagnostics`, authHeader());
+      const data = response.data;
+      
+      let message = `📊 Navigation Diagnostics:\n\n`;
+      message += `Total Articles: ${data.total_articles}\n`;
+      message += `Total Navigation Items: ${data.total_navigation_items}\n`;
+      message += `Missing Navigation Items: ${data.missing_navigation_items}\n\n`;
+      
+      if (data.missing_articles.length > 0) {
+        message += `⚠️ Articles without navigation:\n`;
+        data.missing_articles.forEach((article, i) => {
+          message += `${i + 1}. ${article.title} (slug: ${article.slug})\n`;
+          message += `   Category: ${article.category}\n`;
+        });
+        message += `\n💡 Click "Sync Navigation" to fix this.`;
+      } else {
+        message += `✅ All articles have navigation items!`;
+      }
+      
+      alert(message);
+    } catch (error) {
+      console.error("Error getting diagnostics:", error);
+      alert("Failed to get diagnostics");
+    }
+  };
+
   const handleDelete = async (id) => {
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
