@@ -389,6 +389,71 @@ async def delete_navigation_item(nav_id: str, current_admin: str = Depends(get_c
         raise HTTPException(status_code=404, detail="Navigation item not found")
     return {"message": "Navigation item deleted successfully"}
 
+@api_router.post("/admin/navigation/sync")
+async def sync_navigation(current_admin: str = Depends(get_current_admin)):
+    """Sync navigation with articles - create missing navigation items"""
+    try:
+        articles = await db.articles.find().to_list(1000)
+        nav_items = await db.navigation.find().to_list(1000)
+        
+        # Get all article navigation targets
+        article_nav_items = [n for n in nav_items if n.get('type') == 'article']
+        nav_targets = {n.get('target'): n for n in article_nav_items}
+        
+        created_count = 0
+        
+        for article in articles:
+            if article.get('slug') not in nav_targets:
+                # Create missing navigation item
+                category_label = article.get('category', 'Uncategorized')
+                
+                # Find or create category
+                category_nav = await db.navigation.find_one({
+                    "type": "category",
+                    "label": {"$regex": f"^{re.escape(category_label)}$", "$options": "i"}
+                })
+                
+                parent_id = None
+                if category_nav:
+                    parent_id = category_nav["id"]
+                else:
+                    # Create new category
+                    max_cat_order = max([n.get('order', 0) for n in nav_items if n.get('type') == 'category'], default=0)
+                    new_category = {
+                        "id": str(uuid.uuid4()),
+                        "label": category_label,
+                        "type": "category",
+                        "target": None,
+                        "parent_id": None,
+                        "order": max_cat_order + 1,
+                        "icon": None
+                    }
+                    await db.navigation.insert_one(new_category)
+                    parent_id = new_category["id"]
+                    logger.info(f"Created category: {category_label}")
+                
+                # Create article navigation item
+                existing_nav_in_cat = await db.navigation.find({"parent_id": parent_id}).sort("order", -1).limit(1).to_list(1)
+                next_order = (existing_nav_in_cat[0]["order"] + 1) if existing_nav_in_cat else 1
+                
+                nav_item = {
+                    "id": str(uuid.uuid4()),
+                    "label": article.get('title'),
+                    "type": "article",
+                    "target": article.get('slug'),
+                    "parent_id": parent_id,
+                    "order": next_order,
+                    "icon": None
+                }
+                await db.navigation.insert_one(nav_item)
+                created_count += 1
+                logger.info(f"Created navigation item for article: {article.get('title')}")
+        
+        return {"message": f"Sync complete. Created {created_count} navigation items"}
+    except Exception as e:
+        logger.error(f"Error syncing navigation: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Sync failed: {str(e)}")
+
 # Media Upload Routes
 @api_router.post("/admin/upload")
 async def upload_media(file: UploadFile = File(...), current_admin: str = Depends(get_current_admin)):
