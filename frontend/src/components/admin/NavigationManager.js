@@ -218,14 +218,6 @@ const NavigationManager = ({ onLogout }) => {
       }
     }
   };
-          items: updatedArticles
-        }, authHeader());
-      } catch (error) {
-        console.error("Error reordering articles:", error);
-        await fetchNavigation();
-      }
-    }
-  };
 
   // Organize navigation into categories
   const categories = navigation
