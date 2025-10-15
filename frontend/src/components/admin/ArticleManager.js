@@ -3,9 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import AdminLayout from "./AdminLayout";
 import { Plus, Edit, Trash2, Eye, EyeOff, Search } from "lucide-react";
-
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-const API = `${BACKEND_URL}/api`;
+import { BACKEND_URL, API } from "../../config";
 
 const ArticleManager = ({ onLogout }) => {
   const [articles, setArticles] = useState([]);
