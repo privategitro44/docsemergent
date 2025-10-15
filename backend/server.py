@@ -362,13 +362,25 @@ async def update_navigation_item(nav_id: str, nav_update: Dict[str, Any], curren
 @api_router.put("/admin/navigation/reorder")
 async def reorder_navigation(items_data: Dict[str, Any], current_admin: str = Depends(get_current_admin)):
     """Bulk update navigation items order"""
-    items = items_data.get("items", [])
-    for item in items:
-        await db.navigation.update_one(
-            {"id": item["id"]},
-            {"$set": {"order": item["order"]}}
-        )
-    return {"message": "Navigation reordered successfully"}
+    try:
+        items = items_data.get("items", [])
+        logger.info(f"Reordering {len(items)} navigation items")
+        
+        for item in items:
+            if not item.get("id"):
+                logger.error(f"Invalid item in reorder request: {item}")
+                continue
+            
+            result = await db.navigation.update_one(
+                {"id": item["id"]},
+                {"$set": {"order": item["order"]}}
+            )
+            logger.info(f"Updated item {item['id']} with order {item['order']}, matched: {result.matched_count}")
+        
+        return {"message": f"Successfully reordered {len(items)} navigation items"}
+    except Exception as e:
+        logger.error(f"Error in reorder_navigation: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Failed to reorder: {str(e)}")
 
 @api_router.delete("/admin/navigation/{nav_id}")
 async def delete_navigation_item(nav_id: str, current_admin: str = Depends(get_current_admin)):
