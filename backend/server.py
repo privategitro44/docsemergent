@@ -454,6 +454,36 @@ async def sync_navigation(current_admin: str = Depends(get_current_admin)):
         logger.error(f"Error syncing navigation: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Sync failed: {str(e)}")
 
+@api_router.get("/admin/navigation/diagnostics")
+async def navigation_diagnostics(current_admin: str = Depends(get_current_admin)):
+    """Get diagnostic information about navigation sync status"""
+    try:
+        articles = await db.articles.find().to_list(1000)
+        nav_items = await db.navigation.find().to_list(1000)
+        
+        article_nav_items = [n for n in nav_items if n.get('type') == 'article']
+        nav_targets = {n.get('target'): n for n in article_nav_items}
+        
+        missing_articles = []
+        for article in articles:
+            if article.get('slug') not in nav_targets:
+                missing_articles.append({
+                    "title": article.get('title'),
+                    "slug": article.get('slug'),
+                    "category": article.get('category'),
+                    "is_published": article.get('is_published', False)
+                })
+        
+        return {
+            "total_articles": len(articles),
+            "total_navigation_items": len(article_nav_items),
+            "missing_navigation_items": len(missing_articles),
+            "missing_articles": missing_articles
+        }
+    except Exception as e:
+        logger.error(f"Error getting diagnostics: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Diagnostics failed: {str(e)}")
+
 # Media Upload Routes
 @api_router.post("/admin/upload")
 async def upload_media(file: UploadFile = File(...), current_admin: str = Depends(get_current_admin)):
