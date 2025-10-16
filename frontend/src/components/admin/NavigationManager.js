@@ -230,12 +230,15 @@ const NavigationManager = ({ onLogout }) => {
       setNavigation(updatedNav);
 
       try {
-        await axios.put(`${API}/admin/navigation/reorder`, {
+        const response = await axios.put(`${API}/admin/navigation/reorder`, {
           items: updatedCategories
         }, authHeader());
+        console.log('Reorder categories success:', response.data);
       } catch (error) {
         console.error("Error reordering categories:", error);
-        alert("Failed to reorder categories");
+        console.error("Error response:", error.response?.data);
+        console.error("Error status:", error.response?.status);
+        alert(`Failed to reorder categories: ${error.response?.data?.detail || error.message}`);
         await fetchNavigation(); // Revert on error
       }
     } else if (type === 'article') {
