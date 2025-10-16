@@ -71,6 +71,10 @@ const NavigationManager = ({ onLogout }) => {
   };
 
   const saveEditCategory = async (categoryId) => {
+    if(categoryId==='default'){
+      alert("Can't edit default category");
+      return;
+    }
     if (!editCategoryName.trim()) {
       alert("Category name cannot be empty");
       return;
@@ -168,6 +172,10 @@ const NavigationManager = ({ onLogout }) => {
   };
 
   const handleDelete = async (id) => {
+    if(id==="default"){
+      alert("Can't delete default category");
+      return;
+    }
     if (!window.confirm('Are you sure you want to delete this item?')) return;
     try {
       await axios.delete(`${API}/admin/navigation/${id}`, authHeader());
@@ -179,6 +187,11 @@ const NavigationManager = ({ onLogout }) => {
   };
 
   const handleChangeCategory = async (articleId, newCategoryId) => {
+    if(newCategoryId==="default"){
+      console.error("Can't assign to default category");
+      alert("Change to default category not allowed");
+      return;
+    }
     try {
       // Update the article's parent_id
       await axios.put(`${API}/admin/navigation/${articleId}`, {
@@ -265,10 +278,34 @@ const NavigationManager = ({ onLogout }) => {
     .filter(item => item.type === 'category')
     .sort((a, b) => a.order - b.order);
 
+  categories.push(
+    {
+        "id": "default",
+        "label": "Default",
+        "type": "category",
+        "target": null,
+        "parent_id": null,
+        "order": 0,
+        "icon": null
+    }
+  )
+
   const getArticlesForCategory = (categoryId) => {
-    const articles = navigation
-      .filter(item => item.type === 'article' && item.parent_id === categoryId)
-      .sort((a, b) => (a.order || 0) - (b.order || 0));
+    let articles=[];
+    if(categoryId==="default"){
+      const navSet = new Set();
+      navigation
+        .filter(item => item.type === 'category').forEach(item => {
+        navSet.add(item.id);
+      });
+      articles = navigation
+        .filter(item=> item.type==='article' && !navSet.has(item.parent_id))
+        .sort((a, b) => (a.order || 0) - (b.order || 0))
+    }else{
+      articles = navigation
+        .filter(item => item.type === 'article' && item.parent_id === categoryId)
+        .sort((a, b) => (a.order || 0) - (b.order || 0));
+    }
     return articles;
   };
 
