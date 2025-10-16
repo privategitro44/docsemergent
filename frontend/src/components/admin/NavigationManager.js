@@ -265,12 +265,15 @@ const NavigationManager = ({ onLogout }) => {
       setNavigation(updatedNav);
 
       try {
-        await axios.put(`${API}/admin/navigation/reorder`, {
+        const response = await axios.put(`${API}/admin/navigation/reorder`, {
           items: updatedArticles
         }, authHeader());
+        console.log('Reorder articles success:', response.data);
       } catch (error) {
         console.error("Error reordering articles:", error);
-        alert("Failed to reorder articles");
+        console.error("Error response:", error.response?.data);
+        console.error("Error status:", error.response?.status);
+        alert(`Failed to reorder articles: ${error.response?.data?.detail || error.message}`);
         await fetchNavigation(); // Revert on error
       }
     }
