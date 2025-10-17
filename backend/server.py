@@ -342,23 +342,6 @@ async def create_navigation_item(nav_item: NavigationCreate, current_admin: str 
     await db.navigation.insert_one(nav_obj.dict())
     return nav_obj
 
-@api_router.put("/admin/navigation/{nav_id}", response_model=NavigationItem)
-async def update_navigation_item(nav_id: str, nav_update: Dict[str, Any], current_admin: str = Depends(get_current_admin)):
-    """Update navigation item - allows partial updates"""
-    # Filter out None values for partial updates
-    update_data = {k: v for k, v in nav_update.items() if v is not None}
-    if not update_data:
-        raise HTTPException(status_code=400, detail="No update data provided")
-    
-    result = await db.navigation.update_one({"id": nav_id}, {"$set": update_data})
-    if result.modified_count == 0:
-        # Check if item exists
-        existing = await db.navigation.find_one({"id": nav_id})
-        if not existing:
-            raise HTTPException(status_code=404, detail="Navigation item not found")
-    updated_nav = await db.navigation.find_one({"id": nav_id})
-    return NavigationItem(**updated_nav)
-
 @api_router.put("/admin/navigation/reorder")
 async def reorder_navigation(items_data: Dict[str, Any], current_admin: str = Depends(get_current_admin)):
     """Bulk update navigation items order"""
@@ -381,6 +364,23 @@ async def reorder_navigation(items_data: Dict[str, Any], current_admin: str = De
     except Exception as e:
         logger.error(f"Error in reorder_navigation: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Failed to reorder: {str(e)}")
+
+@api_router.put("/admin/navigation/{nav_id}", response_model=NavigationItem)
+async def update_navigation_item(nav_id: str, nav_update: Dict[str, Any], current_admin: str = Depends(get_current_admin)):
+    """Update navigation item - allows partial updates"""
+    # Filter out None values for partial updates
+    update_data = {k: v for k, v in nav_update.items() if v is not None}
+    if not update_data:
+        raise HTTPException(status_code=400, detail="No update data provided")
+    
+    result = await db.navigation.update_one({"id": nav_id}, {"$set": update_data})
+    if result.modified_count == 0:
+        # Check if item exists
+        existing = await db.navigation.find_one({"id": nav_id})
+        if not existing:
+            raise HTTPException(status_code=404, detail="Navigation item not found")
+    updated_nav = await db.navigation.find_one({"id": nav_id})
+    return NavigationItem(**updated_nav)
 
 @api_router.delete("/admin/navigation/{nav_id}")
 async def delete_navigation_item(nav_id: str, current_admin: str = Depends(get_current_admin)):
