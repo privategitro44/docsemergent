@@ -484,6 +484,48 @@ async def navigation_diagnostics(current_admin: str = Depends(get_current_admin)
         logger.error(f"Error getting diagnostics: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Diagnostics failed: {str(e)}")
 
+@api_router.get("/admin/uploads/diagnostics")
+async def uploads_diagnostics(current_admin: str = Depends(get_current_admin)):
+    """Get diagnostic information about uploaded files"""
+    try:
+        # Check filesystem
+        upload_files = list(uploads_dir.glob('*'))
+        file_info = []
+        for f in sorted(upload_files, key=lambda x: x.stat().st_mtime, reverse=True):
+            if f.is_file():
+                stat = f.stat()
+                file_info.append({
+                    "filename": f.name,
+                    "size": stat.st_size,
+                    "url": f"/api/uploads/{f.name}"
+                })
+        
+        # Check database for images
+        articles = await db.articles.find().to_list(1000)
+        images_in_db = []
+        for article in articles:
+            content = article.get('content', [])
+            image_blocks = [b for b in content if b.get('type') == 'image']
+            for block in image_blocks:
+                url = block.get('content', '')
+                filename = url.split('/api/uploads/')[-1] if '/api/uploads/' in url else None
+                images_in_db.append({
+                    "article": article.get('title'),
+                    "url": url,
+                    "filename": filename,
+                    "exists_on_disk": (uploads_dir / filename).exists() if filename else False
+                })
+        
+        return {
+            "total_files_on_disk": len(file_info),
+            "files": file_info[:10],  # First 10 files
+            "total_images_in_articles": len(images_in_db),
+            "images_in_articles": images_in_db
+        }
+    except Exception as e:
+        logger.error(f"Error getting upload diagnostics: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Diagnostics failed: {str(e)}")
+
 # Media Upload Routes
 @api_router.post("/admin/upload")
 async def upload_media(file: UploadFile = File(...), current_admin: str = Depends(get_current_admin)):
